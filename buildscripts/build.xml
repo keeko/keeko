@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="keeko-build" basedir="." default="doc">
+
+	<property name="path.lib.phpdoc" value="${basedir}/libs/phpdoc/phpdoc"/>
+	<property name="path.lib.phing" value="${basedir}/libs/phing"/>
+	<property name="path.lib.propel" value="${basedir}/libs/propel-gen"/>
+	<property name="path.lib.db" value="${basedir}/libs/db"/>
+	<property name="path.exe.php" value="D:\php\php-5.2.5\php"/>
+
+	<property name="dir.docs.api" value="${basedir}/../docs/api"/>
+	<property name="dir.propel.project" value="${basedir}/../db"/>
+	<property name="dir.keeko.src" value="${basedir}/../src"/>
+
+	<taskdef
+		name="propeller"
+		classpath="${basedir}/libs/keeko-ant/keeko-ant.jar"
+		classname="net.keeko.utils.ant.Propeller"
+		/>
+
+	<target name="-cleanup-doc">
+		<delete dir="${dir.docs.api}"/>
+		<mkdir dir="${dir.docs.api}"/>
+	</target>
+	
+	<target name="-cleanup-db">
+		<delete dir="${dir.propel.project}/build"/>
+	</target>
+
+	<target name="doc" depends="-cleanup-doc">
+		<!-- 
+			ignore (-i):
+			[-] ../src/libs/*
+			[-] ../src/libs/*.php
+			[ ] libs/*
+			[ ] libs/*.php
+			[ ] ../src/libs/<dir>
+			[ ] ../src/libs/<dir>/*
+			[ ] ../src/libs/**/*
+			[ ] libs
+			[ ] ../src/libs
+			
+			legend:
+			[ ] open
+			[-] not working
+			[x] working 
+		-->
+		<exec executable="${path.exe.php}" dir="${basedir}">
+			<arg line='${path.lib.phpdoc} -d ../src -t ../docs/api -i ../src/libs/*,../src/libs/*.php -ti "Keeko API Documentation" -po net-keeko-core -dn net-keeko-core -o "HTML:frames:DOM/earthli"'/>
+		</exec>
+	</target>
+
+	<target name="dbmapping" depends="-cleanup-db">
+		<echo message="Database Mapping (1/4)"/>
+		<echo message="=============================================================="/>
+		<echo message=""/>
+		<echo message="- Creating copy of dbdesigner output"/>
+		<echo message="- Replacing"/>
+		<echo message="- Run propel and create classes and stuff"/>
+		<echo message="=============================================================="/>
+		
+		<copy file="${dir.propel.project}/dbdesigner.xml" tofile="${dir.propel.project}/db.xml"/>
+		<replace file="${dir.propel.project}/db.xml" token="usertbl" value="user"/>
+		
+		<delete file="${dir.propel.project}/schema.xml"/>
+		
+		<xslt style="${path.lib.db}/dbd2propel.xsl" in="${dir.propel.project}/db.xml" out="${dir.propel.project}/schema.xml"/>
+		
+		<delete file="${dir.propel.project}/db.xml"/>
+		
+		<exec executable="${path.exe.php}">
+			<env key="PHING_HOME" path="${path.lib.phing}"/>
+			<env key="PHP_CLASSPATH" path="${path.lib.phing}/classes"/>
+			<arg line="-d html_errors=off -qC ${path.lib.phing}/bin/phing.php -f ${path.lib.propel}/build.xml -Dproject.dir=${dir.propel.project}"/>
+		</exec>
+		
+		<echo message="Database Mapping (2/4)"/>
+		<echo message="=============================================================="/>
+		<echo message=""/>
+		<echo message="- Adding comments to created classes"/>
+		<echo message="=============================================================="/>
+
+		
+		<propeller
+			directory="${dir.propel.project}/build/classes/net/keeko/cms/core/entities"
+			namespace="net::keeko::cms::core::entities"/>
+
+		<!--
+		<replace
+			dir="${dir.propel.project}/build/classes/core/entities"
+			includes="**/*.php"
+			propertyFile="${path.lib.db}/replace.properties">
+			
+			<replacefilter
+				token="&lt;?php"
+				property="replace.entities.head"/>
+			<replacefilter
+				token="require '"
+				property="replace.entities.require"/>
+		</replace>
+
+		<replace
+			dir="${dir.propel.project}/build/classes/core/entities"
+			includes="*.php"
+			propertyFile="${path.lib.db}/replace.properties">
+			
+			<replacefilter
+				token="@package    core.entities\n */"
+				property="replace.entities.namespace.package"/>
+			
+			<replacefilter
+				token="@package    core.entities"
+				property="replace.entities.package"/>
+		</replace>
+
+		<replace
+			dir="${dir.propel.project}/build/classes/core/entities/om"
+			propertyFile="${path.lib.db}/replace.properties">
+			
+			<replacefilter
+				token="@package    core.entities.om\n */"
+				property="replace.entities.namespace.package.base"/>
+
+			<replacefilter
+				token="@package    core.entities.om"
+				property="replace.entities.package.base"/>
+		</replace>
+
+		<replace
+			dir="${dir.propel.project}/build/classes/core/entities/map"
+			propertyFile="${path.lib.db}/replace.properties">
+			
+			<replacefilter
+				token="@package    core.entities.map\n */"
+				property="replace.entities.namespace.package.map"/>
+			
+			<replacefilter
+				token="@package    core.entities.map"
+				property="replace.entities.package.map"/>
+		</replace>-->
+
+		<echo message="Database Mapping (3/4)"/>
+		<echo message="=============================================================="/>
+		<echo message=""/>
+		<echo message="- Copy classes to destination folders"/>
+		<echo message="=============================================================="/>
+
+		<!--
+			Obviously the overwrite="whatever" does not work.
+			So whatever the attribute's value is the files are overwritten.
+			Therefore the following workaround to copy these files in a 
+			temporary folder and later copy it back. Hey they will get
+			overwritten ;-)
+			
+			(Workaround steps are indented)
+		- -
+			
+			<!- - backup - -
+			<mkdir dir="${dir.keeko.src}/core/entities/temp"/>
+			<copy todir="${dir.keeko.src}/core/entities/temp" overwrite="true" outputencoding="utf-8">
+				<fileset dir="${dir.keeko.src}/core/entities" includes="*.php"/>
+			</copy>
+
+		<!- - copy 'main' classes - -
+		<copy todir="${dir.keeko.src}/core/entities" overwrite="false" outputencoding="utf-8">
+			<fileset dir="${dir.propel.project}/build/classes/core/entities" includes="*.php"/>
+		</copy>
+
+			<!- - restore - -
+			<copy todir="${dir.keeko.src}/core/entities" overwrite="true" outputencoding="utf-8">
+				<fileset dir="${dir.keeko.src}/core/entities/temp" includes="*.php"/>
+			</copy>
+			<delete dir="${dir.keeko.src}/core/entities/temp"/>
+
+		<!- - copy 'base' classes (overwrite) - -
+		<copy todir="${dir.keeko.src}/core/entities/om" overwrite="true" outputencoding="utf-8">
+			<fileset dir="${dir.propel.project}/build/classes/core/entities/om" includes="*.php"/>
+		</copy>
+
+		<!- - copy 'map' classes (overwrite) - -
+		<copy todir="${dir.keeko.src}/core/entities/map" overwrite="true" outputencoding="utf-8">
+			<fileset dir="${dir.propel.project}/build/classes/core/entities/map" includes="*.php"/>
+		</copy>
+		
+		<!- - copy config file - -
+		<copy file="${dir.propel.project}/build/conf/keeko-conf.php" tofile="${dir.keeko.src}/conf/keeko-conf.php"/>
+		-->
+		
+			<!-- backup -->
+			<mkdir dir="${dir.keeko.src}/net/keeko/cms/core/entities/temp"/>
+			<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities/temp" overwrite="true" outputencoding="utf-8">
+				<fileset dir="${dir.keeko.src}/net/keeko/cms/core/entities" includes="*.php"/>
+			</copy>
+
+		<!-- copy 'main' classes -->
+		<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities" overwrite="false" outputencoding="utf-8">
+			<fileset dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities" includes="*.php"/>
+		</copy>
+
+			<!-- restore -->
+			<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities" overwrite="true" outputencoding="utf-8">
+				<fileset dir="${dir.keeko.src}/net/keeko/cms/core/entities/temp" includes="*.php"/>
+			</copy>
+			<delete dir="${dir.keeko.src}/net/keeko/cms/core/entities/temp"/>
+
+		<!-- copy 'base' classes (overwrite) -->
+		<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities/om" overwrite="true" outputencoding="utf-8">
+			<fileset dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities/om" includes="*.php"/>
+		</copy>
+
+		<!-- copy 'map' classes (overwrite) -->
+		<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities/map" overwrite="true" outputencoding="utf-8">
+			<fileset dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities/map" includes="*.php"/>
+		</copy>
+		
+		<!-- copy config file -->
+		<copy file="${dir.propel.project}/build/conf/keeko-conf.php" tofile="${dir.keeko.src}/keeko-conf.php"/>
+		
+		
+		<echo message="Database Mapping (4/4)"/>
+		<echo message="=============================================================="/>
+		<echo message=""/>
+		<echo message="- Cleanup :)"/>
+		<echo message="=============================================================="/>
+
+		<!--<delete dir="${dir.propel.project}/build/classes"/>-->
+		<echo message="@TODO config files etc"/>
+	</target>
+</project>

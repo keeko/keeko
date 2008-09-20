@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+	<item constant="page">Page &amp; Structure</item>
+	<item constant="user">User Management</item>
+	<item constant="files">Files</item>
+	<item constant="modules">Modules</item>
+	<item constant="system">System</item>
+	<item constant="about">About</item>
+</menu>

@@ -1,0 +1,535 @@
+@CHARSET "UTF-8";
+
+/*
+
+*/
+
+
+/**
+ * gara.jswt.List
+ *
+ */
+.keeko {
+	outline: none;
+}
+ 
+.keeko ul.jsWTList {
+	border: 1px solid #888;
+	overflow: auto;
+	background-color: #FFF;
+	padding: 5px;
+}
+
+.keeko ul.jsWTList li span {
+	border: 1px solid #FFF;
+	background-color: #FFF;
+	color: #000;
+	font-family: Verdana;
+	font-size: 85%;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.keeko ul.jsWTListActive li.selected span {
+	border: 1px solid #E8EFB4;
+	background-color: #E8EFB4;
+	color: #000;
+}
+
+.keeko ul.jsWTListActive li.active span {
+	border: 1px dashed #999;
+}
+
+.keeko ul.jsWTListInactive li.selected span {
+	border: 1px solid #DDD;
+	background-color: #DDD;
+	color: #000;
+}
+
+/**
+ * gara.jswt.Tree
+ */
+.keeko ul.jsWTTree {
+	border: 1px solid #888;
+	overflow: auto;
+	background-color: #FFF;
+	padding: 5px;
+}
+
+.keeko .jsWTTreeLines ul {
+	background-image: url('line.gif');
+}
+
+.keeko .jsWTTreeLines li {
+	background-image: url('join.gif');
+}
+
+.keeko ul.jsWTTree li span.text {
+	border: 1px solid #FFF;
+	background-color: #FFF;
+	color: #000;
+	font-family: Verdana;
+}
+
+.keeko ul.jsWTTree li span:hover.text {
+}
+
+.keeko ul.jsWTTreeActive li span.selected {
+	border: 1px solid #E8EFB4;
+	background-color: #E8EFB4;
+	color: #000;
+}
+
+.keeko ul.jsWTTreeActive li span:hover.selected {
+}
+
+.keeko ul.jsWTTreeActive li span.active {
+	border: 1px dashed #999;
+}
+
+.keeko ul.jsWTTreeInactive li span.selected {
+	border: 1px solid #DDD;
+	background-color: #DDD;
+	color: #000;
+}
+
+.keeko .jsWTTreeLines li.bottom {
+	background-image: url('joinbottom.gif');
+}
+
+.keeko .jsWTTreeLines ul.bottom {
+	background-image: none;
+}
+
+.keeko ul.jsWTTree li span.togglerExpanded {
+	background-image: url('collapse.gif');
+}
+
+.keeko ul.jsWTTree li span.togglerCollapsed {
+	background-image: url('expand.gif');
+}
+
+/**
+ * gara.jswt.TabFolder
+ */
+.keeko div.jsWTTabFolder {
+}
+
+.keeko ul.jsWTTabbar {
+	height: 24px;
+	margin-bottom: -2px;
+	padding-left: 15px;
+}
+
+.keeko ul.jsWTTabbar li {
+	cursor: default;
+	float: left;
+	font-family: Verdana;
+	background-color: #EAE6D6;
+	color: #000;
+	font-size: 85%;
+	height: 22px;
+}
+
+.keeko ul.jsWTTabbarTop li {
+	background: url('left_both2.png') no-repeat top left;
+	padding-left: 12px;
+	border-bottom: 2px solid #67AB34;
+}
+
+.keeko ul.jsWTTabbarTop li span {
+	padding: 4px;
+	padding-bottom: 3px;
+	padding-right: 14px;
+	height: 15px;
+	background: url('right_both2.png') no-repeat top right;
+	display: block;
+	float: none;
+}
+
+.keeko ul.jsWTTabbarTop li:hover {
+	color: #000;
+}
+
+.keeko ul.jsWTTabbarTop li.active {
+	color: #000;
+	border-bottom: none;
+	height: 24px;
+}
+
+.keeko ul.jsWTTabbarTop li.active span {
+	height: 17px;
+}
+
+.keeko ul.jsWTTabbarBottom li {
+	margin-top: -1px;
+	margin-bottom: 2px;
+}
+
+.keeko div.jsWTTabFolderActive ul.jsWTTabbarBottom li:hover {
+}
+
+.keeko div.jsWTTabFolderActive ul.jsWTTabbarBottom li.active {
+	border-top-color: #9C9577;
+	margin-bottom: 0;
+}
+
+.keeko div.jsWTTabFolderInactive ul.jsWTTabbarBottom li.active {
+	border-top-color: #CCC8BA;
+	margin-bottom: 0;
+}
+
+.keeko div.jsWTTabFolder div.jsWTTabClientArea {
+	border-top: 2px solid #67AB34;
+	padding: 15px;
+	padding-top: 10px;
+}
+
+/**
+ * gara.jswt.Table
+ #E8EFB4
+ */
+ 
+.keeko table.jsWTTable {
+	border-collapse: separate;
+	font-size: 85%;
+}
+
+.keeko table.jsWTTable thead {
+	background-image: url('theadbg.png');
+	background-repeat: repeat-x;
+}
+
+.keeko table.jsWTTable thead tr th {
+	padding: 2px;
+	/*background-color: #EEE;*/
+	color: #000;
+	border-bottom: 2px solid #67AB34;
+	cursor: default;
+}
+
+.keeko table.jsWTTable thead tr th span {
+	margin-top: -3px;
+	margin-right: -4px !important;
+	margin-bottom: -3px;
+	height: 22px;
+}
+
+.keeko table.jsWTTable tbody tr td {
+	padding: 2px;
+	cursor: default;
+}
+
+.keeko table.jsWTTable td img {
+	margin-right: 3px;
+	vertical-align: middle;
+}
+
+.keeko table.jsWTTableLines tbody tr td {
+	border-bottom: 1px solid #000;
+}
+
+.keeko table.jsWTTableNoLines tbody tr td {
+	border-bottom: none;
+}
+
+.keeko table.jsWTTableActive tbody.jsWTTableFullSelection tr.selected,
+.keeko table.jsWTTableActive tbody tr td.selected {
+	background-color: #E8EFB4;
+}
+
+.keeko table.jsWTTableInactive tbody.jsWTTableFullSelection tr.selected,
+.keeko table.jsWTTableInactive tbody tr td.selected {
+	background-color: #DDD;
+}
+
+/* Menu Widget */
+.keeko ul.jsWTMenu {
+	margin: 0;
+	padding: 0;
+	background-image: none;
+	background-color: #E2E2E2;
+	border: 1px solid #000;
+}
+
+.keeko ul.jsWTMenu li {
+	border: 1px solid #CCC8BA;
+	text-indent: 5px;
+	color: #000;
+	text-decoration: none;
+	padding: 0 3px 1px 2px;
+	border-width: 0;
+}
+
+.keeko ul.jsWTMenu li span {
+	font-size: 85%;
+}
+
+.keeko ul.jsWTMenu li img {
+	vertical-align: middle;
+}
+
+.keeko ul.jsWTMenu li.active {
+/*	border: 1px dotted #000;*/
+}
+
+.keeko ul.jsWTMenu li:hover {
+	background-color: #5F9E30;
+	color: #fff;
+}
+
+.keeko ul.jsWTMenu li:hover span {
+	/*background-color: #EAE6D6;*/
+}
+
+
+.keeko ul.jsWTMenuBar {
+	margin: 0;
+	padding: 0;
+	background-image: none;
+	background-color: #CCC8BA;
+	border: none;
+	height: 29px;
+}
+
+.keeko ul.jsWTMenuBar li {
+	float: left;
+	position: relative;
+}
+
+.keeko ul.jsWTMenuPopUp,
+.keeko ul.jsWTMenuDropDown {
+	margin: 0;
+	padding: 3px 0;
+	background-image: none;
+	background-color: #FFF;
+	border: 1px solid #888;
+}
+
+.keeko ul.jsWTMenuPopUp li,
+.keeko ul.jsWTMenuDropDown li {
+	margin: 0;
+	border: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	background-image: none;
+	background-color: #FFF;
+	float: none;
+}
+
+.keeko ul.jsWTMenuPopUp li span,
+.keeko ul.jsWTMenuDropDown li span {
+	border: none;
+	padding: 0;
+	padding-left: 3px;
+	margin: 0;
+	line-height: 19px;
+}
+
+.keeko ul.jsWTMenuPopUp li img,
+.keeko ul.jsWTMenuDropDown li img {
+}
+
+.keeko ul.jsWTMenuPopUp li.active,
+.keeko ul.jsWTMenuDropDown li.active {
+/*	border: 1px dotted #000;*/
+}
+
+.keeko ul.jsWTMenuPopUp li:hover,
+.keeko ul.jsWTMenuDropDown li:hover {
+	background-color: #5F9E30;
+	border: 0;
+}
+
+.keeko ul.jsWTMenuPopUp li:hover span,
+.keeko ul.jsWTMenuDropDown li:hover span {
+	/*background-color: #EAE6D6;*/
+}
+
+.keeko ul.jsWTMenuBar ul.jsWTMenuDropDown {
+	margin-left: -1px !important;
+	margin-top: 0 !important;
+	margin-top: 18px;
+	white-space: nowrap;
+	left: 0;
+}
+
+/* IE7 hack*/
+.keeko ul.jsWTMenuBar ul.jsWTMenuDropDown {
+	*margin-top: 18px !important;
+}
+
+.keeko ul.jsWTMenuBar ul.jsWTMenuDropDown ul {
+	*margin-top: 0 !important;
+}
+
+.keeko ul.jsWTMenuDropDown {
+	width: 150px;
+}
+
+.keeko ul.jsWTMenuPopUp li,
+.keeko ul.jsWTMenuDropDown li {
+	width: 138px !important;
+	width: 144px;
+}
+
+/* the chain jsWTMenuBar jsWTMenuDropDown is because IE6 needs some readjusment */
+.keeko ul.jsWTMenuBar ul.jsWTMenuDropDown  li ul,
+.keeko ul.jsWTMenuPopUp li ul,
+.keeko ul.jsWTMenuDropDown li ul {
+	top: -2px;
+	left: 145px;
+	margin-top: 0;
+	margin-left: -3px !important;
+}
+
+.keeko ul.jsWTMenuPopUp li.jsWTMenuItemCascade,
+.keeko ul.jsWTMenuDropDown li.jsWTMenuItemCascade {
+	background-image: url('arrow.gif');
+	background-position: 135px 8px;
+	background-repeat: no-repeat;	
+}
+
+.keeko ul.jsWTMenuPopUp li.jsWTMenuItemSeparator,
+.keeko ul.jsWTMenuPopUp li.jsWTMenuItemSeparator:hover,
+.keeko ul.jsWTMenuDropDown li.jsWTMenuItemSeparator,
+.keeko ul.jsWTMenuDropDown li.jsWTMenuItemSeparator:hover {
+	border: 1px solid #CCC8BA;
+	background-color: #CCC8BA;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.keeko ul.jsWTMenuBar li.jsWTMenuItemSeparator,
+.keeko ul.jsWTMenuBar li.jsWTMenuItemSeparator:hover {
+	border: none;
+	border-left: 1px solid #777;
+	background-color: #CCC8BA;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 0;
+	padding-right: 0;
+	height: 23px;
+}
+
+
+/*** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 
+ * gara.jswt.Dialog
+ * 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ */
+
+.keeko div.jsWTDialog {
+	
+}
+
+.keeko div.jsWTDialogBar {
+	/*background: url('left.png') no-repeat;*/
+	line-height: 16px;
+	cursor: default;
+	height: 27px;
+}
+
+/* This div is only because of IE6 grrrrr */
+.keeko div.jsWTDialogBarLeft {
+	background: url('left.png') no-repeat;
+	width: 9px;
+	height: 27px;
+	float: left;
+}
+
+.keeko div.jsWTDialogBarText {
+	background: url('bar.png') repeat-x;
+	padding: 5px 5px 5px 0;
+	height: 18px;
+	color: #FFF;
+}
+
+.keeko div.jsWTDialogBarButtons {
+	background: url('right.png') no-repeat right top;
+	padding: 3px 3px 0 2px;
+	height: 25px;
+}
+
+.keeko span.jsWTDialogCancelButton {
+	background: url('close.png') no-repeat;
+	width: 19px;
+	height: 19px;
+	display: block;
+	margin: 1px 2px 0 0;
+}
+
+.keeko span.jsWTDialogCancelButton:hover {
+	background: url('close_hover.png');
+}
+
+.keeko div.jsWTDialogContent {
+	border: 1px solid #000;
+	background-color: #FFF;
+}
+
+
+/*** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 
+ * gara.jswt.MessageBox
+ * 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ */
+
+.keeko div.jsWTMessageBox,
+.keeko div.jsWTInputDialog {
+	width: 350px;
+}
+
+.keeko div.jsWTMessageBox .jsWTDialogBarText,
+.keeko div.jsWTInputDialog .jsWTDialogBarText {
+	width: 310px;
+}
+
+.keeko div.jsWTMessageBox .jsWTDialogContent,
+.keeko div.jsWTInputDialog .jsWTDialogContent {
+	background-color: #FFF;
+	padding: 10px;
+}
+
+.keeko div.jsWTMessageBox .jsWTMessageBoxContentText{
+	padding: 5px 0;
+	padding-left: 31px;
+}
+
+.keeko div.jsWTMessageBox .jsWTIconError,
+.keeko div.jsWTMessageBox .jsWTIconInformation,
+.keeko div.jsWTMessageBox .jsWTIconQuestion,
+.keeko div.jsWTMessageBox .jsWTIconWarning,
+.keeko div.jsWTMessageBox .jsWTIconWorking {
+	background-position: 5px 5px;
+	background-repeat: no-repeat;
+}
+
+.keeko div.jsWTMessageBox .jsWTIconError {
+	background-image: url('icon_error.png');
+}
+.keeko div.jsWTMessageBox .jsWTIconInformation {
+	background-image: url('icon_information.png');
+} 
+.keeko div.jsWTMessageBox .jsWTIconQuestion {
+	background-image: url('icon_question.png');
+}
+.keeko div.jsWTMessageBox .jsWTIconWarning {
+	background-image: url('icon_warning.png');
+}
+.keeko div.jsWTMessageBox .jsWTIconWorking {
+	background-image: url('icon_working.gif');
+}
+
+.keeko div.jsWTInputDialog .jsWTInputDialogContentText {
+	padding: 5px 0;
+}
+
+.keeko div.jsWTInputDialog .jsWTInputDialogContentText input {
+	display: block;
+	margin: 10px 0 5px 0;
+}

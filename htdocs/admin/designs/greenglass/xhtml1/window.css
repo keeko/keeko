@@ -1,0 +1,10 @@
+div#content {
+	padding: 0;
+}
+
+h1 {
+	margin-left: 15px;
+	margin-bottom: 10px;
+	padding-bottom: 0;
+	padding-top: 15px;
+}

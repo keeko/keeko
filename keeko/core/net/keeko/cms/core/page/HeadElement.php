@@ -1,0 +1,7 @@
+<?php
+namespace net::keeko::cms::core::page;/************************************************************************  			core/page/HeadElement.php - Copyright thomasyou can use variables in your heading files which are replaced at generationtime. possible variables are : author, date, time, filename and filepath.just write %variable_name%This file was generated on So Feb 10 2008 at 19:38:19The original location of this file is /home/thomas/htdocs/keeko/src/core/page/HeadElement.php**************************************************************************//** * class HeadElement * Generalisation for a HTML Element in the &lt;head&gt; area
+ * 
+ * @package net.keeko.core
+ * @subpackage	page */abstract class HeadElement{	/**	 * Contains the the object as XMLDocument	 * @access protected	 */	protected $xml = null;	public function __construct() {}
+	/**	 * Returns a XML-representation	 *	 * @return DOMDocument	 * @access public	 */	public function toXML() {
+		$this->generateXML();		return $this->xml;	}	/**	 * Internally used to generate the XML-Fragment	 *	 * @return 	 * @abstract	 * @access protected	 */	abstract protected function generateXML();}?>

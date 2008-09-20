@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<js>
+	<yes>Yes</yes>
+	<no>No</no>
+	<cancel>Cancel</cancel>
+	<ok>OK</ok>
+	<retry>Retry</retry>
+	<abort>Abort</abort>
+	<ignore>Ignore</ignore>
+	<confirm>Confirm</confirm>
+
+	<error>Error</error>
+	<errors>
+		<unknown>Unknown Error</unknown>
+	</errors>
+	
+	<dialog>
+		<delete>
+			<question1>Would you delete</question1>
+			<question2>Would you REALLY delete</question2>
+		</delete>
+	</dialog>
+
+	<groups>
+		<create>
+			<title>Create new Group</title>
+			<name>Name for the new Group</name>
+		</create>
+		<error>
+			<exist>Group already exists</exist>
+		</error>
+	</groups>
+</js>
