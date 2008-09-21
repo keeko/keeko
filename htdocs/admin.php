@@ -1,12 +1,17 @@
 <?php
-require_once 'prepend.php';
-
-use net::keeko::cms::apps::Administration;
-
+define('KEEKO_PATH', '../keeko');
 try {
-	$admin = new Administration();
-	$admin->run();
-} catch(PropelException $e) {
-	echo $e->getCause();
-}
-?>
+	require '../keeko/admin.php'; 
+} catch (Exception $exception) { 
+	echo '<html><body><center>'  
+		. 'An exception occured while bootstrapping the application.';
+	if (defined('KEEKO_ENVIRONMENT') 
+			&& KEEKO_ENVIRONMENT != 'production'  ) {
+		echo '<br /><br />' . $exception->getMessage() . '<br />'  
+		. '<div align="left">Stack Trace:' . '<pre>' 
+		. $exception->getTraceAsString() . '</pre></div>'; 
+	} 
+	echo '</center></body></html>'; 
+	exit(1); 
+} 
+?> 
