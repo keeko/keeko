@@ -36,23 +36,22 @@ $package("");})();
 
 function XHR() {
 	var xmlhttp;
-	if (typeof XMLHttpRequest != "undefined") {
-		try {
-			xmlhttp = new XMLHttpRequest();
-		} catch (e) {
-			xmlhttp = false;
-		}
-	} else {
-		try {
-			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		} catch (e) {
+	(function() {
+		if (typeof XMLHttpRequest != "undefined") {
+
+			xmlhttp = XMLHttpRequest();
+		} else {
 			try {
-				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+				xmlhttp = ActiveXObject("Msxml2.XMLHTTP");
 			} catch (e) {
-				xmlhttp = false;
+				try {
+					xmlhttp = ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e) {
+					xmlhttp = false;
+				}
 			}
 		}
-	}
+	})();
 	return xmlhttp;
 }';
 
