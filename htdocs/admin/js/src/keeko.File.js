@@ -72,6 +72,10 @@ $class("File", {
 	getFilename : function() {
 		return this._fileName;
 	},
+	
+	setFilename : function(filename) {
+		this._fileName = filename;
+	},
 
 	getPath : function() {
 		return this._path;
@@ -94,10 +98,11 @@ $class("File", {
 	},
 	
 	getType : function() {
+		var ext = this._ext.toLowerCase();
 		if (this.isDir()) {
 			return "folder";
-		} else if (this._types.hasOwnProperty(this._ext)) {
-			return this._types[this._ext];
+		} else if (this._types.hasOwnProperty(ext)) {
+			return this._types[ext];
 		}
 		return this._types['unknown'];
 	},

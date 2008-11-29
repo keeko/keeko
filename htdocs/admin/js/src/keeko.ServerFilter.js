@@ -50,7 +50,7 @@ $class("ServerFilter", {
 		xhr.open("GET", url, true);
 		xhr.onreadystatechange = function(){
 			if (xhr.readyState == 4) {
-				filter.handleRequest(xhr);
+				filter.handleResponse(xhr);
 			}
 		}
 		xhr.send(null);
@@ -87,7 +87,7 @@ $class("ServerFilter", {
 		}
 	},
 
-	handleRequest : function(xhr) {
+	handleResponse : function(xhr) {
 		if (typeof(this._callback) != null) {
 			if (typeof(this._context) == null) {
 				this._context = window;

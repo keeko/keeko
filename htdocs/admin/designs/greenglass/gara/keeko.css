@@ -20,6 +20,11 @@
 	padding: 5px;
 }
 
+.keeko ul.jsWTList li input {
+	margin: 5px 5px 0 5px;
+	float: left;
+}
+
 .keeko ul.jsWTList li span {
 	border: 1px solid #FFF;
 	background-color: #FFF;
@@ -62,6 +67,11 @@
 
 .keeko .jsWTTreeLines li {
 	background-image: url('join.gif');
+}
+
+.keeko ul.jsWTTree li input {
+	margin: 3px 5px 0 5px;
+	float: left;
 }
 
 .keeko ul.jsWTTree li span.text {
@@ -119,6 +129,11 @@
 	height: 24px;
 	margin-bottom: -2px;
 	padding-left: 15px;
+}
+
+.keeko .diagTabBar ul.jsWTTabbar {
+	background-color: #FFF;
+	margin-top: -2px;
 }
 
 .keeko ul.jsWTTabbar li {
@@ -195,9 +210,14 @@
 	font-size: 85%;
 }
 
-.keeko table.jsWTTable thead {
+.keeko table.jsWTTable thead,
+.keeko .x-grid3-hd-row {
 	background-image: url('theadbg.png');
 	background-repeat: repeat-x;
+}
+
+.keeko .x-grid3-hd-row {
+	border-bottom: 2px solid #67AB34;
 }
 
 .keeko table.jsWTTable thead tr th {
@@ -234,7 +254,8 @@
 }
 
 .keeko table.jsWTTableActive tbody.jsWTTableFullSelection tr.selected,
-.keeko table.jsWTTableActive tbody tr td.selected {
+.keeko table.jsWTTableActive tbody tr td.selected,
+.keeko .x-grid3-row-selected {
 	background-color: #E8EFB4;
 }
 
@@ -282,6 +303,13 @@
 	/*background-color: #EAE6D6;*/
 }
 
+.keeko ul.jsWTMenu li.checked {
+	background-image: url('checked.png');
+	background-position: 4px 8px;
+	background-repeat: no-repeat;
+	padding-left: 14px;
+	width: 126px !important;
+}
 
 .keeko ul.jsWTMenuBar {
 	margin: 0;
@@ -373,6 +401,17 @@
 	width: 144px;
 }
 
+.keeko ul.jsWTMenuPopUp li.disabled,
+.keeko ul.jsWTMenuDropDown li.disabled {
+	color: #777;
+}
+
+.keeko ul.jsWTMenuPopUp li.disabled img,
+.keeko ul.jsWTMenuDropDown li.disabled img {
+	color: #777;
+	opacity: 0.5;
+}
+
 /* the chain jsWTMenuBar jsWTMenuDropDown is because IE6 needs some readjusment */
 .keeko ul.jsWTMenuBar ul.jsWTMenuDropDown  li ul,
 .keeko ul.jsWTMenuPopUp li ul,
@@ -400,6 +439,13 @@
 	margin-bottom: 0;
 	padding-top: 0;
 	padding-bottom: 0;
+}
+
+.keeko ul.jsWTMenuPopUp li.disabled:hover,
+.keeko ul.jsWTMenuDropDown li.disabled:hover {
+	color: #777;
+	background-color: #FFF;
+	border: 0;
 }
 
 .keeko ul.jsWTMenuBar li.jsWTMenuItemSeparator,
@@ -532,4 +578,16 @@
 .keeko div.jsWTInputDialog .jsWTInputDialogContentText input {
 	display: block;
 	margin: 10px 0 5px 0;
+}
+
+
+/*** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 
+ * gara.jswt.IframeDialog
+ * 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ */
+
+.keeko div.jsWTIframeDialog div.jsWTDialogContent div.loading {
+	background: #FFF url('loading.gif') no-repeat center;
 }

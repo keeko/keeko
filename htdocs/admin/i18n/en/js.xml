@@ -12,6 +12,7 @@
 	<error>Error</error>
 	<errors>
 		<unknown>Unknown Error</unknown>
+		<params>Missing Params</params>
 	</errors>
 	
 	<dialog>
@@ -30,4 +31,23 @@
 			<exist>Group already exists</exist>
 		</error>
 	</groups>
+	
+	<upload>
+		<add>Add Files</add>
+		<cancel>Cancel Upload</cancel>
+		<start>Start Upload</start>
+		<status>
+			<queued>Queued</queued>
+			<progress>Progress</progress>
+			<error>Error</error>
+			<complete>Complete</complete>
+			<cancelled>Cancelled</cancelled>
+		</status>
+		<error>
+			<size>File size exceeds limits</size>
+			<zerobyte>File has zero bytes</zerobyte>
+			<invalid>Invalid file type</invalid>
+			<queue>Queue limit is reached</queue>
+		</error>
+	</upload>
 </js>

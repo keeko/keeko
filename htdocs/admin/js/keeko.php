@@ -1,13 +1,19 @@
 <?php
 header('Content-Type: text/javascript, charset: utf-8');
 
-echo '(function() { $package("keeko");'."\n";
+echo '(function() {'."\n";
 $di = new DirectoryIterator('./src');
+$files = array();
 foreach ($di as $file) {
 	if ($file->isFile()) {
+		$fileName = str_replace('.js', '', $file->getFileName());
+		$namespace = str_replace(substr(strrchr($fileName, '.'), 0), '', $fileName);
+		echo '$package("'.$namespace.'");'."\n";
 		echo file_get_contents($file->getPath() . '/'. $file->getFilename())."\n";
 	}
 }
+
+echo '$package("");'."\n";
 
 $l = !empty($_GET['l']) ? $_GET['l'] : 'en';
 
@@ -31,27 +37,27 @@ if (gara && gara.i18n) {
 	gara.i18n.set("retry", keeko.i18n.get("global.retry"));
 	gara.i18n.set("ignore", keeko.i18n.get("global.ignore"));
 }
-
-$package("");})();
+})();
 
 function XHR() {
-	var xmlhttp;
-	(function() {
-		if (typeof XMLHttpRequest != "undefined") {
-
-			xmlhttp = XMLHttpRequest();
-		} else {
-			try {
-				xmlhttp = ActiveXObject("Msxml2.XMLHTTP");
-			} catch (e) {
+	var xmlhttp = null;
+	if (xmlhttp == null) {
+		(function() {
+			if (typeof XMLHttpRequest != "undefined") {
+				xmlhttp = XMLHttpRequest();
+			} else {
 				try {
-					xmlhttp = ActiveXObject("Microsoft.XMLHTTP");
+					xmlhttp = ActiveXObject("Msxml2.XMLHTTP");
 				} catch (e) {
-					xmlhttp = false;
+					try {
+						xmlhttp = ActiveXObject("Microsoft.XMLHTTP");
+					} catch (e) {
+						xmlhttp = false;
+					}
 				}
 			}
-		}
-	})();
+		})();
+	}
 	return xmlhttp;
 }';
 

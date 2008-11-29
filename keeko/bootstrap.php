@@ -14,10 +14,9 @@ defined('KEEKO_ENVIRONMENT') or define('KEEKO_ENVIRONMENT', 'development');
 $classpath = new Classpath();
 $classpath->addPath(KEEKO_PATH);
 spl_autoload_register(array($classpath, 'load'));
-session_start();
 
 Propel::init(KEEKO_PATH . '/keeko-conf.php');
-net::keeko::cms::core::KeekoRuntime::getInstance()->setClasspath($classpath);
+net::keeko::cms::core::KeekoRuntime::setClasspath($classpath);
 
 unset($dbHost);
 unset($dbName);

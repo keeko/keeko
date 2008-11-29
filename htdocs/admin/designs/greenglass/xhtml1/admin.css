@@ -152,6 +152,16 @@ h1 {
 	margin-bottom: 15px;
 }
 
+body.window h1 {
+	background-image: url('../images/dialog_gradient.png');
+	background-repeat: repeat-x;
+	background-color: #FFF;
+	padding-bottom: 10px;
+	padding-left: 15px;
+	margin: 0;
+	border-bottom: 2px solid #67AB34;
+}
+
 h2 {
 	font-family: Arial;
 	font-size: 150%;
@@ -186,6 +196,7 @@ h2 {
 	border-top: 1px solid #888;
 	text-align: right;
 	padding: 5px;
+	margin-bottom: -1px;
 }
 
 #btnOk, #btnCancel {
@@ -198,6 +209,7 @@ h2 {
 	background-color: transparent;
 	-moz-user-select: none;
 	outline: none;
+	padding: 2px;
 }
 
 #btnOk:active, #btnCancel:active,
@@ -217,7 +229,7 @@ h2 {
 
 /******************************************************************************
  *
- * Form Controls
+ * Form Controls & Buttons
  *
  ******************************************************************************/
 
@@ -257,4 +269,161 @@ input[type = "button"], input[type = "submit"] {
 	border-width: 2px;
 	background-color: #5F9E30;
 	color: #FFF;
+}
+
+.btn {
+	background: url('../images/btn.png') no-repeat top left;
+	border: none;
+	height: 21px;
+	line-height: 21px;
+	color: #000;
+	background-color: transparent;
+	-moz-user-select: none;
+	outline: none;
+	display: block;
+}
+
+.btnEnd {
+	display: block;
+	background: url('../images/btn.png') no-repeat top right;
+	margin-left: 15px;
+	margin-right: -15px;
+}
+
+/******************************************************************************
+ *
+ * Widgets
+ *
+ ******************************************************************************/
+.keekoUpload .toolbar {
+	padding: 0 5px 5px 5px;
+	text-align: right;
+}
+
+.keekoUpload .addButton {
+	padding-left: 20px;
+	background-image: url('../images/add.png');
+	background-repeat: no-repeat;
+	cursor: pointer;
+	float: left;
+}
+
+.keekoUpload .cancelButton {
+	padding-left: 20px;
+	background-image: url('../images/upload_cancel.png');
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+.keekoUpload .startButton {
+	padding-left: 20px;
+	background-image: url('../images/upload_start.png');
+	background-repeat: no-repeat;
+	cursor: pointer;
+	margin-left: 10px;
+}
+
+.keekoUpload .container {
+	background-color: #FFF;
+	overflow-x: hidden;
+	overflow-y: auto;
+	border: 1px solid #CCC;
+	border-bottom-width: 0;
+}
+
+.keekoUpload .uploadItem {
+	position: relative;
+	height: 45px;
+	border-top: 1px solid #F9FFF4;
+	border-left: 1px solid #F9FFF4;
+	border-bottom: 1px solid #CCC;
+	padding: 5px;
+	background-color: #E8EFB4;
+}
+
+.keekoUpload .uploadItem span {
+	display: block;
+	position: absolute;
+}
+
+.keekoUpload .uploadItem .itemName {
+	font-weight: bold;	
+}
+
+.keekoUpload .uploadItem .status {
+	top: 22px;
+	font-size: 77%;
+}
+
+.keekoUpload .uploadItem .size {
+	font-size: 77%;
+	top: 22px;
+	right: 5px;
+}
+
+.keekoUpload .uploadItem .remove {
+	right: 5px;
+	width: 16px;
+	background-image: url('../images/remove.png');
+	height: 16px;
+	cursor: pointer;
+}
+
+.keekoUpload .uploadItem .progressBarContainer {
+	position: absolute;
+	height: 3px;
+	top: 42px;
+	right: 5px;
+	left: 5px;
+}
+
+.keekoUpload .uploadItem .progressBar {
+	background-color: #5F9E30;
+	height: 3px;
+}
+
+.keekoUpload .totalProgressContainer {
+	border: 1px solid #CCC;
+	border-bottom-width: 0;
+	padding: 5px;
+	height: 15px;
+	text-align: center;
+	position: relative;
+	background-color: #EEE;
+}
+
+.keekoUpload .totalProgressText {
+	z-index: 5;
+	font-size: 77%;
+	position: absolute;
+	top: 6px;
+}
+
+.keekoUpload .totalProgressBarContainer {
+	border: 1px solid #CCC;
+	position: absolute;
+	z-index: 3;
+	left: 5px;
+	top: 5px;
+	right: 5px;
+	bottom: 5px;
+	height: 13px;
+}
+
+.keekoUpload .totalProgressBar {
+	background-color: #E8EFB4;
+	width: 0;
+	height: 13px;
+}
+
+.keekoSelectDialog .keekoSelectContent {
+	overflow: auto;
+}
+
+.keekoSelectDialog .keekoSelectContentLoading {
+	background: url('../images/loading-indicator.gif') center no-repeat;
+}
+
+.keeko div.keekoSelectContent ul.jsWTTree {
+	border: 0;
 }

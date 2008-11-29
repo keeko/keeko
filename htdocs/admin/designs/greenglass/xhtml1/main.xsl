@@ -27,7 +27,13 @@
 					<link type="text/css" rel="stylesheet" href="admin/designs/greenglass/xhtml1/window.css"/>
 				</xsl:if>
 			</head>
-			<body class="keeko">
+			<body>
+				<xsl:attribute name="class">
+					<xsl:choose>
+						<xsl:when test="/keeko/settings/mode = 'window'">keeko window</xsl:when>
+						<xsl:otherwise>keeko</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
 				<xsl:if test="/keeko/settings/mode != 'window'">
 					<xsl:call-template name="pageHeader"/>
 					<div id="topbar">
@@ -37,6 +43,9 @@
 					</div>
 				</xsl:if>
 				<div id="content">
+					<xsl:if test="/keeko/settings/mode = 'window'">
+						<xsl:attribute name="class">window</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates select="//block[@name = 'content']/action"/>
 				</div>
 				
