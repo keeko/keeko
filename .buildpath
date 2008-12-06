@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <buildpath>
-	<buildpathentry excluding="modules/" kind="src" path="keeko"/>
+	<buildpathentry kind="src" path="keeko"/>
 </buildpath>
