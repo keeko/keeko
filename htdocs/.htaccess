@@ -1,8 +1,8 @@
 RewriteEngine On
 RewriteBase /keeko/htdocs
 
-RewriteRule ^modules/(.*)$ ../keeko/modules/$1 [L]
-RewriteRule ^libs/(.*)$ ../libs/$1 [L]
+#RewriteRule ^modules/(.*)$ ../keeko/modules/$1 [L]
+#RewriteRule ^libs/(.*)$ ../libs/$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]

@@ -7,10 +7,6 @@
 <column name="language" type="VARCHAR" size="2"/>
 <column name="variant" type="VARCHAR" size="2"/>
 <column name="is_default" type="BOOLEAN"/>
-<column name="url" type="VARCHAR" size="255"/>
-<unique name="unique">
-<unique-column name="url"/>
-</unique>
 </table>
 <table name="language_text">
 <column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
@@ -22,11 +18,11 @@
 </table>
 <table name="page">
 <column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
+<column name="app_id" type="INTEGER" size="10" required="true"/>
 <column name="parent_id" type="INTEGER" size="10" required="true"/>
 <column name="keywords_id" type="INTEGER" size="10" required="true"/>
 <column name="description_id" type="INTEGER" size="10" required="true"/>
 <column name="title_id" type="INTEGER" size="10" required="true"/>
-<column name="is_user" type="BOOLEAN"/>
 <foreign-key foreignTable="language_text" name="page_title" onDelete="cascade">
 <reference local="title_id" foreign="id"/>
 </foreign-key>
@@ -39,24 +35,24 @@
 <foreign-key foreignTable="page" name="parent" onDelete="restrict">
 <reference local="parent_id" foreign="id"/>
 </foreign-key>
-</table>
-<table name="layout">
-<column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
-<column name="page_id" type="INTEGER" size="10"/>
-<foreign-key foreignTable="page" name="Rel_31" onDelete="restrict">
-<reference local="page_id" foreign="id"/>
+<foreign-key foreignTable="app" name="belongs_to" onDelete="restrict">
+<reference local="app_id" foreign="id"/>
 </foreign-key>
 </table>
 <table name="grid">
 <column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
+<column name="block_id" type="INTEGER" size="10" required="true"/>
+<column name="page_id" type="INTEGER" size="10" required="true"/>
 <column name="grid_id" type="INTEGER" size="10"/>
-<column name="layout_id" type="INTEGER" size="10"/>
 <column name="classnames" type="VARCHAR" size="255"/>
-<foreign-key foreignTable="layout" name="layout_has_grid" onDelete="cascade">
-<reference local="layout_id" foreign="id"/>
-</foreign-key>
 <foreign-key foreignTable="grid" name="parent" onDelete="cascade">
 <reference local="grid_id" foreign="id"/>
+</foreign-key>
+<foreign-key foreignTable="page" name="Rel_49" onDelete="restrict">
+<reference local="page_id" foreign="id"/>
+</foreign-key>
+<foreign-key foreignTable="block" name="Rel_53" onDelete="restrict">
+<reference local="block_id" foreign="id"/>
 </foreign-key>
 </table>
 <table name="unit">
@@ -73,27 +69,16 @@
 </table>
 <table name="setting">
 <column name="keyname" type="VARCHAR" size="64" primaryKey="true" required="true"/>
-<column name="cat_id" type="INTEGER" size="10" required="true"/>
 <column name="section_id" type="INTEGER" size="10" required="true"/>
 <column name="module_id" type="INTEGER" size="10" required="true"/>
 <column name="value" type="LONGVARCHAR"/>
 <column name="format" type="INTEGER" size="8"/>
 <column name="hide" type="BOOLEAN"/>
-<foreign-key foreignTable="setting_cat" name="settings_cat" onDelete="restrict">
-<reference local="cat_id" foreign="id"/>
-</foreign-key>
 <foreign-key foreignTable="module" name="module_setting" onDelete="restrict">
 <reference local="module_id" foreign="id"/>
 </foreign-key>
 <foreign-key foreignTable="setting_section" name="settings_section" onDelete="restrict">
 <reference local="section_id" foreign="id"/>
-</foreign-key>
-</table>
-<table name="setting_cat">
-<column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
-<column name="name_id" type="INTEGER" size="10" required="true"/>
-<foreign-key foreignTable="language_text" name="Rel_46" onDelete="restrict">
-<reference local="name_id" foreign="id"/>
 </foreign-key>
 </table>
 <table name="module">
@@ -111,15 +96,10 @@
 </table>
 <table name="menu">
 <column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
-<column name="unit_id" type="INTEGER" size="10"/>
-<column name="block_id" type="INTEGER" size="10"/>
+<column name="app_id" type="INTEGER" size="10" required="true"/>
 <column name="name" type="VARCHAR" size="64"/>
-<column name="is_admin" type="BOOLEAN"/>
-<foreign-key foreignTable="block" name="menu_block" onDelete="restrict">
-<reference local="block_id" foreign="id"/>
-</foreign-key>
-<foreign-key foreignTable="unit" name="menu_in_unit" onDelete="restrict">
-<reference local="unit_id" foreign="id"/>
+<foreign-key foreignTable="app" name="Rel_51" onDelete="restrict">
+<reference local="app_id" foreign="id"/>
 </foreign-key>
 </table>
 <table name="menu_item">
@@ -155,7 +135,7 @@
 </table>
 <table name="role">
 <column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
-<column name="user_id" type="INTEGER" size="10" required="true"/>
+<column name="user_id" type="INTEGER" size="10"/>
 <column name="name" type="VARCHAR" size="64"/>
 <column name="is_guest" type="BOOLEAN"/>
 <column name="is_default" type="BOOLEAN"/>
@@ -264,45 +244,17 @@
 <table name="unit_action">
 <column name="unit_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
 <column name="action_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
-<column name="param_id" type="INTEGER" size="10" required="true"/>
 <foreign-key foreignTable="unit" name="Rel_35" onDelete="restrict">
 <reference local="unit_id" foreign="id"/>
 </foreign-key>
 <foreign-key foreignTable="action" name="Rel_36" onDelete="restrict">
 <reference local="action_id" foreign="id"/>
 </foreign-key>
-<foreign-key foreignTable="param" name="action_has_param" onDelete="restrict">
-<reference local="param_id" foreign="id"/>
-</foreign-key>
 </table>
 <table name="param">
 <column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
 <column name="keyname" type="VARCHAR" size="255"/>
 <column name="value" type="VARCHAR" size="255"/>
-</table>
-<table name="layout_grid">
-<column name="layout_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
-<column name="grid_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
-<foreign-key foreignTable="layout" name="Rel_38" onDelete="restrict">
-<reference local="layout_id" foreign="id"/>
-</foreign-key>
-<foreign-key foreignTable="grid" name="Rel_39" onDelete="restrict">
-<reference local="grid_id" foreign="id"/>
-</foreign-key>
-</table>
-<table name="block_action">
-<column name="block_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
-<column name="action_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
-<column name="param_id" type="INTEGER" size="10" required="true"/>
-<foreign-key foreignTable="block" name="Rel_40" onDelete="restrict">
-<reference local="block_id" foreign="id"/>
-</foreign-key>
-<foreign-key foreignTable="action" name="Rel_41" onDelete="restrict">
-<reference local="action_id" foreign="id"/>
-</foreign-key>
-<foreign-key foreignTable="param" name="Rel_42" onDelete="restrict">
-<reference local="param_id" foreign="id"/>
-</foreign-key>
 </table>
 <table name="user_setting_value">
 <column name="user_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
@@ -320,6 +272,42 @@
 <column name="name_id" type="INTEGER" size="10" required="true"/>
 <foreign-key foreignTable="language_text" name="Rel_44" onDelete="restrict">
 <reference local="name_id" foreign="id"/>
+</foreign-key>
+</table>
+<table name="app">
+<column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
+<column name="name" type="VARCHAR" size="255"/>
+<column name="unixname" type="VARCHAR" size="255" required="true"/>
+<column name="classname" type="VARCHAR" size="255" required="true"/>
+</table>
+<table name="app_uri">
+<column name="uri" type="VARCHAR" size="255" primaryKey="true" required="true"/>
+<column name="app_id" type="INTEGER" size="10" required="true"/>
+<foreign-key foreignTable="app" name="Rel_50" onDelete="restrict">
+<reference local="app_id" foreign="id"/>
+</foreign-key>
+</table>
+<table name="unit_action_param">
+<column name="param_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
+<column name="action_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
+<column name="unit_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
+<foreign-key foreignTable="unit_action" name="Rel_50" onDelete="restrict">
+<reference local="unit_id" foreign="unit_id"/>
+<reference local="action_id" foreign="action_id"/>
+</foreign-key>
+<foreign-key foreignTable="param" name="Rel_51" onDelete="restrict">
+<reference local="param_id" foreign="id"/>
+</foreign-key>
+</table>
+<table name="language_uri">
+<column name="language_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
+<column name="app_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
+<column name="uri" type="VARCHAR" size="255"/>
+<foreign-key foreignTable="language" name="Rel_53" onDelete="restrict">
+<reference local="language_id" foreign="id"/>
+</foreign-key>
+<foreign-key foreignTable="app" name="Rel_54" onDelete="restrict">
+<reference local="app_id" foreign="id"/>
 </foreign-key>
 </table>
 </database>

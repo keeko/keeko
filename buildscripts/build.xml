@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project name="keeko-build" basedir="." default="doc">
 
 	<property name="path.lib.phpdoc" value="${basedir}/libs/phpdoc/phpdoc"/>
 	<property name="path.lib.phing" value="${basedir}/libs/phing"/>
-	<property name="path.lib.propel" value="${basedir}/libs/propel-gen"/>
+	<property name="path.lib.propel" value="${basedir}/libs/propel-gen-svn"/>
 	<property name="path.lib.db" value="${basedir}/libs/db"/>
 	<property name="path.exe.php" value="D:\php\php-5.2.5\php"/>
 
 	<property name="dir.docs.api" value="${basedir}/../docs/api"/>
 	<property name="dir.propel.project" value="${basedir}/../db"/>
-	<property name="dir.keeko.src" value="${basedir}/../src"/>
+	<property name="dir.keeko.src" value="${basedir}/../keeko/core"/>
 
 	<taskdef
 		name="propeller"
@@ -81,9 +80,69 @@
 		<echo message="=============================================================="/>
 
 		
-		<propeller
+		<!--<propeller
 			directory="${dir.propel.project}/build/classes/net/keeko/cms/core/entities"
-			namespace="net::keeko::cms::core::entities"/>
+			namespace="net::keeko::cms::core::entities"/>-->
+
+		<replace
+			dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities"
+			includes="**/*.php">
+			
+			<replacefilter
+				token="net\keeko\cms\core\entities\Base"
+				value="net\keeko\cms\core\entities\base\Base"/>
+			<replacefilter
+				token="net\keeko\cms\core\entities\peer\Base"
+				value="Base"/>
+			<replacefilter
+				token="extends net"
+				value="extends \net"/>
+			<replacefilter
+				token="(PDO"
+				value="(\PDO"/>
+			<replacefilter
+				token=" PDO"
+				value=" \PDO"/>
+		</replace>
+		
+		<replace
+			dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities"
+			includes="**/*.php" excludes="**/*Peer.php">
+
+			<replacefilter
+				token="net\keeko\cms\core\entities\peer"
+				value="\net\keeko\cms\core\entities\peer"/>
+		</replace>
+		
+		<replace
+			dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities/om"
+			includes="*Peer.php">
+
+			<replacefilter
+				token="net\keeko\cms\core\entities\peer\"
+				value=""/>
+			<replacefilter
+				token="net\keeko\cms\core\entities\"
+				value="\net\keeko\cms\core\entities\"/>
+			<replacefilter
+				token="namespace \net"
+				value="namespace net"/>
+		</replace>
+
+		<replace
+			dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities/om"
+			includes="**/*.php">
+
+			<replacefilter
+				token="namespace net\keeko\cms\core\entities;"
+				value="namespace net\keeko\cms\core\entities\base;"/>
+			<replacefilter
+				token="new net\keeko\cms\core\entities\map"
+				value="new \net\keeko\cms\core\entities\map"/>
+			<!--<replacefilter
+				token="net\keeko\cms\core\entities\peer\Base"
+				value="Base"/>-->
+		</replace>
 
 		<!--
 		<replace
@@ -149,42 +208,11 @@
 			Obviously the overwrite="whatever" does not work.
 			So whatever the attribute's value is the files are overwritten.
 			Therefore the following workaround to copy these files in a 
-			temporary folder and later copy it back. Hey they will get
-			overwritten ;-)
+			temporary folder and later copy it back. 
 			
 			(Workaround steps are indented)
-		- -
-			
-			<!- - backup - -
-			<mkdir dir="${dir.keeko.src}/core/entities/temp"/>
-			<copy todir="${dir.keeko.src}/core/entities/temp" overwrite="true" outputencoding="utf-8">
-				<fileset dir="${dir.keeko.src}/core/entities" includes="*.php"/>
-			</copy>
-
-		<!- - copy 'main' classes - -
-		<copy todir="${dir.keeko.src}/core/entities" overwrite="false" outputencoding="utf-8">
-			<fileset dir="${dir.propel.project}/build/classes/core/entities" includes="*.php"/>
-		</copy>
-
-			<!- - restore - -
-			<copy todir="${dir.keeko.src}/core/entities" overwrite="true" outputencoding="utf-8">
-				<fileset dir="${dir.keeko.src}/core/entities/temp" includes="*.php"/>
-			</copy>
-			<delete dir="${dir.keeko.src}/core/entities/temp"/>
-
-		<!- - copy 'base' classes (overwrite) - -
-		<copy todir="${dir.keeko.src}/core/entities/om" overwrite="true" outputencoding="utf-8">
-			<fileset dir="${dir.propel.project}/build/classes/core/entities/om" includes="*.php"/>
-		</copy>
-
-		<!- - copy 'map' classes (overwrite) - -
-		<copy todir="${dir.keeko.src}/core/entities/map" overwrite="true" outputencoding="utf-8">
-			<fileset dir="${dir.propel.project}/build/classes/core/entities/map" includes="*.php"/>
-		</copy>
-		
-		<!- - copy config file - -
-		<copy file="${dir.propel.project}/build/conf/keeko-conf.php" tofile="${dir.keeko.src}/conf/keeko-conf.php"/>
 		-->
+		
 		
 			<!-- backup -->
 			<mkdir dir="${dir.keeko.src}/net/keeko/cms/core/entities/temp"/>
@@ -194,7 +222,7 @@
 
 		<!-- copy 'main' classes -->
 		<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities" overwrite="false" outputencoding="utf-8">
-			<fileset dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities" includes="*.php"/>
+			<fileset dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities" includes="*.php" excludes="*Peer.php"/>
 		</copy>
 
 			<!-- restore -->
@@ -204,18 +232,28 @@
 			<delete dir="${dir.keeko.src}/net/keeko/cms/core/entities/temp"/>
 
 		<!-- copy 'base' classes (overwrite) -->
-		<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities/om" overwrite="true" outputencoding="utf-8">
-			<fileset dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities/om" includes="*.php"/>
+		<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities/base" overwrite="true" outputencoding="utf-8">
+			<fileset dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities/om" includes="*.php" excludes="*Peer.php"/>
+		</copy>
+
+		<!-- copy 'peer' classes (overwrite) -->
+		<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities/peer" overwrite="false" outputencoding="utf-8">
+			<fileset dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities" includes="*Peer.php"/>
+		</copy>
+
+		<!-- copy 'base peer' classes (overwrite) -->
+		<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities/peer" overwrite="true" outputencoding="utf-8">
+			<fileset dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities/om" includes="*Peer.php"/>
 		</copy>
 
 		<!-- copy 'map' classes (overwrite) -->
 		<copy todir="${dir.keeko.src}/net/keeko/cms/core/entities/map" overwrite="true" outputencoding="utf-8">
 			<fileset dir="${dir.propel.project}/build/classes/net/keeko/cms/core/entities/map" includes="*.php"/>
 		</copy>
-		
-		<!-- copy config file -->
+
+		<!-- copy config file -
 		<copy file="${dir.propel.project}/build/conf/keeko-conf.php" tofile="${dir.keeko.src}/keeko-conf.php"/>
-		
+		-->
 		
 		<echo message="Database Mapping (4/4)"/>
 		<echo message="=============================================================="/>
@@ -223,7 +261,7 @@
 		<echo message="- Cleanup :)"/>
 		<echo message="=============================================================="/>
 
-		<!--<delete dir="${dir.propel.project}/build/classes"/>-->
+		<delete dir="${dir.propel.project}/build"/>
 		<echo message="@TODO config files etc"/>
 	</target>
 </project>
