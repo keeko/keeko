@@ -27,4 +27,15 @@ class RoleAction extends \net\keeko\cms\core\entities\base\BaseRoleAction {
 		parent::__construct();
 	}
 
+	public function toXML() {
+		$xml = new \DOMDocument();
+		$root = $xml->createElement('groupAction');
+		$xml->appendChild($root);
+
+		$root->setAttribute('actionId', $this->getActionId());
+		$root->setAttribute('groupId', $this->getRoleId());
+
+		return $xml;
+	}
+
 } // net\keeko\cms\core\entities\RoleAction

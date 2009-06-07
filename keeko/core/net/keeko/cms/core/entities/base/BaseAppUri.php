@@ -692,7 +692,7 @@ abstract class BaseAppUri extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\AppUri The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setApp(net\keeko\cms\core\entities\App $v = null)
+	public function setApp(\net\keeko\cms\core\entities\App $v = null)
 	{
 		if ($v === null) {
 			$this->setAppId(NULL);

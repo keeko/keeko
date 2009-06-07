@@ -998,7 +998,7 @@ abstract class BaseLanguageText extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\LanguageText The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setLanguage(net\keeko\cms\core\entities\Language $v = null)
+	public function setLanguage(\net\keeko\cms\core\entities\Language $v = null)
 	{
 		if ($v === null) {
 			$this->setLanguageId(NULL);
@@ -1184,7 +1184,7 @@ abstract class BaseLanguageText extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addPageRelatedByTitleId(net\keeko\cms\core\entities\Page $l)
+	public function addPageRelatedByTitleId(\net\keeko\cms\core\entities\Page $l)
 	{
 		if ($this->collPagesRelatedByTitleId === null) {
 			$this->initPagesRelatedByTitleId();
@@ -1434,7 +1434,7 @@ abstract class BaseLanguageText extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addPageRelatedByDescriptionId(net\keeko\cms\core\entities\Page $l)
+	public function addPageRelatedByDescriptionId(\net\keeko\cms\core\entities\Page $l)
 	{
 		if ($this->collPagesRelatedByDescriptionId === null) {
 			$this->initPagesRelatedByDescriptionId();
@@ -1684,7 +1684,7 @@ abstract class BaseLanguageText extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addPageRelatedByKeywordsId(net\keeko\cms\core\entities\Page $l)
+	public function addPageRelatedByKeywordsId(\net\keeko\cms\core\entities\Page $l)
 	{
 		if ($this->collPagesRelatedByKeywordsId === null) {
 			$this->initPagesRelatedByKeywordsId();
@@ -1934,7 +1934,7 @@ abstract class BaseLanguageText extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addMenuItem(net\keeko\cms\core\entities\MenuItem $l)
+	public function addMenuItem(\net\keeko\cms\core\entities\MenuItem $l)
 	{
 		if ($this->collMenuItems === null) {
 			$this->initMenuItems();
@@ -2325,7 +2325,7 @@ abstract class BaseLanguageText extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUserExt(net\keeko\cms\core\entities\UserExt $l)
+	public function addUserExt(\net\keeko\cms\core\entities\UserExt $l)
 	{
 		if ($this->collUserExts === null) {
 			$this->initUserExts();
@@ -2528,7 +2528,7 @@ abstract class BaseLanguageText extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUserExtCat(net\keeko\cms\core\entities\UserExtCat $l)
+	public function addUserExtCat(\net\keeko\cms\core\entities\UserExtCat $l)
 	{
 		if ($this->collUserExtCats === null) {
 			$this->initUserExtCats();
@@ -2684,7 +2684,7 @@ abstract class BaseLanguageText extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addSettingSection(net\keeko\cms\core\entities\SettingSection $l)
+	public function addSettingSection(\net\keeko\cms\core\entities\SettingSection $l)
 	{
 		if ($this->collSettingSections === null) {
 			$this->initSettingSections();

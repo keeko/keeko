@@ -905,7 +905,7 @@ abstract class BaseUserExt extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\UserExt The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setLanguageText(net\keeko\cms\core\entities\LanguageText $v = null)
+	public function setLanguageText(\net\keeko\cms\core\entities\LanguageText $v = null)
 	{
 		if ($v === null) {
 			$this->setNameId(NULL);
@@ -954,7 +954,7 @@ abstract class BaseUserExt extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\UserExt The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setUserExtCat(net\keeko\cms\core\entities\UserExtCat $v = null)
+	public function setUserExtCat(\net\keeko\cms\core\entities\UserExtCat $v = null)
 	{
 		if ($v === null) {
 			$this->setCatId(NULL);
@@ -1140,7 +1140,7 @@ abstract class BaseUserExt extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUserExtVal(net\keeko\cms\core\entities\UserExtVal $l)
+	public function addUserExtVal(\net\keeko\cms\core\entities\UserExtVal $l)
 	{
 		if ($this->collUserExtVals === null) {
 			$this->initUserExtVals();

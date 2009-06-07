@@ -63,7 +63,49 @@ $class("Package", {
 		}, this);
 	}
 });
-/*	$Id: EventManager.class.js 79 2007-08-23 20:34:07Z tgossmann $
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class Utils
+ * @author Thomas Gossmann
+ * @namespace gara
+ */
+$class("Utils", {
+	getStyle : $static(function(element, styleProp) {
+		var style = "";
+		if (document.defaultView && document.defaultView.getComputedStyle){
+			style = document.defaultView.getComputedStyle(element, "").getPropertyValue(styleProp);
+		} else if(element.currentStyle){
+			styleProp = styleProp.replace(/\-(\w)/g, function (match, p1){
+				return p1.toUpperCase();
+			});
+			style = element.currentStyle[styleProp];
+		}
+		return style;
+	})
+});
+/*	$Id: EventManager.class.js 139 2008-07-20 21:41:07Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -104,17 +146,11 @@ $class("EventManager", {
 	 * @private
 	 */
 	_instance : $static(null),
+	_listeners : $static({}),
 
 	$constructor : function() {
-		this._listeners = [];
-		//base2.DOM.bind(document);
 		base2.DOM.EventTarget(window);
-		//base2.DOM.bind(window);
 		window.addEventListener("unload", this, false);
-//		var eventMgr = this;
-//		window.onunload = function(e) {
-//			eventMgr.handleEvent(e);
-//		}
 	},
 
 	getInstance : $static(function() {
@@ -135,19 +171,30 @@ $class("EventManager", {
 	 * @param {Object|Function} listener the desired action handler
 	 * @return {Event} generated event-object for this listener
 	 */
-	addListener : function(domNode, type, listener) {
-//		console.log("EventMngr.addListener: " + domNode.nodeName + " " + type + " " + listener);
+	addListener : $static(function(domNode, type, listener) {
 		domNode.addEventListener(type, listener, false);
+
+		var d = new Date();
+		var hashAppendix = "" + d.getDay() + d.getHours() + d.getMinutes() + d.getSeconds() + d.getMilliseconds();
+
+		if (!domNode._garaHash) {
+			domNode._garaHash = domNode.toString() + hashAppendix;
+		}
+
+		if (!listener.hasOwnProperty("_garaHash")) {
+			listener._garaHash = listener.toString() + hashAppendix;
+		}
 		
+		var hash = "" + domNode._garaHash + type + listener._garaHash;
 		var event = {
 			domNode : domNode,
 			type : type,
 			listener : listener
 		}
-		this._listeners.push(event);
+		this._listeners[hash] = event;
 		
 		return event;
-	},
+	}),
 
 	/**
 	 * @method
@@ -169,13 +216,17 @@ $class("EventManager", {
 	 * @param {Event} event object which is returned by addListener()
 	 * @see addListener
 	 */
-	removeListener : function(e) {
-		e.domNode.removeEventListener(e.type, e.listener, false);
+	removeListener : $static(function(domNode, type, listener) {
+		domNode.removeEventListener(type, listener, false);
 
-		if (this._listeners.contains(e)) {
-			this._listeners.remove(e);
+		if (domNode._garaHash && listener.hasOwnProperty("_garaHash")) {
+			var hash = domNode._garaHash + type + listener._garaHash;
+
+			if (this._listeners[hash]) {
+				delete this._listeners[hash];
+			}
 		}
-	},
+	}),
 
 	/**
 	 * @method
@@ -184,16 +235,19 @@ $class("EventManager", {
 	 * @private
 	 */
 	_unregisterAllEvents : function() {
-		while (this._listeners.length > 0) {
-			var event = this._listeners.pop();
-			this.removeListener(event);
+		var hash, e;
+		for (hash in gara.EventManager._listeners) {
+			e = gara.EventManager._listeners[hash];
+			gara.EventManager.removeListener(e.domNode, e.type, e.listener);
 		}
 	},
-	
+
 	toString : function() {
 		return "[gara.EventManager]";
 	}
 });
+gara.eventManager = gara.EventManager.getInstance();
+
 /*	$Id: OutOfBoundsException.class.js 63 2007-07-20 15:36:50Z tgossmann $
 
 		gara - Javascript Toolkit
@@ -233,7 +287,7 @@ $class("OutOfBoundsException", {
 		this.name = $class.typeOf(this);
 	}
 });
-/*	$Id: onDOMLoaded.function.js 63 2007-07-20 15:36:50Z tgossmann $
+/*	$Id: $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -255,37 +309,39 @@ $class("OutOfBoundsException", {
 
 	===========================================================================
 */
-var onDOMLoaded = gara.onDOMLoaded = function(f) {
-	/* for Mozilla/Opera9 */
-	if (document.addEventListener) {
-		document.addEventListener("DOMContentLoaded", f, false);
-	}
-	
-	/* for Internet Explorer */
-	else if (window.ActiveX) {
-		document.write("<scr"+"ipt id=__ie_onload defer src=javascript:void(0)><\/script>");
-		var script = document.getElementById("__ie_onload");
-		script.onreadystatechange = function() {
-			if (this.readyState == "complete") {
-				f(); // call the onload handler
-			}
+
+/**
+ * @class I18n
+ * @author Thomas Gossmann
+ * @namespace gara
+ */
+$class("I18n", {
+	$constructor : function() {
+		this._map = {
+			ok: "Ok",
+			cancel: "Cancel",
+			yes : "Yes",
+			no : "No",
+			retry : "Retry",
+			abort : "Abort",
+			ignore : "Ignore"
 		};
+	},
+	
+	get : function(key) {
+		if (this._map.hasOwnProperty(key)) {
+			return this._map[key];
+		}
+		
+		return null;
+	},
+	
+	set : function(key, value) {
+		this._map[key] = value;
 	}
+});
 
-	/* for Safari */
-	else if (/WebKit/i.test(navigator.userAgent)) { // sniff
-		var _timer = setInterval(function() {
-			if (/loaded|complete/.test(document.readyState)) {
-				f(); // call the onload handler
-			}
-		}, 10);
-	}
-
-	/* for other browsers */
-	else {
-		window.onload = f;
-	}
-}
+gara.i18n = new gara.I18n();
 var garaPkg = new gara.Package({
 	exports : "Package,EventManager,OutOfBoundsException",
 	name : "gara"
@@ -368,6 +424,26 @@ $class("JSWT", {
 	
 	/**
 	 * @field
+	 * Style constant for cascade behavior (value is 1&lt;&lt;6).
+	 * <p><b>Used By:</b><ul>
+	 * <li><code>MenuItem</code></li>
+	 * </ul></p>
+	 */
+	CASCADE : $static(1 << 6),
+	
+	/**
+	 * @field
+	 * Style constant for check box behavior (value is 1&lt;&lt;5).
+	 * <p><b>Used By:</b><ul>
+	 * <li><code>MenuItem</code></li>
+	 * <li><code>Table</code></li>
+	 * <li><code>Tree</code></li>
+	 * </ul></p>
+	 */
+	CHECK : $static(1 << 5),
+	
+	/**
+	 * @field
 	 * Style constant for close box trim (value is 1&lt;&lt;6, since we do not distinguish between CLOSE style and MENU style).
 	 */
 	CLOSE : $static(1 << 6),
@@ -398,11 +474,63 @@ $class("JSWT", {
 	 */
 	DROP_DOWN : $static(1 << 2),
 	
+	/** 
+	 * JSWT error constant indicating that a menu which needed
+	 * to have the drop down style had some other style instead
+	 * (value is 21).
+	 */
+	ERROR_MENU_NOT_DROP_DOWN : $static(21),
+
+	/** 
+	 * JSWT error constant indicating that an attempt was made to
+	 * invoke an JSWT operation using a widget which had already
+	 * been disposed
+	 * (value is 24). 
+	 */
+	ERROR_WIDGET_DISPOSED : $static(24),
+
+	/** 
+	 * JSWT error constant indicating that a menu item which needed
+	 * to have the cascade style had some other style instead
+	 * (value is 27).
+	 */
+	ERROR_MENUITEM_NOT_CASCADE : $static(27),
+	
 	/**
 	 * @field
 	 * Style constant for full row selection behavior (value is 1&lt;&lt;16).
 	 */
 	FULL_SELECTION : $static(1 << 16),
+
+	/**
+	 * @field
+	 * The MessageBox style constant for error icon behavior (value is 1).
+	 */
+	ICON_ERROR : $static(1),
+    
+	/**
+	 * @field
+	 * The MessageBox style constant for information icon behavior (value is 1&lt;&lt;1).
+	 */
+	ICON_INFORMATION : $static(1 << 1),
+	
+	/**
+	 * @field
+	 * The MessageBox style constant for question icon behavior (value is 1&lt;&lt;2).
+	 */
+	ICON_QUESTION : $static(1 << 2),
+	
+	/**
+	 * @field
+	 * The MessageBox style constant for warning icon behavior (value is 1&lt;&lt;3).
+	 */
+	ICON_WARNING : $static(1 << 3),
+	
+	/**
+	 * @field
+	 * The MessageBox style constant for "working" icon behavior (value is 1&lt;&lt;4).
+	 */
+	ICON_WORKING : $static(1 << 4),      
 
 	/**
 	 * @field
@@ -451,6 +579,12 @@ $class("JSWT", {
 	 * The MessageBox style constant for a RETRY button, valid combinations are ABORT|RETRY|IGNORE, RETRY|CANCEL (value is 1&lt;&lt;10).
 	 */
 	RETRY : $static(1 << 10),
+	
+	/**
+	 * @field
+	 * Style constant for line separator behavior (value is 1&lt;&lt;1).
+	 */
+	SEPARATOR : $static(1 << 1),
 
 	/**
 	 * @field
@@ -569,6 +703,47 @@ $interface("SelectionListener", {
 		return "[gara.jswt.SelectionListener]";
 	}
 });
+/*	$Id: SelectionListener.interface.js 91 2007-12-09 18:58:43Z tgossmann $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @interface MenuListener
+ * @author Thomas Gossmann
+ * @namespace gara.jswt
+ */
+$interface("MenuListener", {
+	menuHidden : function(widget) {
+		
+	},
+	
+	menuShown : function(widget) {
+		
+	},
+	
+	toString : function() {
+		return "[gara.jswt.MenuListener]";
+	}
+});
 /*	$Id: ItemNotExistsException.class.js 91 2007-12-09 18:58:43Z tgossmann $
 
 		gara - Javascript Toolkit
@@ -606,7 +781,64 @@ $class("ItemNotExistsException", {
 		this.name = $class.typeOf(this);
 	}
 });
-/*	$Id: Widget.class.js 91 2007-12-09 18:58:43Z tgossmann $
+/*	$Id: ItemNotExistsException.class.js 91 2007-12-09 18:58:43Z tgossmann $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class JSWTException
+ * @author Thomas Gossmann
+ * @namespace gara.jswt
+ * @extends Exception
+ */
+$class("JSWTException", {
+	$extends : Exception,
+	
+	/**
+	 * @field
+	 * Contains the error code, one of JSWT.ERROR_* 
+	 */
+	code : null,
+	
+	/**
+	 * @constructor
+	 * Raises a JSWT Exception
+	 * 
+	 * @param {mixed} codeOrMessage Pass either a code or a message
+	 * @param {String} message Wether code is passed place your message as second
+	 */
+	$constructor : function(codeOrMessage, message) {
+		var code;
+		if (typeof(message) == "undefined") {
+			message = codeOrMessage;
+		} else {
+			code = codeOrMessage;
+		}
+		this.code = code;
+		this.message = String(message);
+		this.name = $class.typeOf(this);
+	}
+});
+/*	$Id: Widget.class.js 169 2008-11-13 23:29:49Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -675,6 +907,7 @@ $class("Widget", {
 		this.domref = null;
 
 		this._parent = parent;
+		this._parentNode = null;
 		this._style = typeof(style) == "undefined" ? JSWT.DEFAULT : style;
 		this._data = null;
 		this._dataMap = {};
@@ -684,6 +917,7 @@ $class("Widget", {
 		this._listener = {};
 		
 		this._disposed = false;
+		this._disposeListener = [];
 	},
 
 	/**
@@ -701,6 +935,24 @@ $class("Widget", {
 
 	/**
 	 * @method
+	 * Adds a dispose listener to the widget
+	 * 
+	 * @author Thomas Gossmann
+	 * @param {gara.jswt.DisposeListener} listener the listener which gets notified about the disposal
+	 * @return {void}
+	 */
+	addDisposeListener : function(listener) {
+		if (!$class.instanceOf(listener, gara.jswt.DisposeListener)) {
+			throw new TypeError("listener not instance of gara.jswt.DisposeListener");
+		}
+
+		if (!this._disposeListener.contains(listener)) {
+			this._disposeListener.push(listener);
+		}
+	},
+
+	/**
+	 * @method
 	 * Adds an eventlistener to the widget
 	 * 
 	 * @author Thomas Gossmann
@@ -714,11 +966,46 @@ $class("Widget", {
 		}
 
 		this._listener[eventType].push(listener);
-		this.registerListener(eventType, listener);
+		this._registerListener(eventType, listener);
 	},
 
+	/**
+	 * @method
+	 * Checks wether the widget is disposed or not
+	 * 
+	 * @author Thomas Gossmann
+	 * @throws gara.jswt.JSWTException <ul>
+	 * 		<li>gara.jswt.JSWT.ERROR_WIDGET_DISPOSED - If widget is disposed</li>
+	 * </ul>
+	 * 
+	 * @return {void}
+	 */
+	checkWidget : function() {
+		if (this.isDisposed()) {
+			throw new gara.jswt.JSWTException(JSWT.ERROR_WIDGET_DISPOSED);
+		}
+	},
+
+	/**
+	 * @method
+	 * Disposes the widget
+	 * 
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
 	dispose : function() {
 		this._disposed = true;
+		
+		// notify dispose listeners
+		this._disposeListener.forEach(function(item, index, arr) {
+			item.widgetDisposed(this);
+		}, this);
+		
+		for (var type in this._listener) {
+			this._listener[type].forEach(function(item, index, arr) {
+				this.removeListener(type, item);
+			}, this);
+		}
 	},
 
 	/**
@@ -786,6 +1073,13 @@ $class("Widget", {
 
 //	handleEvent : $abstract(function(e){}),
 
+	/**
+	 * @method
+	 * Tells wether this widget is disposed or not
+	 * 
+	 * @author Thomas Gossmann
+	 * @return {boolean} true for disposed status otherwise false
+	 */
 	isDisposed : function() {
 		return this._disposed;
 	},
@@ -818,7 +1112,7 @@ $class("Widget", {
 		}
 	},
 
-	registerListener : $abstract(function(eventType, listener){}),
+	_registerListener : $abstract(function(eventType, listener){}),
 
 	/**
 	 * @method
@@ -835,6 +1129,24 @@ $class("Widget", {
 
 	/**
 	 * @method
+	 * Removes a dispose listener from the widget
+	 * 
+	 * @author Thomas Gossmann
+	 * @param {gara.jswt.DisposeListener} listener the listener which should be removed
+	 * @return {void} 
+	 */
+	removeDisposeListener : function(listener) {
+		if (!$class.instanceOf(listener, gara.jswt.DisposeListener)) {
+			throw new TypeError("listener not instance of gara.jswt.DisposeListener");
+		}
+
+		if (this._disposeListener.contains(listener)) {
+			this._disposeListener.remove(listener);
+		}
+	},
+
+	/**
+	 * @method
 	 * Removes a listener from this item
 	 * 
 	 * @author Thomas Gossmann
@@ -843,7 +1155,11 @@ $class("Widget", {
 	 * @return {void}
 	 */
 	removeListener : function(eventType, listener) {
-		this._listener[eventType].remove(listener);
+		if (this._listener.hasOwnProperty(eventType) 
+				&& this._listener[eventType].contains(listener)) {
+			this._listener[eventType].remove(listener);
+			this._unregisterListener(eventType, listener);
+		}
 	},
 	
 	/**
@@ -862,11 +1178,17 @@ $class("Widget", {
 		}
 	},
 	
+	_setParentNode : function(parentNode) {
+		this._parentNode = parentNode;
+	},
+	
 	toString : function() {
 		return "[gara.jswt.Widget]";
-	}
+	},
+
+	_unregisterListener : $abstract(function(eventType, listener){})
 });
-/*	$Id: Control.class.js 91 2007-12-09 18:58:43Z tgossmann $
+/*	$Id: Control.class.js 140 2008-07-20 22:24:27Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -909,6 +1231,9 @@ $class("Control", {
 		this._hasFocus = false;
 		this._menu = null;
 
+		this._width = null;
+		this._height = null;
+
 		gara.jswt.ControlManager.getInstance().addControl(this);
 		this.addFocusListener(gara.jswt.ControlManager.getInstance());
 	},
@@ -946,6 +1271,39 @@ $class("Control", {
 		// notify focus listeners
 		for (var i = 0, len = this._focusListener.length; i < len; ++i) {
 			this._focusListener[i].focusGained(this);
+		}
+	},
+	
+	getHeight : function() {
+		return this._height;
+	},
+	
+	getWidth : function() {
+		return this._width;
+	},
+
+	handleContextMenu : function(e) {
+		switch(e.type) {
+			case "contextmenu":
+				if (this._menu != null) {
+					this._menu.setLocation(e.clientX, e.clientY);
+					this._menu.setVisible(true);
+					e.preventDefault(); // safari
+				}
+				break;
+
+			/* Opera has no contextmenu event, so we go for Ctrl + mousedown 
+			 * See YUI blog for more information:
+			 * http://yuiblog.com/blog/2008/07/17/context-menus-and-focus-in-opera/
+			 */
+			case "mousedown":
+				if (window.opera 
+						&& (e.altKey || e.ctrlKey) 
+						&& this._menu != null) {
+					this._menu.setLocation(e.clientX, e.clientY);
+					this._menu.setVisible(true, e);
+				}
+				break;
 		}
 	},
 
@@ -1003,13 +1361,22 @@ $class("Control", {
 		}
 	},
 	
+	setHeight : function(height) {
+		this._height = height;
+	},
+
 	setMenu : function(menu) {
 		if (!$class.instanceOf(menu, gara.jswt.Menu)) {
 			throw new TypeError("menu is not a gara.jswt.Menu");
 		}
 
 		this._menu = menu;
+		this.addListener("contextmenu", this);
 		this.addListener("mousedown", this);
+	},
+
+	setWidth : function(width) {
+		this._width = width;
 	},
 
 	toString : function() {
@@ -1057,7 +1424,7 @@ $class("Composite", {
 		this.$base(parent, style);
 	}
 });
-/*	$Id: List.class.js 114 2007-12-27 20:41:27Z tgossmann $
+/*	$Id: List.class.js 177 2008-11-23 21:27:09Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -1112,12 +1479,14 @@ $class("List", {
 			this._style = JSWT.SINGLE;
 		}
 
+		this._event = null;
 		this._items = [];
 		this._selection = [];
 		this._selectionListener = [];
 		this._activeItem = null;
 		this._shiftItem = null;
 		this._className = this._baseClass = "jsWTList";
+		this._className += " jsWTListInactive";
 	},
 
 	/**
@@ -1131,12 +1500,14 @@ $class("List", {
 	 * @return {void}
 	 */
 	_activateItem : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.ListItem)) {
 			throw new TypeError("item is not type of gara.jswt.ListItem");
 		}
 		// set a previous active item inactive
-		if (this._activeItem != null) {
+		if (this._activeItem != null && !this._activeItem.isDisposed()) {
 			this._activeItem.setActive(false);
+			this._activeItem.update();
 		}
 
 		this._activeItem = item;
@@ -1155,6 +1526,7 @@ $class("List", {
 	 * @return {void}
 	 */
 	_addItem : function(item, index) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.ListItem)) {
 			throw new TypeError("item is not type of gara.jswt.ListItem");
 		}
@@ -1176,11 +1548,43 @@ $class("List", {
 	 * @return {void}
 	 */
 	addSelectionListener : function(listener) {
+		this.checkWidget();
 		if (!$class.instanceOf(listener, gara.jswt.SelectionListener)) {
 			throw new TypeError("listener is not instance of gara.jswt.SelectionListener");
 		}
 
 		this._selectionListener.push(listener);
+	},
+	
+	_create : function() {
+		this.domref = document.createElement("ul");
+		this.domref.obj = this;
+		this.domref.control = this;
+		base2.DOM.EventTarget(this.domref);
+
+		/* buffer unregistered user-defined listeners */
+		var unregisteredListener = {};			
+		for (var eventType in this._listener) {
+			unregisteredListener[eventType] = this._listener[eventType].concat([]);
+		}
+
+		/* List event listener */
+		this.addListener("mousedown", this);
+
+		/* register user-defined listeners */
+		for (var eventType in unregisteredListener) {
+			unregisteredListener[eventType].forEach(function(elem, index, arr) {
+				this._registerListener(eventType, elem);
+			}, this);
+		}
+
+		if (!$class.instanceOf(this._parent, gara.jswt.Composite)) {
+			this._parentNode = this._parent;
+		}
+
+		if (this._parentNode != null) {
+			this._parentNode.appendChild(this.domref);
+		}
 	},
 
 	/**
@@ -1193,16 +1597,17 @@ $class("List", {
 	 * @return {void}
 	 */
 	deselect : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.ListItem)) {
 			throw new TypeError("item not instance of gara.jswt.ListItem");
 		}
 
 		if (this._selection.contains(item)) {
+			item._setSelected(false);
 			this._selection.remove(item);
-			this.notifySelectionListener();
-			item.setUnselected();
 			this._shiftItem = item;
 			this._activateItem(item);
+			this.notifySelectionListener();
 		}
 	},
 
@@ -1214,10 +1619,25 @@ $class("List", {
 	 * @return {void}
 	 */
 	deselectAll : function() {
+		this.checkWidget();
 		for (var i = 0, len = this._items.length; i < len; ++i) {
 			this.deselect(this._items[i]);
 		}
 		this.update();
+	},
+
+	dispose : function() {
+		this.deselectAll();
+		this.$base();
+
+		this._items.forEach(function(item, index, arr) {
+			item.dispose();
+		}, this);
+
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+		delete this.domref;
 	},
 
 	/**
@@ -1230,6 +1650,7 @@ $class("List", {
 	 * @return {gara.jswt.ListItem} the item
 	 */
 	getItem : function(index) {
+		this.checkWidget();
 		if (index >= this._items.length) {
 			throw new gara.OutOfBoundsException("Your item lives outside of this list");
 		}
@@ -1267,6 +1688,7 @@ $class("List", {
 	 * @return {gara.jswt.ListItem[]} an array with items
 	 */
 	getSelection : function() {
+		this.checkWidget();
 		return this._selection;
 	},
 
@@ -1278,6 +1700,7 @@ $class("List", {
 	 * @return {int} the amount
 	 */
 	getSelectionCount : function() {
+		this.checkWidget();
 		return this._selection.length;
 	},
 
@@ -1290,10 +1713,16 @@ $class("List", {
 	 * @return {void}
 	 */
 	handleEvent : function(e) {
+		this.checkWidget();
 		// special events for the list
 		var obj = e.target.obj || null;
 		
-//		console.log("List.handleEvent(" + e.type + ")");
+		if (obj && $class.instanceOf(obj, gara.jswt.ListItem)) {
+			e.item = obj;
+		}
+		e.widget = this;
+		this._event = e;
+
 		switch (e.type) {
 			case "mousedown":
 				if (!this._hasFocus) {
@@ -1319,25 +1748,14 @@ $class("List", {
 						this.select(item);
 					}
 				}
-				
-				if (e.which == 3 && this._menu != null) {
-					if (this.domref.style.position != "") {
-						this._menu.setLocation(e.layerX, e.layerY);
-					} else {
-						this._menu.setLocation(e.clientX, e.clientY);
-					}
-					this._menu.setVisible(true);
-					return false;
-				}
 				break;
 
 			case "keyup":
 			case "keydown":
 			case "keypress":
-
-				this._items.forEach(function(item, index, arr) {
-					item.handleEvent(e);
-				});
+				if (this._activeItem != null) {
+					this._activeItem.handleEvent(e);
+				}
 
 				this._notifyExternalKeyboardListener(e, this, this);
 				
@@ -1347,7 +1765,13 @@ $class("List", {
 				break;
 		}
 
+		this.handleContextMenu(e);
 		e.stopPropagation();
+		
+		/* in case of ie6, it is necessary to return false while the type of
+		 * the event is "contextmenu" and the menu isn't hidden in ie6
+		 */
+		return false;
 	},
 
 	/**
@@ -1367,7 +1791,8 @@ $class("List", {
 		}
 
 		switch (e.keyCode) {
-			case 38 : // up
+			case 37: // left
+			case 38: // up
 				// determine previous item
 				var prev = false;
 				var activeIndex = this.indexOf(this._activeItem);
@@ -1377,6 +1802,18 @@ $class("List", {
 				}
 
 				if (prev) {
+					// update scrolling
+					var h = 0;
+					for (var i = 0; i < (activeIndex - 1); i++) {
+						h += this._items[i].domref.offsetHeight
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-top"))
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-bottom"));
+					}
+					if (h < this.domref.scrollTop) {
+						this.domref.scrollTop = h;
+					}
+					
+					// handle select
 					if (!e.ctrlKey && !e.shiftKey) {
 						//this.deselect(this._activeItem);
 						this.select(prev, false);
@@ -1390,7 +1827,8 @@ $class("List", {
 				}
 				break;
 
-			case 40 : // down
+			case 39: // right
+			case 40: // down
 				// determine next item
 				var next = false;
 				var activeIndex = this.indexOf(this._activeItem);
@@ -1401,6 +1839,23 @@ $class("List", {
 				}
 
 				if (next) {
+					// update scrolling
+					var h = 0;
+					for (var i = 0; i <= (activeIndex + 1); i++) {
+						h += this._items[i].domref.offsetHeight
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-top"))
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-bottom"));
+					}
+					var viewport = this.domref.clientHeight + this.domref.scrollTop
+						- parseInt(gara.Utils.getStyle(this.domref, "padding-top"))
+						- parseInt(gara.Utils.getStyle(this.domref, "padding-bottom"));
+					if (h > viewport) {
+						this.domref.scrollTop = h - this.domref.clientHeight
+							+ parseInt(gara.Utils.getStyle(this.domref, "padding-top"))
+							+ parseInt(gara.Utils.getStyle(this.domref, "padding-bottom"));
+					}
+
+					// handle select
 					if (!e.ctrlKey && !e.shiftKey) {
 						//this.deselect(this.activeItem);
 						this.select(next, false);
@@ -1414,15 +1869,17 @@ $class("List", {
 				}
 				break;
 
-			case 32 : // space
+			case 32: // space
 				if (this._selection.contains(this._activeItem) && e.ctrlKey) {
 					this.deselect(this._activeItem);
 				} else {
 					this.select(this._activeItem, true);
 				}
 				break;
-				
-			case 36 : // home
+
+			case 36: // home
+				this.domref.scrollTop = 0;
+
 				if (!e.ctrlKey && !e.shiftKey) {
 					this.select(this._items[0], false);
 				} else if (e.shiftKey) {
@@ -1432,7 +1889,9 @@ $class("List", {
 				}
 				break;
 				
-			case 35 : // end
+			case 35: // end
+				this.domref.scrollTop = this.domref.scrollHeight - this.domref.clientHeight;
+
 				var lastOffset = this._items.length - 1;
 				if (!e.ctrlKey && !e.shiftKey) {
 					this.select(this._items[lastOffset], false);
@@ -1456,6 +1915,7 @@ $class("List", {
 	 * @return {int} the index of the specified item
 	 */
 	indexOf : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.ListItem)) {
 			throw new TypeError("item not instance of gara.jswt.ListItem");
 		}
@@ -1478,7 +1938,7 @@ $class("List", {
 	 */
 	notifySelectionListener : function() {
 		for (var i = 0, len = this._selectionListener.length; i < len; ++i) {
-			this._selectionListener[i].widgetSelected(this);
+			this._selectionListener[i].widgetSelected(this._event);
 		}
 	},
 	
@@ -1490,9 +1950,9 @@ $class("List", {
 	 * @author Thomas Gossmann
 	 * @return {void}
 	 */
-	registerListener : function(eventType, listener) {
+	_registerListener : function(eventType, listener) {
 		if (this.domref != null) {
-			gara.EventManager.getInstance().addListener(this.domref, eventType, listener);
+			gara.EventManager.addListener(this.domref, eventType, listener);
 		}
 	},
 
@@ -1505,8 +1965,12 @@ $class("List", {
 	 * @return {void}
 	 */
 	remove : function(index) {
+		this.checkWidget();
 		var item = this._items.removeAt(index)[0];
-		this.domref.removeChild(item.domref);
+		if (this._selection.contains(item)) {
+			this._selection.remove(item);
+		}
+		item.dispose();
 		delete item;
 	},
 
@@ -1520,6 +1984,7 @@ $class("List", {
 	 * @return {void}
 	 */
 	removeRange : function(start, end) {
+		this.checkWidget();
 		for (var i = start; i <= end; ++i) {
 			this.remove(i);
 		}
@@ -1534,6 +1999,7 @@ $class("List", {
 	 * @return {void}
 	 */
 	removeFromArray : function(indices) {
+		this.checkWidget();
 		indices.forEach(function(item, index, arr) {
 			this.remove(index);
 		}, this);
@@ -1547,10 +2013,12 @@ $class("List", {
 	 * @return {void}
 	 */
 	removeAll : function() {
+		this.checkWidget();
 		while (this._items.length) {
-			var item = this._items.pop();
+			/*var item = this._items.pop();
 			this.domref.removeChild(item.domref);
-			delete item;
+			delete item;*/
+			this.remove(0);
 		}
 	},
 
@@ -1564,6 +2032,7 @@ $class("List", {
 	 * @return {void}
 	 */
 	removeSelectionListener : function(listener) {
+		this.checkWidget();
 		if (!$class.instanceOf(listener, gara.jswt.SelectionListener)) {
 			throw new TypeError("listener is not instance of gara.jswt.SelectionListener");
 		}
@@ -1583,19 +2052,22 @@ $class("List", {
 	 * @return {void}
 	 */
 	select : function(item, _add) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.ListItem)) {
 			throw new TypeError("item not instance of gara.jswt.ListItem");
 		}
 
-		if (!_add || (this._style & JSWT.SINGLE) == JSWT.SINGLE) {
+		if (!_add || (this._style & JSWT.MULTI) != JSWT.MULTI) {
 			while (this._selection.length) {
-				this._selection.pop().setUnselected();
+				var i = this._selection.pop();
+				i._setSelected(false);
+				i.update();
 			}
 		}
 
 		if (!this._selection.contains(item)) {
+			item._setSelected(true);
 			this._selection.push(item);
-			item.setSelected();
 			this._shiftItem = item;
 			this._activateItem(item);
 			this.notifySelectionListener();
@@ -1610,10 +2082,12 @@ $class("List", {
 	 * @return {void}
 	 */
 	selectAll : function() {
-		for (var i = 0, len = this._items.length; i < len; ++i) {
-			this.select(this._items[i], true);
+		this.checkWidget();
+		if ((this._style & JSWT.SINGLE) != JSWT.SINGLE) {
+			for (var i = 0, len = this._items.length; i < len; ++i) {
+				this.select(this._items[i], true);
+			}
 		}
-		this.update();
 	},
 
 	/**
@@ -1627,6 +2101,7 @@ $class("List", {
 	 * @return {void}
 	 */
 	selectRange : function(item, _add) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.ListItem)) {
 			throw new TypeError("item not instance of gara.jswt.ListItem");
 		}
@@ -1634,7 +2109,9 @@ $class("List", {
 		// only, when selection mode is MULTI
 		if (!_add) {
 			while (this._selection.length) {
-				this._selection.pop().setUnselected();
+				var i = this._selection.pop();
+				i._setSelected(false);
+				i.update();
 			}
 		}
 
@@ -1646,7 +2123,8 @@ $class("List", {
 
 			for (var i = from; i <= to; ++i) {
 				this._selection.push(this._items[i]);
-				this._items[i].setSelected();
+				this._items[i]._setSelected(true);
+				this._items[i].update();
 			}
 
 			this._activateItem(item);
@@ -1668,6 +2146,7 @@ $class("List", {
 	 * @return {void}
 	 */	
 	setItem : function(index, string) {
+		this.checkWidget();
 		if (typeof(string) != "string") {
 			throw new TypeError("string is not type of a String");
 		}
@@ -1691,6 +2170,7 @@ $class("List", {
 	 * @return {void}
 	 */
 	setItems : function(strings) {
+		this.checkWidget();
 		if (!$class.instanceOf(strings, Array)) {
 			throw new TypeError("strings are not an Array");
 		}
@@ -1717,16 +2197,36 @@ $class("List", {
 	 * @return {void}
 	 */	
 	setSelection : function(items) {
-		if (!$class.instanceOf(items, Array)) {
-			throw new TypeError("items are not instance of an Array");
+		this.checkWidget();
+		if ($class.instanceOf(items, Array)) {
+			items.forEach(function(item, index, arr) {
+				if ($class.instanceOf(item, gara.jswt.ListItem)) {
+					this.select(item, true);
+				} else if ($class.instanceOf(item, Number)) {
+					this.select(this._items[item], true);
+				}
+			}, this);
+		} else if ($class.instanceOf(items, Number)) {
+			this.select(this._items[items]);
 		}
-
-		this._selection = items;
-		this.notifySelectionListener();
 	},
 
 	toString : function() {
 		return "[gara.jswt.List]";
+	},
+	
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+		if (this.domref != null) {
+			gara.EventManager.removeListener(this.domref, eventType, listener);
+		}
 	},
 
 	/**
@@ -1737,36 +2237,14 @@ $class("List", {
 	 * @return {void}
 	 */
 	update : function() {
+		this.checkWidget();
 		// create widget if domref equals null
 		if (this.domref == null) {
-			this.domref = document.createElement("ul");
-			this.domref.obj = this;
-			this.domref.control = this;
-			base2.DOM.EventTarget(this.domref);
-
-			/* buffer unregistered user-defined listeners */
-			var unregisteredListener = {};			
-			for (var eventType in this._listener) {
-				unregisteredListener[eventType] = this._listener[eventType].concat([]);
-			}
-
-			/* List event listener */
-			this.addListener("mousedown", this);
-
-			/* register user-defined listeners */
-			for (var eventType in unregisteredListener) {
-				unregisteredListener[eventType].forEach(function(elem, index, arr) {
-					this.registerListener(eventType, elem);
-				}, this);
-			}
-
-			/* If parent is not a composite then it *must* be a HTMLElement
-			 * but because of IE there is no cross-browser check. Or no one I know of.
-			 */
-			if (!$class.instanceOf(this._parent, gara.jswt.Composite)) {
-				this._parent.appendChild(this.domref);
-			}
+			this._create();
 		}
+
+		if (this._height != null) this.domref.style.width = this._width + "px"; 
+		if (this._width != null) this.domref.style.height = this._height + "px";
 
 		this.removeClassName("jsWTListFullSelection");
 
@@ -1778,30 +2256,12 @@ $class("List", {
 
 		// update items
 		this._items.forEach(function(item, index, arr) {
-
-			// create item ...
-			if (!item.isCreated()) {
-				var node = item.create();
-				var nextNode = index == 0 
-					? this.domref.firstChild
-					: arr[index - 1].domref.nextSibling;
-
-				if (!nextNode) {
-					this.domref.appendChild(node);					
-				} else {
-					this.domref.insertBefore(node, nextNode);
-				}
-			}
-
-			// ... or update it
-			if (item.hasChanged()) {
-				item.update();
-				item.releaseChange();
-			}
+			item._setParentNode(this.domref);
+			item.update();
 		}, this);
 	}
 });
-/*	$Id: Tree.class.js 125 2007-12-30 14:55:37Z tgossmann $
+/*	$Id: Tree.class.js 177 2008-11-23 21:27:09Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -1844,14 +2304,17 @@ $class("Tree", {
 		}
 		
 		this._showLines = true;
+		this._event = null;
 
 		this._shiftItem = null;
 		this._activeItem = null;
 		this._className = this._baseClass = "jsWTTree";
+		this._className += " jsWTTreeInactive";
 		
 		this._selection = [];
 		this._selectionListeners = [];
 		this._items = [];
+		this._columns = [];
 		this._firstLevelItems = [];
 	},
 
@@ -1866,17 +2329,20 @@ $class("Tree", {
 	 * @return {void}
 	 */
 	_activateItem : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
 			throw new TypeError("item is not type of gara.jswt.TreeItem");
 		}
+
 		// set a previous active item inactive
-		if (this._activeItem != null) {
+		if (this._activeItem != null && !this._activeItem.isDisposed()) {
 			this._activeItem.setActive(false);
+			this._activeItem.update();
 		}
 
 		this._activeItem = item;
 		this._activeItem.setActive(true);
-		this.update();
+		this._activeItem.update();
 	},
 
 	/**
@@ -1890,6 +2356,7 @@ $class("Tree", {
 	 * @return void
 	 */
 	_addItem : function(item, index) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
 			throw new TypeError("item is not type of gara.jswt.TreeItem");
 		}
@@ -1918,8 +2385,7 @@ $class("Tree", {
 		// childs
 		else {
 			index = this._items.indexOf(parentItem)
-				+ getDescendents(parentItem)
-				+ 1;
+				+ getDescendents(parentItem);
 
 			this._items.insertAt(index, item);
 		}
@@ -1956,6 +2422,40 @@ $class("Tree", {
 			this._selectionListeners.push(listener);
 		}
 	},
+
+	_create : function() {
+		this.domref = document.createElement("ul");
+		this.domref.obj = this;
+		this.domref.control = this;
+		base2.DOM.EventTarget(this.domref);
+
+		/* buffer unregistered user-defined listeners */
+		var unregisteredListener = {};			
+		for (var eventType in this._listener) {
+			unregisteredListener[eventType] = this._listener[eventType].concat([]);
+		}
+
+		/* List event listener */
+		this.addListener("mousedown", this);
+
+		/* register user-defined listeners */
+		for (var eventType in unregisteredListener) {
+			unregisteredListener[eventType].forEach(function(elem, index, arr) {
+				this._registerListener(eventType, elem);
+			}, this);
+		}
+
+		/* If parent is not a composite then it *must* be a HTMLElement
+		 * but because of IE there is no cross-browser check. Or no one I know of.
+		 */
+		if (!$class.instanceOf(this._parent, gara.jswt.Composite)) {
+			this._parentNode = this._parent;
+		}
+
+		if (this._parentNode != null) {
+			this._parentNode.appendChild(this.domref);
+		}
+	},
 	
 	/**
 	 * @method
@@ -1965,18 +2465,18 @@ $class("Tree", {
 	 * @param {gara.jswt.TreeItem} item the item to deselect
 	 * @return {void}
 	 */
-	deselect : function(item) {
+	_deselect : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
 			throw new TypeError("item is not type of gara.jswt.TreeItem");
 		}
 	
-		if (this._selection.contains(item)
-				&& item.getParent() == this) {
+		if (this._selection.contains(item)/* && item.getParent() == this*/) {
+			item._setSelected(false);
 			this._selection.remove(item);
-			this._notifySelectionListener();
-			item.setChecked(false);
 			this._shiftItem = item;
 			this._activateItem(item);
+			this._notifySelectionListener();
 		}
 	},
 
@@ -1988,10 +2488,29 @@ $class("Tree", {
 	 * @return {void}
 	 */
 	deselectAll : function() {
-		for (var i = this._selection.length; i >= 0; --i) {
-			this.deselect(this._selection[i]);
+		this.checkWidget();
+		while (this._selection.length) {
+			this._deselect(this._selection[0]);
 		}
 		this.update();
+	},
+
+	dispose : function() {
+		this.deselectAll();
+		this.$base();
+
+		this._firstLevelItems.forEach(function(item, index, arr) {
+			item.dispose();
+		}, this);
+
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+		delete this.domref;
+	},
+	
+	getColumnCount : function() {
+		return this._columns.length;
 	},
 
 	/**
@@ -2004,6 +2523,7 @@ $class("Tree", {
 	 * @return {gara.jswt.TreeItem} the item
 	 */
 	getItem : function(index) {
+		this.checkWidget();
 		if (index >= this._items.length) {
 			throw new gara.OutOfBoundsException("Your item lives outside of this Tree");
 		}
@@ -2076,14 +2596,17 @@ $class("Tree", {
 	 * @return {void}
 	 */
 	handleEvent : function(e) {
-		// special events for the tree
+		this.checkWidget();
 		var obj = e.target.obj || null;
 		var item = null;
 		
-		if ($class.instanceOf(obj, gara.jswt.TreeItem)) {
+		if (obj && $class.instanceOf(obj, gara.jswt.TreeItem)) {
+			e.item = obj;
 			item = obj;
 		}
-		
+		e.widget = this;
+		this._event = e;
+
 		switch (e.type) {
 			case "mousedown":
 				if (!this._hasFocus) {
@@ -2091,10 +2614,11 @@ $class("Tree", {
 				}
 
 				if (item != null) {
+					
 					if (e.target != item.toggleNode) {
 						if (e.ctrlKey && !e.shiftKey) {
 							if (this._selection.contains(item)) {
-								this.deselect(item);
+								this._deselect(item);
 							} else {
 								this._select(item, true);
 							}
@@ -2106,29 +2630,16 @@ $class("Tree", {
 							this._select(item, false);
 						}
 					}
+					
 				}
-				
-				if (e.which == 3 && this._menu != null) {
-					if (this.domref.style.position != "") {
-						this._menu.setLocation(e.layerX, e.layerY);
-					} else {
-						this._menu.setLocation(e.clientX, e.clientY);
-					}
-					this._menu.setVisible(true);
-				}
-				break;
-
-			case "dblclick":
-				// dummy handler. dblclick event is passed to the item
 				break;
 
 			case "keyup":
 			case "keydown":
 			case "keypress":
-			
-				this._items.forEach(function(item, index, arr) {
-					item.handleEvent(e);
-				});
+				if (this._activeItem != null) {
+					this._activeItem.handleEvent(e);
+				}
 
 				this._notifyExternalKeyboardListener(e, this, this);
 				
@@ -2142,7 +2653,13 @@ $class("Tree", {
 			item.handleEvent(e);
 		}
 
+		this.handleContextMenu(e);
 		e.stopPropagation();
+
+		/* in case of ie6, it is necessary to return false while the type of
+		 * the event is "contextmenu" and the menu isn't hidden in ie6
+		 */
+		return false;
 	},
 
 	/**
@@ -2155,6 +2672,7 @@ $class("Tree", {
 	 * @return {void}
 	 */
 	_handleKeyEvent : function(e) {
+		this.checkWidget();
 		if (this._activeItem == null) {
 			return;
 		}
@@ -2185,8 +2703,26 @@ $class("Tree", {
 						prev = getLastItem(prevSibling);
 					}
 				}
-				
+
 				if (prev) {
+					// update scrolling
+					var h = 0, activeIndex = this._items.indexOf(this._activeItem);
+					for (var i = 0; i < (activeIndex - 1); i++) {
+						h += this._items[i].domref.offsetHeight
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-top"))
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-bottom"));
+						if (this._items[i]._hasChilds()) {
+							var childContainer = this._items[i]._getChildContainer();
+							h -= childContainer.offsetHeight
+								+ parseInt(gara.Utils.getStyle(childContainer, "margin-top"))
+								+ parseInt(gara.Utils.getStyle(childContainer, "margin-bottom"));
+						}
+					}
+					if (h < this.domref.scrollTop) {
+						this.domref.scrollTop = h;
+					}
+
+					// handle select
 					if (!e.ctrlKey && !e.shiftKey) {
 						this._select(prev, false);
 					} else if (e.ctrlKey && e.shiftKey) {
@@ -2226,6 +2762,29 @@ $class("Tree", {
 				}
 
 				if (next) {
+					// update scrolling
+					var h = 0, activeIndex = this._items.indexOf(this._activeItem);
+					for (var i = 0; i <= (activeIndex + 1); i++) {
+						h += this._items[i].domref.offsetHeight
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-top"))
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-bottom"));
+						if (this._items[i]._hasChilds()) {
+							var childContainer = this._items[i]._getChildContainer();
+							h -= childContainer.offsetHeight
+								+ parseInt(gara.Utils.getStyle(childContainer, "margin-top"))
+								+ parseInt(gara.Utils.getStyle(childContainer, "margin-bottom"));
+						}
+					}
+					var viewport = this.domref.clientHeight + this.domref.scrollTop
+						- parseInt(gara.Utils.getStyle(this.domref, "padding-top"))
+						- parseInt(gara.Utils.getStyle(this.domref, "padding-bottom"));
+					if (h > viewport) {
+						this.domref.scrollTop = h - this.domref.clientHeight
+							+ parseInt(gara.Utils.getStyle(this.domref, "padding-top"))
+							+ parseInt(gara.Utils.getStyle(this.domref, "padding-bottom"));
+					}
+
+					// handle select
 					if (!e.ctrlKey && !e.shiftKey) {
 						this._select(next, false);
 					} else if (e.ctrlKey && e.shiftKey) {
@@ -2254,13 +2813,15 @@ $class("Tree", {
 				
 			case 32 : // space
 				if (this._selection.contains(this._activeItem) && e.ctrlKey) {
-					this.deselect(this._activeItem);
+					this._deselect(this._activeItem);
 				} else {
 					this._select(this._activeItem, true);
 				}
 				break;
 				
 			case 36 : // home
+				this.domref.scrollTop = 0;
+			
 				if (!e.ctrlKey && !e.shiftKey) {
 					this._select(this._items[0], false);
 				} else if (e.shiftKey) {
@@ -2271,6 +2832,8 @@ $class("Tree", {
 				break;
 				
 			case 35 : // end
+				this.domref.scrollTop = this.domref.scrollHeight - this.domref.clientHeight;
+			
 				if (!e.ctrlKey && !e.shiftKey) {
 					this._select(this._items[this._items.length-1], false);
 				} else if (e.shiftKey) {
@@ -2315,6 +2878,7 @@ $class("Tree", {
 	 * @return {int} the index of the specified item
 	 */
 	indexOf : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
 			throw new TypeError("item not instance of gara.jswt.TreeItem");
 		}
@@ -2336,7 +2900,7 @@ $class("Tree", {
 	 */
 	_notifySelectionListener : function() {
 		this._selectionListeners.forEach(function(item, index, arr) {
-			item.widgetSelected(this);
+			item.widgetSelected(this._event);
 		}, this);
 	},
 
@@ -2348,9 +2912,9 @@ $class("Tree", {
 	 * @author Thomas Gossmann
 	 * @return {void}
 	 */
-	registerListener : function(eventType, listener) {
+	_registerListener : function(eventType, listener) {
 		if (this.domref != null) {
-			gara.EventManager.getInstance().addListener(this.domref, eventType, listener);
+			gara.EventManager.addListener(this.domref, eventType, listener);
 		}
 	},
 	
@@ -2363,9 +2927,22 @@ $class("Tree", {
 	 * @return {void}
 	 */
 	remove : function(index) {
+		this.checkWidget();
 		var item = this._firstLevelItems.removeAt(index)[0];
-		this.domref.removeChild(item.domref);
+		this._items.remove(item);
+		if (!item.isDisposed()) {
+			item.dispose();
+		}
 		delete item;
+	},
+	
+	_removeItem : function(item) {
+		this.checkWidget();
+		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
+			throw new TypeError("item not instance of gara.jswt.TreeItem");
+		}
+		
+		this._items.remove(item);
 	},
 	
 	/**
@@ -2411,21 +2988,6 @@ $class("Tree", {
 			delete item;
 		}
 	},
-	
-	/**
-	 * @method
-	 * Removes all items from the tree
-	 * 
-	 * @author Thomas Gossmann
-	 * @return {void}
-	 */
-	removeAll : function() {
-		while (this._firstLevelItems.length) {
-			var item = this._firstLevelItems.pop();
-			this.domref.removeChild(item.domref);
-			delete item;
-		}
-	},
 
 	/**
 	 * @method
@@ -2437,7 +2999,7 @@ $class("Tree", {
 	 * @return {void}
 	 */
 	removeSelectionListener : function(listener) {
-		if (!$class.instanceOf(item, gara.jswt.SelectionListener)) {
+		if (!$class.instanceOf(listener, gara.jswt.SelectionListener)) {
 			throw new TypeError("item is not type of gara.jswt.SelectionListener");
 		}
 
@@ -2458,20 +3020,22 @@ $class("Tree", {
 	 * @return {void}
 	 */
 	_select : function(item, _add) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
 			throw new TypeError("item is not type of gara.jswt.TreeItem");
 		}
 
 		if (!_add || (this._style & JSWT.MULTI) != JSWT.MULTI) {
 			while (this._selection.length) {
-				this._selection.pop().setChecked(false);
+				var i = this._selection.pop();
+				i._setSelected(false);
+				i.update();
 			}
 		}
 
-		if (!this._selection.contains(item)
-				&& item.getParent() == this) {
+		if (!this._selection.contains(item)) {
+			item._setSelected(true);
 			this._selection.push(item);
-			item.setChecked(true);
 			this._shiftItem = item;
 			this._activateItem(item);
 			this._notifySelectionListener();
@@ -2486,10 +3050,13 @@ $class("Tree", {
 	 * @return {void}
 	 */
 	selectAll : function() {
-		this._items.forEach(function(item, index, arr) {
-			this._select(item, true);
-		}, this);
-		this.update();
+		this.checkWidget();
+		if ((this._style & JSWT.SINGLE) != JSWT.SINGLE) {
+			this._items.forEach(function(item, index, arr){
+				this._select(item, true);
+			}, this);
+			this.update();
+		}
 	},
 
 	/**
@@ -2501,13 +3068,16 @@ $class("Tree", {
 	 * @return {void}
 	 */
 	_selectShift : function(item, _add) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
 			throw new TypeError("item is not type of gara.jswt.TreeItem");
 		}
 
 		if (!_add) {
 			while (this._selection.length) {
-				this._selection.pop().setChecked(false);
+				var i = this._selection.pop();
+				i._setSelected(false);
+				i.update();
 			}
 		}
 
@@ -2519,7 +3089,8 @@ $class("Tree", {
 
 			for (var i = from; i <= to; ++i) {
 				this._selection.push(this._items[i]);
-				this._items[i].setChecked(true);
+				this._items[i]._setSelected(true);
+				this._items[i].update();
 			}
 
 			this._activateItem(item);			
@@ -2551,16 +3122,34 @@ $class("Tree", {
 	 * @return {void}
 	 */	
 	setSelection : function(items) {
+		this.checkWidget();
 		if (!$class.instanceOf(items, Array)) {
 			throw new TypeError("items are not instance of an Array");
 		}
 
 		this._selection = items;
+		this._selection.forEach(function(item, index, arr) {
+			item._setSelected(true);
+		}, this);
 		this._notifySelectionListener();
 	},
 
 	toString : function() {
 		return "[gara.jswt.Tree]";
+	},
+	
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+		if (this.domref != null) {
+			gara.EventManager.removeListener(this.domref, eventType, listener);
+		}
 	},
 	
 	/**
@@ -2571,36 +3160,13 @@ $class("Tree", {
 	 * @return {void}
 	 */
 	update : function() {
+		this.checkWidget();
 		if (this.domref == null) {
-			this.domref = document.createElement("ul");
-			this.domref.obj = this;
-			this.domref.control = this;
-			base2.DOM.EventTarget(this.domref);
-
-			/* buffer unregistered user-defined listeners */
-			var unregisteredListener = {};			
-			for (var eventType in this._listener) {
-				unregisteredListener[eventType] = this._listener[eventType].concat([]);
-			}
-
-			/* List event listener */
-			this.addListener("mousedown", this);
-			this.addListener("dblclick", this);
-
-			/* register user-defined listeners */
-			for (var eventType in unregisteredListener) {
-				unregisteredListener[eventType].forEach(function(elem, index, arr) {
-					this.registerListener(eventType, elem);
-				}, this);
-			}
-
-			/* If parent is not a composite then it *must* be a HTMLElement
-			 * but because of IE there is no cross-browser check. Or no one I know of.
-			 */
-			if (!$class.instanceOf(this._parent, gara.jswt.Composite)) {
-				this._parent.appendChild(this.domref);
-			}
+			this._create();
 		}
+
+		if (this._height != null) this.domref.style.width = this._width + "px"; 
+		if (this._width != null) this.domref.style.height = this._height + "px";
 
 		this.removeClassName("jsWTTreeNoLines");
 		this.removeClassName("jsWTTreeLines");
@@ -2617,42 +3183,18 @@ $class("Tree", {
 		}
 
 		this.domref.className = this._className;
-		this._updateItems(this._firstLevelItems, this.domref);
-	},
-	
-	/**
-	 * @method
-	 * Update Items
-	 * 
-	 * @private
-	 * @author Thomas Gossmann
-	 * @param {gara.jswt.TreeItem[]} items to update
-	 * @param {HTMLElement} parentNode the parent dom node
-	 * @return {void}  
-	 */
-	_updateItems : function(items, parentNode) {
-		var itemCount = items.length;
-		items.forEach(function(item, index, arr) {
-			// create item ...
-			if (!item.isCreated()) {
-				item.create();
-				parentNode.appendChild(item.domref);
-			}
 
-			// ... or update it
-			if (item.hasChanged()) {
+		// update items		
+		this._firstLevelItems.forEach(function(item, index, arr) {
+			if (item.isDisposed()) {
+				this.remove(index);
+			} else {
 				item.update();
-				item.releaseChange();
-			}
-
-			if (item.getItemCount() > 0) {
-				var childContainer = item._getChildContainer();
-				this._updateItems(item.getItems(), childContainer);			
 			}
 		}, this);
 	}
 });
-/*	$Id: TabFolder.class.js 91 2007-12-09 18:58:43Z tgossmann $
+/*	$Id: TabFolder.class.js 176 2008-11-22 01:27:51Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -2703,10 +3245,12 @@ $class("TabFolder", {
 		this._activeItem = null;
 		this._selectionListener = [];
 		this._selection = [];
+		this._event = null;
 
 		this._tabbar = null;
 		this._clientArea = null;
 		this._className = this._baseClass = "jsWTTabFolder";
+		this._className += " jsWTTabFolderInactive";
 	},
 
 	/**
@@ -2720,11 +3264,12 @@ $class("TabFolder", {
 	 * @return {void}
 	 */
 	_addItem : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TabItem)) {
 			throw new TypeError("item is not type of gara.jswt.TabItem");
 		}
 
-		var count = this.getItemCount();
+		item._setClientArea(this._clientArea);
 		this._items.push(item);
 	},
 
@@ -2738,6 +3283,7 @@ $class("TabFolder", {
 	 * @return {void}
 	 */
 	addSelectionListener : function(listener) {
+		this.checkWidget();
 		if (!$class.instanceOf(listener, gara.jswt.SelectionListener)) {
 			throw new TypeError("listener is not instance of gara.jswt.SelectionListener");
 		}
@@ -2756,19 +3302,20 @@ $class("TabFolder", {
 	 * @return {void}
 	 */
 	_activateItem : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TabItem)) {
 			throw new TypeError("item is not type of gara.jswt.TabItem");
 		}
 		
 		if (this._activeItem != null) {
-			this._activeItem.setActive(false);
+			this._activeItem._setActive(false);
 		}
 		
 		this._activeItem = item;
-		item._setActive(true);
+		this._activeItem._setActive(true);
 
 		// clean up client area
-		for (var i = 0, len = this._clientArea.childNodes.length; i < len; ++i) {
+		/*for (var i = 0, len = this._clientArea.childNodes.length; i < len; ++i) {
 			this._clientArea.removeChild(this._clientArea.childNodes[i]);
 		}
 
@@ -2782,13 +3329,86 @@ $class("TabFolder", {
 			} else {
 				this._clientArea.appendChild(item.getContent());
 			}
-		}
+		}*/
 
 		this.update();
 
 		this._selection = [];
 		this._selection.push(item);
 		this._notifySelectionListener();
+	},
+	
+	_create : function() {
+		this.domref = document.createElement("div");
+		this.domref.obj = this;
+		this.domref.control = this;
+		base2.DOM.EventTarget(this.domref);
+
+		this._tabbar = document.createElement("ul");
+		this._tabbar.obj = this;
+		this._tabbar.control = this;
+		this._tabbar.className = "jsWTTabbar";
+		base2.DOM.EventTarget(this._tabbar);
+
+		this._clientArea = document.createElement("div");
+		this._clientArea.className = "jsWTTabClientArea"
+		base2.DOM.EventTarget(this._clientArea);
+
+		if (this._style == JSWT.TOP) {
+			this.domref.appendChild(this._tabbar);
+			this.domref.appendChild(this._clientArea);
+			this.addClassName("jsWTTabFolderTopbar");
+		} else {
+			this.domref.appendChild(this._clientArea);
+			this.domref.appendChild(this._tabbar);
+			this.addClassName("jsWTTabFolderBottombar");
+		}
+
+		/* buffer unregistered user-defined listeners */
+		var unregisteredListener = {};			
+		for (var eventType in this._listener) {
+			unregisteredListener[eventType] = this._listener[eventType].concat([]);
+		}
+
+		/* List event listener */
+		this.addListener("mousedown", this);
+
+		/* register user-defined listeners */
+		for (var eventType in unregisteredListener) {
+			unregisteredListener[eventType].forEach(function(elem, index, arr) {
+				this.registerListener(eventType, elem);
+			}, this);
+		}
+
+		/* If parent is not a composite then it *must* be a HTMLElement
+		 * but because of IE there is no cross-browser check. Or no one I know of.
+		 */
+		if (!$class.instanceOf(this._parent, gara.jswt.Composite)) {
+			this._parentNode = this._parent;
+		}
+
+		if (this._parentNode != null) {
+			this._parentNode.appendChild(this.domref);
+		}
+	},
+	
+	dispose : function() {
+		this.$base();
+
+		this._items.forEach(function(item, index, arr) {
+			item.dispose();
+		}, this);
+
+		this.domref.removeChild(this._tabbar);
+		this.domref.removeChild(this._clientArea);
+
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+		
+		delete this._tabbar;
+		delete this._clientArea;
+		delete this.domref;
 	},
 
 	/**
@@ -2812,6 +3432,7 @@ $class("TabFolder", {
 	 * @return {gara.jswt.TabItem} the item
 	 */
 	getItem : function(index) {
+		this.checkWidget();
 		if (index >= this._items.length) {
 			throw new gara.OutOfBoundsException("Your item lives outside of this tabfolder");
 		}
@@ -2849,6 +3470,7 @@ $class("TabFolder", {
 	 * @return {gara.jswt.TabItem[]} an array with items
 	 */
 	getSelection : function() {
+		this.checkWidget();
 		return this._selection;
 	},
 	
@@ -2860,6 +3482,7 @@ $class("TabFolder", {
 	 * @return {int} the index of the selected item
 	 */
 	getSelectionIndex : function() {
+		this.checkWidget();
 		if (this._selection.length) {
 			return this._items.indexOf(this._selection[0]);
 		} else {
@@ -2876,7 +3499,15 @@ $class("TabFolder", {
 	 * @return {void}
 	 */
 	handleEvent : function(e) {
+		this.checkWidget();
 		var obj = e.target.obj || null;
+		
+		if (obj && $class.instanceOf(obj, gara.jswt.TabItem)) {
+			e.item = obj;
+		}
+		e.widget = this;
+		this._event = e;
+
 		switch (e.type) {
 			case "mousedown":
 				if (!this._hasFocus) {
@@ -2888,16 +3519,6 @@ $class("TabFolder", {
 
 					this._activateItem(item);
 				}
-				
-				if (e.which == 3 && this._menu != null) {
-					if (this.domref.style.position != "") {
-						this._menu.setLocation(e.layerX, e.layerY);
-					} else {
-						this._menu.setLocation(e.clientX, e.clientY);
-					}
-					this._menu.setVisible(true);
-					return false;
-				}
 				break;
 			
 						
@@ -2905,18 +3526,25 @@ $class("TabFolder", {
 			case "keydown":
 			case "keypress":
 			
-				this._items.forEach(function(item, index, arr) {
-					item.handleEvent(e);
-				});
+				if (this._activeItem != null) {
+					this._activeItem.handleEvent(e);
+				}
 
 				this._notifyExternalKeyboardListener(e, this, this);
 				
 				break;
 		}
+		
+		this.handleContextMenu(e);
 
 		if (e.target != this.domref) {
 			e.stopPropagation();
 		}
+		
+		/* in case of ie6, it is necessary to return false while the type of
+		 * the event is "contextmenu" and the menu isn't hidden in ie6
+		 */
+		return false;
 	},
 	
 	/**
@@ -2930,6 +3558,7 @@ $class("TabFolder", {
 	 * @return {int} the index of the specified item
 	 */
 	indexOf : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TabItem)) {
 			throw new TypeError("item not instance of gara.jswt.TabItem");
 		}
@@ -2951,7 +3580,7 @@ $class("TabFolder", {
 	 */
 	_notifySelectionListener : function() {
 		for (var i = 0, len = this._selectionListener.length; i < len; ++i) {
-			this._selectionListener[i].widgetSelected(this);
+			this._selectionListener[i].widgetSelected(this._event);
 		}
 	},
 
@@ -2963,9 +3592,9 @@ $class("TabFolder", {
 	 * @author Thomas Gossmann
 	 * @return {void}
 	 */
-	registerListener : function(eventType, listener) {
+	_registerListener : function(eventType, listener) {
 		if (this.domref != null) {
-			gara.EventManager.getInstance().addListener(this.domref, eventType, listener);
+			gara.EventManager.addListener(this.domref, eventType, listener);
 		}
 	},
 
@@ -2979,6 +3608,7 @@ $class("TabFolder", {
 	 * @return {void}
 	 */
 	removeSelectionListener : function(listener) {
+		this.checkWidget();
 		if (!$class.instanceOf(listener, gara.jswt.SelectionListener)) {
 			throw new TypeError("listener is not instance of gara.jswt.SelectionListener");
 		}
@@ -3000,6 +3630,7 @@ $class("TabFolder", {
 	 * @return {void}
 	 */
 	setSelection : function(arg) {
+		this.checkWidget();
 		if (typeof(arg) == 'number') {
 			if (arg >= this._items.length) {
 				throw new gara.OutOfBoundsException("Your item lives outside of this tabfolder");
@@ -3028,6 +3659,20 @@ $class("TabFolder", {
 	toString : function() {
 		return "[gara.jswt.TabFolder]";
 	},
+	
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+		if (this.domref != null) {
+			gara.EventManager.removeListener(this.domref, eventType, listener);
+		}
+	},
 
 	/**
 	 * @method
@@ -3037,62 +3682,45 @@ $class("TabFolder", {
 	 * @return {void}
 	 */
 	update : function() {
+		this.checkWidget();
 		var firstBuild = false;
 		if (this.domref == null) {
-			this.domref = document.createElement("div");
-			this.domref.obj = this;
-			this.domref.control = this;
-			base2.DOM.EventTarget(this.domref);
-
-			this._tabbar = document.createElement("ul");
-			this._tabbar.obj = this;
-			this._tabbar.control = this;
-			base2.DOM.EventTarget(this._tabbar);
-
-			this._clientArea = document.createElement("div");
-			this._clientArea.className = "jsWTTabClientArea"
-			base2.DOM.EventTarget(this._clientArea);
-
-			if (this._style == JSWT.TOP) {
-				this.domref.appendChild(this._tabbar);
-				this.domref.appendChild(this._clientArea);
-				this._tabbar.className = "jsWTTabbar jsWTTabbarTop";
-			} else {
-				this.domref.appendChild(this._clientArea);
-				this.domref.appendChild(this._tabbar);
-				this._tabbar.className = "jsWTTabbar jsWTTabbarBottom";
-			}
-
-			/* buffer unregistered user-defined listeners */
-			var unregisteredListener = {};			
-			for (var eventType in this._listener) {
-				unregisteredListener[eventType] = this._listener[eventType].concat([]);
-			}
-
-			/* List event listener */
-			this.addListener("mousedown", this);
-
-			/* register user-defined listeners */
-			for (var eventType in unregisteredListener) {
-				unregisteredListener[eventType].forEach(function(elem, index, arr) {
-					this.registerListener(eventType, elem);
-				}, this);
-			}
-
-			/* If parent is not a composite then it *must* be a HTMLElement
-			 * but because of IE there is no cross-browser check. Or no one I know of.
-			 */
-			if (!$class.instanceOf(this._parent, gara.jswt.Composite)) {
-				this._parent.appendChild(this.domref);
-			}
-
+			this._create();
 			firstBuild = true;
 		}
 
 		this.domref.className = this._className;
+		this.domref.style.width = this._width != null ? this._width + "px" : "auto";
+		this.domref.style.height = this._height != null ? this._height + "px" : "auto";
+
+		this._tabbar.style.width = this._width != null ? this._width + "px" : "auto"
+		this._tabbar.style.width = this._width != null ? this._width + "px" : "auto";
+
+		if (this._height != null) {
+			this._clientArea.style.height = (this._height 
+				- (this._tabbar.offsetHeight
+					+ parseInt(gara.Utils.getStyle(this._tabbar, "margin-top"))
+					+ parseInt(gara.Utils.getStyle(this._tabbar, "margin-bottom")))
+				- parseInt(gara.Utils.getStyle(this._clientArea, "margin-top"))
+				- parseInt(gara.Utils.getStyle(this._clientArea, "border-top-width"))
+				- parseInt(gara.Utils.getStyle(this._clientArea, "border-bottom-width"))
+				- parseInt(gara.Utils.getStyle(this._clientArea, "margin-bottom"))
+				) + "px";
+		}
+
+		if (this._width != null) {
+			this._clientArea.style.width = this._width
+				- parseInt(gara.Utils.getStyle(this._clientArea, "margin-left"))
+				- parseInt(gara.Utils.getStyle(this._clientArea, "border-left-width"))
+				- parseInt(gara.Utils.getStyle(this._clientArea, "border-right-width"))
+				- parseInt(gara.Utils.getStyle(this._clientArea, "margin-right"))
+			+ "px";	
+		}
 
 		// update items
 		this._items.forEach(function(item, index, arr) {
+			item._setClientArea(this._clientArea);
+			
 			// create item ...
 			if (!item.isCreated()) {
 				node = item._create();
@@ -3172,9 +3800,13 @@ $class("Table", {
 		this._thead = null;
 		this._theadRow = null;
 		this._tbody = null;
+		this._tbodyPadding = null;
+		this._paddingFiller = null;
 
 		this._className = this._baseClass = "jsWTTable";
-		
+		this._className += " jsWTTableInactive";
+
+		this._event = null;
 		this._selection = [];
 		this._selectionListener = [];
 		this._shiftItem = null;
@@ -3182,20 +3814,24 @@ $class("Table", {
 	},
 
 	_activateItem : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TableItem)) {
 			throw new TypeError("item is not type of gara.jswt.TableItem");
 		}
+
 		// set a previous active item inactive
-		if (this._activeItem != null) {
+		if (this._activeItem != null && !this._activeItem.isDisposed()) {
 			this._activeItem.setActive(false);
+			this._activeItem.update();
 		}
 
 		this._activeItem = item;
 		this._activeItem.setActive(true);
-		this.update();
+		this._activeItem.update();
 	},
 
 	_addItem : function(item, index) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TableItem)) {
 			throw new TypeError("item is not a gara.jswt.TableItem");
 		}
@@ -3205,9 +3841,11 @@ $class("Table", {
 		} else {
 			this._items.push(item);
 		}
+		item._setParentNode(this._tbody);
 	},
 
 	_addColumn : function(column, index) {
+		this.checkWidget();
 		if (!$class.instanceOf(column, gara.jswt.TableColumn)) {
 			throw new TypeError("column is not a gara.jswt.TableColumn");
 		}
@@ -3221,6 +3859,7 @@ $class("Table", {
 			this._columns.push(column);
 			this._columnOrder.push(this._columns.length - 1);
 		}
+		column._setParentNode(this._theadRow);
 	},
 	
 	/**
@@ -3251,6 +3890,7 @@ $class("Table", {
 	 * @return {void}
 	 */
 	clear : function(index) {
+		this.checkWidget();
 		var item = this._items[index];
 		item.clear();
 	},
@@ -3261,39 +3901,7 @@ $class("Table", {
 		this.domref.control = this;
 		base2.DOM.EventTarget(this.domref);
 
-		this._createTableHead();
-
-		this._tbody = document.createElement("tbody");
-		this._tbody.obj = this;
-		this._tbody.control = this;
-		base2.DOM.EventTarget(this._tbody);
-		this.domref.appendChild(this._tbody);
-		
-		/* buffer unregistered user-defined listeners */
-		var unregisteredListener = {};			
-		for (var eventType in this._listener) {
-			unregisteredListener[eventType] = this._listener[eventType].concat([]);
-		}
-
-		/* List event listener */
-		this.addListener("mousedown", this);
-
-		/* register user-defined listeners */
-		for (var eventType in unregisteredListener) {
-			unregisteredListener[eventType].forEach(function(elem, index, arr) {
-				this.registerListener(eventType, elem);
-			}, this);
-		}
-
-		/* If parent is not a composite then it *must* be a HTMLElement
-		 * but because of IE there is no cross-browser check. Or no one I know of.
-		 */
-		if (!$class.instanceOf(this._parent, gara.jswt.Composite)) {
-			this._parent.appendChild(this.domref);
-		}
-	},
-
-	_createTableHead : function() {
+		// table head
 		this._thead = document.createElement("thead");
 		this._thead.obj = this;
 		this._thead.control = this;
@@ -3306,12 +3914,66 @@ $class("Table", {
 		base2.DOM.EventTarget(this._theadRow);
 		this._thead.appendChild(this._theadRow);
 
+		if ((this._style & JSWT.CHECK) == JSWT.CHECK) {
+			var checkboxCol = document.createElement("th");
+			this._theadRow.appendChild(checkboxCol);
+		}
+
 		for (var i = 0, len = this._columnOrder.length; i < len; ++i) {
+			this._columns[this._columnOrder[i]]._setParentNode(this._theadRow);
 			this._columns[this._columnOrder[i]].update();
-			this._theadRow.appendChild(this._columns[this._columnOrder[i]].domref);
+		}
+
+		// table body
+		this._tbody = document.createElement("tbody");
+		this._tbody.obj = this;
+		this._tbody.control = this;
+		base2.DOM.EventTarget(this._tbody);
+		this.domref.appendChild(this._tbody);
+
+		this._tbodyPadding = document.createElement("tbody");
+		this._tbodyPadding.obj = this;
+		this._tbodyPadding.control = this;
+		this._tbodyPadding.style.display = "none";
+		base2.DOM.EventTarget(this._tbodyPadding);
+		this.domref.appendChild(this._tbodyPadding);
+
+		var tr = document.createElement("tr");
+		this._paddingFiller = document.createElement("td");
+		this._paddingFiller.colspan = this._columns.length;
+		this._paddingFiller.appendChild(document.createTextNode("&nbsp;"));
+		tr.appendChild(this._paddingFiller);
+		this._tbodyPadding.appendChild(tr);
+
+		// listeners
+		/* buffer unregistered user-defined listeners */
+		var unregisteredListener = {};			
+		for (var eventType in this._listener) {
+			unregisteredListener[eventType] = this._listener[eventType].concat([]);
+		}
+
+		/* Table event listener */
+		this.addListener("mousedown", this);
+
+		/* register user-defined listeners */
+		for (var eventType in unregisteredListener) {
+			unregisteredListener[eventType].forEach(function(elem, index, arr) {
+				this._registerListener(eventType, elem);
+			}, this);
+		}
+
+		/* If parent is not a composite then it *must* be a HTMLElement
+		 * but because of IE there is no cross-browser check. Or no one I know of.
+		 */
+		if (!$class.instanceOf(this._parent, gara.jswt.Composite)) {
+			this._parentNode = this._parent;
+		}
+		
+		if (this._parentNode != null) {
+			this._parentNode.appendChild(this.domref);
 		}
 	},
-	
+
 	/**
 	 * @method
 	 * Deselects a specific item
@@ -3321,20 +3983,57 @@ $class("Table", {
 	 * @return {void}
 	 */
 	deselect : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TableItem)) {
 			throw new TypeError("item is not type of gara.jswt.TableItem");
 		}
-	
+
 		if (this._selection.contains(item)) {
+			item._setSelected(false);
 			this._selection.remove(item);
-			this._notifySelectionListener();
-			item.setSelected(false);
 			this._shiftItem = item;
 			this._activateItem(item);
+			this._notifySelectionListener();
 		}
 	},
 	
+	deselectAll : function() {
+		this.checkWidget();
+		while (this._selection.length) {
+			this.deselect(this._selection[0]);
+		}
+	},
+
+	dispose : function() {
+		this.deselectAll();
+		this.$base();
+		
+		this._columns.forEach(function(col, index, arr) {
+			col.dispose();
+		}, this);
+		
+		this._items.forEach(function(item, index, arr) {
+			item.dispose();
+		}, this);
+
+		this._thead.removeChild(this._theadRow);
+		this.domref.removeChild(this._thead);
+		this.domref.removeChild(this._tbody);
+		this.domref.removeChild(this._tbodyPadding);
+
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+
+		delete this._theadRow;
+		delete this._thead;
+		delete this._tbody;
+		delete this._tbodyPadding;
+		delete this.domref;
+	},
+	
 	getColumn : function(index) {
+		this.checkWidget();
 		if (index >= 0 && index < this._columns.length) {
 			return this._columns[index];
 		}
@@ -3357,6 +4056,24 @@ $class("Table", {
 		return this._headerVisible;
 	},
 	
+	/**
+	 * @method
+	 * Gets a specified item with a zero-related index
+	 * 
+	 * @author Thomas Gossmann
+	 * @param {int} index the zero-related index
+	 * @throws {gara.OutOfBoundsException} if the requested index is out of bounds
+	 * @return {gara.jswt.TreeItem} the item
+	 */
+	getItem : function(index) {
+		this.checkWidget();
+		if (index >= this._items.length) {
+			throw new gara.OutOfBoundsException("The requested index exceeds the bounds");
+		}
+	
+		return this._items[index];
+	},
+
 	getItemCount : function() {
 		return this._items.length;
 	},
@@ -3392,9 +4109,15 @@ $class("Table", {
 	},
 
 	handleEvent : function(e) {
+		this.checkWidget();
 		var obj = e.target.obj || null;
 		
-//		console.log("List.handleEvent(" + e.type + ")");
+		if (obj && $class.instanceOf(obj, gara.jswt.TableItem)) {
+			e.item = obj;
+		}
+		e.widget = this;
+		this._event = e;
+		
 		switch (e.type) {
 			case "mousedown":
 				if (!this._hasFocus) {
@@ -3420,7 +4143,7 @@ $class("Table", {
 						this.select(item);
 					}
 				}
-				
+
 				if ($class.instanceOf(obj, gara.jswt.TableColumn)) {
 					obj.handleEvent(e);
 				}
@@ -3429,10 +4152,9 @@ $class("Table", {
 			case "keyup":
 			case "keydown":
 			case "keypress":
-			
-				this._items.forEach(function(item, index, arr) {
-					item.handleEvent(e);
-				});
+				if (this._activeItem != null) {
+					this._activeItem.handleEvent(e);
+				}
 
 				this._notifyExternalKeyboardListener(e, this, this);
 				
@@ -3442,10 +4164,20 @@ $class("Table", {
 				break;
 		}
 
+		if ($class.instanceOf(obj, gara.jswt.TableItem)) {
+			this.handleContextMenu(e);
+		}
+
 		e.stopPropagation();
+		
+		/* in case of ie6, it is necessary to return false while the type of
+		 * the event is "contextmenu" and the menu isn't hidden in ie6
+		 */
+		return false;
 	},
 	
 	_handleKeyEvent : function(e) {
+		this.checkWidget();
 		if (this._activeItem == null) {
 			return;
 		}
@@ -3461,6 +4193,18 @@ $class("Table", {
 				}
 
 				if (prev) {
+					// update scrolling
+					var h = 0;
+					for (var i = 0; i < (activeIndex - 1); i++) {
+						h += this._items[i].domref.offsetHeight
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-top"))
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-bottom"));
+					}
+					if (h < this._tbody.scrollTop) {
+						this._tbody.scrollTop = h;
+					}
+					
+					// handle select
 					if (!e.ctrlKey && !e.shiftKey) {
 						//this.deselect(this._activeItem);
 						this.select(prev, false);
@@ -3484,6 +4228,19 @@ $class("Table", {
 				}
 
 				if (next) {
+					// update scrolling
+					var h = 0;
+					for (var i = 0; i <= (activeIndex + 1); i++) {
+						h += this._items[i].domref.offsetHeight
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-top"))
+							+ parseInt(gara.Utils.getStyle(this._items[i].domref, "margin-bottom"));
+					}
+					var viewport = this._tbody.clientHeight + this._tbody.scrollTop;
+					if (h > viewport) {
+						this._tbody.scrollTop = h - this._tbody.clientHeight;
+					}
+
+					// handle select
 					if (!e.ctrlKey && !e.shiftKey) {
 						this.select(next, false);
 					} else if (e.ctrlKey && e.shiftKey) {
@@ -3505,6 +4262,8 @@ $class("Table", {
 				break;
 				
 			case 36 : // home
+				this._tbody.scrollTop = 0;
+			
 				if (!e.ctrlKey && !e.shiftKey) {
 					this.select(this._items[0], false);
 				} else if (e.shiftKey) {
@@ -3513,8 +4272,10 @@ $class("Table", {
 					this._activateItem(this._items[0]);
 				}
 				break;
-				
+
 			case 35 : // end
+				this._tbody.scrollTop = this._tbody.scrollHeight - this._tbody.clientHeight;
+
 				var lastOffset = this._items.length - 1;
 				if (!e.ctrlKey && !e.shiftKey) {
 					this.select(this._items[lastOffset], false);
@@ -3538,6 +4299,7 @@ $class("Table", {
 	 * @return {int} the index of the specified item
 	 */
 	indexOf : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TableItem)) {
 			throw new TypeError("item not instance of gara.jswt.TableItem");
 		}
@@ -3559,13 +4321,13 @@ $class("Table", {
 	 */
 	_notifySelectionListener : function() {
 		this._selectionListener.forEach(function(item, index, arr) {
-			item.widgetSelected(this);
+			item.widgetSelected(this._event);
 		}, this);
 	},
 
-	registerListener : function(eventType, listener) {
+	_registerListener : function(eventType, listener) {
 		if (this.domref) {
-			gara.EventManager.getInstance().addListener(this.domref, eventType, listener);
+			gara.EventManager.addListener(this.domref, eventType, listener);
 		}
 	},
 
@@ -3578,9 +4340,9 @@ $class("Table", {
 	 * @return {void}
 	 */
 	remove : function(index) {
-		//this._items[index].dispose();
+		this.checkWidget();
 		var item = this._items.removeAt(index)[0];
-		this._tbody.removeChild(item.domref);
+		item.dispose();
 		delete item;
 	},
 
@@ -3594,6 +4356,7 @@ $class("Table", {
 	 * @return {void}
 	 */
 	removeRange : function(start, end) {
+		this.checkWidget();
 		for (var i = start; i <= end; ++i) {
 			this.remove(start);
 		}
@@ -3608,6 +4371,7 @@ $class("Table", {
 	 * @return {void}
 	 */
 	removeFromArray : function(indices) {
+		this.checkWidget();
 		indices.forEach(function(item, index, arr) {
 			this.remove(index);
 		}, this);
@@ -3621,6 +4385,7 @@ $class("Table", {
 	 * @return {void}
 	 */
 	removeAll : function() {
+		this.checkWidget();
 		while (this._items.length) {
 			var item = this._items.pop();
 			this.domref.removeChild(item.domref);
@@ -3657,19 +4422,22 @@ $class("Table", {
 	 * @return {void}
 	 */
 	select : function(item, _add) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TableItem)) {
 			throw new TypeError("item not instance of gara.jswt.TableItem");
 		}
 
 		if (!_add || (this._style & JSWT.MULTI) != JSWT.MULTI) {
 			while (this._selection.length) {
-				this._selection.pop().setSelected(false);
+				var i = this._selection.pop();
+				i._setSelected(false);
+				i.update();
 			}
 		}
 
 		if (!this._selection.contains(item)) {
 			this._selection.push(item);
-			item.setSelected(true);
+			item._setSelected(true);
 			this._shiftItem = item;
 			this._activateItem(item);
 			this._notifySelectionListener();
@@ -3686,13 +4454,16 @@ $class("Table", {
 	 * @return {void}
 	 */
 	_selectShift : function(item, _add) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TableItem)) {
 			throw new TypeError("item is not type of gara.jswt.TableItem");
 		}
 
 		if (!_add) {
 			while (this._selection.length) {
-				this._selection.pop().setSelected(false);
+				var i = this._selection.pop();
+				i._setSelected(false);
+				i.update();
 			}
 		}
 
@@ -3704,7 +4475,8 @@ $class("Table", {
 
 			for (var i = from; i <= to; ++i) {
 				this._selection.push(this._items[i]);
-				this._items[i].setSelected(true);
+				this._items[i]._setSelected(true);
+				this._items[i].update();
 			}
 
 			this._activateItem(item);			
@@ -3725,60 +4497,96 @@ $class("Table", {
 	setLinesVisible : function(show) {
 		this._linesVisible = show;
 	},
+	
+	toString : function() {
+		return "[gara.jswt.Table]";
+	},
+	
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+		if (this.domref != null) {
+			gara.EventManager.removeListener(this.domref, eventType, listener);
+		}
+	},
 
 	update : function() {
+		this.checkWidget();
 		if (this.domref == null) {
 			this._create();
-		} else {
-			// update table head
-			while (this._theadRow.childNodes.length) {
-				this._theadRow.removeChild(this._theadRow.childNodes[0]);
-			}
-			for (var i = 0, len = this._columnOrder.length; i < len; ++i) {
-				this._columns[this._columnOrder[i]].update();
-				this._theadRow.appendChild(this._columns[this._columnOrder[i]].domref);
-			}
+		}
+
+		// update table head
+		while (this._theadRow.childNodes.length) {
+			this._theadRow.removeChild(this._theadRow.childNodes[0]);
+		}
+		if ((this._style & JSWT.CHECK) == JSWT.CHECK) {
+			var checkboxCol = document.createElement("th");
+			checkboxCol.innerHTML = "&nbsp;"; // for IE6
+			checkboxCol.className = "jsWTTableCheckboxCol";
+			this._theadRow.appendChild(checkboxCol);
+		}
+		for (var i = 0, len = this._columnOrder.length; i < len; ++i) {
+			//this._columns[this._columnOrder[i]]._setParentNode(this._theadRow);
+			this._columns[this._columnOrder[i]].update();
+			this._theadRow.appendChild(this._columns[this._columnOrder[i]].domref);
 		}
 
 		if (this._headerVisible) {
-			this._thead.style.display = "table-row-group";
+			this._thead.style.display = document.all ? "block" : "table-row-group";
 		} else {
 			this._thead.style.display = "none";
 		}
-
+		
 		this._tbody.className = "";
 		this.removeClassName("jsWTTableNoLines");
 		this.removeClassName("jsWTTableLines");
-
-		if (this._linesVisible) {
-			this.addClassName("jsWTTableLines");
-		} else {
-			this.addClassName("jsWTTableNoLines");
-		}
-
+		this.addClassName("jsWTTable" + (this._linesVisible ? "" : "No") + "Lines");
+		
 		if ((this._style & JSWT.FULL_SELECTION) == JSWT.FULL_SELECTION) {
 			this._tbody.className = "jsWTTableFullSelection";
 		}
-
+		
 		this.domref.className = this._className;
 
 		// update items
 		this._updateItems();
+
+		// reset measurement for new calculations
+		this.domref.style.height = "auto";
+		this._thead.style.height = "auto";
+		this._tbody.style.height = "auto";
+		this._tbodyPadding.style.display = "none";
+		if (this._tbody.clientHeight + this._thead.clientHeight > this._height) {
+			this._tbody.style.height = this._height - this._thead.clientHeight + "px";
+		} else if (this._tbody.clientHeight + this._thead.clientHeight < this._height) {
+			this._tbodyPadding.style.display = document.all ? "block" : "table-row-group";
+			this._tbodyPadding.style.height = this._height - (this._tbody.clientHeight + this._thead.clientHeight) + "px";
+			this._paddingFiller.style.height = this._height - (this._tbody.clientHeight + this._thead.clientHeight) + "px";
+			this._paddingFiller.style.visibility = "hidden";
+			this._paddingFiller.colspan = this._columns.length;
+		} else {
+			this._tbody.style.height = "auto";
+		}
+		
+		this.domref.style.width = this._width != null ? this._width + "px" : "";
+		this.domref.style.height = this._height != null ? this._height + "px" : "";
 	},
 	
 	_updateItems : function() {
 		this._items.forEach(function(item, index, arr) {
-			// create item ...
-			if (!item.isCreated()) {
-				item._create();
-				this._tbody.appendChild(item.domref);
-			} else {
-				item.update();
-			}
+			item._setParentNode(this._tbody);
+			item.update();
 		}, this);
 	}
 });
-/*	$Id: Item.class.js 91 2007-12-09 18:58:43Z tgossmann $
+/*	$Id: Item.class.js 163 2008-11-01 17:17:05Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -3918,17 +4726,6 @@ $class("Item", {
 
 	/**
 	 * @method
-	 * Set this item selected
-	 * 
-	 * @author Thomas Gossmann
-	 * @return {void}
-	 */
-	setSelected : function() {
-		this.addClassName("selected");
-	},
-
-	/**
-	 * @method
 	 * Sets the text for the item
 	 * 
 	 * @author Thomas Gossmann
@@ -3940,22 +4737,11 @@ $class("Item", {
 		this._changed = true;
 	},
 
-	/**
-	 * @method
-	 * Set this item unselected
-	 * 
-	 * @author Thomas Gossmann
-	 * @return {void}
-	 */
-	setUnselected : function() {
-		this.removeClassName("selected");
-	},
-	
 	toString : function() {
 		return "[gara.jswt.Item]";
 	}
 });
-/*	$Id: ListItem.class.js 124 2007-12-29 18:38:17Z tgossmann $
+/*	$Id: ListItem.class.js 176 2008-11-22 01:27:51Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -4011,9 +4797,16 @@ $class("ListItem", {
 		this._parent = parent;
 		this._list = parent;
 		this._list._addItem(this, index);
+
+		// dom references
 		this._span = null;
 		this._spanText = null;
 		this._img = null;
+		this._checkbox = null;
+
+		this._selected = false;
+		this._grayed = false;
+		this._checked = false;
 	},
 
 	/**
@@ -4024,11 +4817,28 @@ $class("ListItem", {
 	 * @author Thomas Gossmann
 	 * @return {void}
 	 */
-	create : function() {
+	_create : function() {
 		this.domref = document.createElement("li");
 		this.domref.className = this._className;
 		this.domref.obj = this;
 		this.domref.control = this._list;
+
+		this._checkbox = document.createElement("input");
+		this._checkbox.type = "checkbox";
+		this._checkbox.obj = this;
+		this._checkbox.control = this._list;
+		this._checkbox.style.display = "none";
+		if (this._grayed) {
+			this._checkbox.disabled = true;
+		}
+		if (this._checked) {
+			this._checkbox.checked = true;
+		}
+		if ((this._list.getStyle() & JSWT.CHECK) == JSWT.CHECK) {
+			this._checkbox.style.display = "inline";
+		}
+		
+		this.domref.appendChild(this._checkbox);
 
 		// create item nodes
 		this._img = null;
@@ -4039,7 +4849,6 @@ $class("ListItem", {
 			this._img.obj = this;
 			this._img.control = this._list;
 			this._img.src = this._image.src;
-			this._img.alt = this._text;
 
 			// put the image into the dom
 			this.domref.appendChild(this._img);
@@ -4055,19 +4864,62 @@ $class("ListItem", {
 		this.domref.appendChild(this._span);
 		
 		base2.DOM.EventTarget(this.domref);
+		base2.DOM.EventTarget(this._checkbox);
 		base2.DOM.EventTarget(this._span);
+		
+		gara.EventManager.addListener(this._checkbox, "mousedown", this);
+		gara.EventManager.addListener(this._checkbox, "keydown", this);
 
 		// register listener
 		for (var eventType in this._listener) {
 			this._listener[eventType].forEach(function(elem, index, arr) {
-				this.registerListener(eventType, elem);
+				this._registerListener(eventType, elem);
 			}, this);
 		}
+		
+		var items = this._list.getItems();
+		var index = items.indexOf(this);
+		var nextNode = index == 0 
+			? this._parentNode.firstChild
+			: items[index - 1].domref.nextSibling;
 
-		this._changed = false;
-		return this.domref;
+		if (!nextNode) {
+			this._parentNode.appendChild(this.domref);					
+		} else {
+			this._parentNode.insertBefore(this.domref, nextNode);
+		}
 	},
 	
+	dispose : function() {
+		this.$base();
+
+		if (this._img != null) {
+			this.domref.removeChild(this._img);
+			delete this._img;
+			this._image = null;
+		}
+
+		this.domref.removeChild(this._span);
+
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+
+		delete this._span;
+		delete this.domref;
+	},
+
+	getChecked : function() {
+		this.checkWidget();
+		this._checked = this._checkbox.checked;
+		return this._checked;
+	},
+
+	getGrayed : function() {
+		this.checkWidget();
+		return this._grayed;
+	},
+
 	/**
 	 * @method
 	 * Event handler for this item. Its main use is to pass through keyboard events
@@ -4079,6 +4931,14 @@ $class("ListItem", {
 	 * @return {void} 
 	 */
 	handleEvent : function(e) {
+		this.checkWidget();
+		
+		if (e.target == this._checkbox
+				&& (e.type == "mousedown"
+					|| e.type == "keydown" && e.keyCode == 32)) {
+			e.garaDetail = gara.jswt.JSWT.CHECK;
+		}
+
 		switch (e.type) {
 			case "keyup":
 			case "keydown":
@@ -4096,18 +4956,61 @@ $class("ListItem", {
 	 * @author Thomas Gossmann
 	 * @return {void}
 	 */
-	registerListener : function(eventType, listener) {
+	_registerListener : function(eventType, listener) {
 		if (this._img != null) {
-			gara.EventManager.getInstance().addListener(this._img, eventType, listener);
+			gara.EventManager.addListener(this._img, eventType, listener);
 		}
 
 		if (this._span != null) {
-			gara.EventManager.getInstance().addListener(this._span, eventType, listener);
+			gara.EventManager.addListener(this._span, eventType, listener);
 		}
+	},
+	
+	setChecked : function(checked) {
+		if (!this._grayed) {
+			this._checked = checked;
+			if (this._checked) {
+				this._checkbox.checked = true;
+			} else {
+				this._checkbox.checked = false;
+			}
+		}
+	},
+	
+	setGrayed : function(grayed) {
+		this._grayed = grayed;
+		if (this._grayed) {
+			this._checkbox.disabled = true;
+		} else {
+			this._checkbox.disabled = false;
+		}
+	},
+	
+	_setSelected : function(selected) {
+		this.checkWidget();
+		this._selected = selected;
 	},
 	
 	toString : function() {
 		return "[gara.jswt.ListItem]";
+	},
+	
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+		if (this._img != null) {
+			gara.EventManager.removeListener(this._img, eventType, listener);
+		}
+
+		if (this._span != null) {
+			gara.EventManager.removeListener(this._span, eventType, listener);
+		}
 	},
 
 	/**
@@ -4118,53 +5021,67 @@ $class("ListItem", {
 	 * @return {void}
 	 */
 	update : function() {
-		// create image
-		if (this._image != null && this._img == null) {
-			this._img = document.createElement("img");
-			this._img.obj = this;
-			this._img.control = this._list;
-			this._img.alt = this._text;
-			this._img.src = this._image.src;
-			this.domref.insertBefore(this._img, this._span);
-			base2.DOM.EventTarget(this._img);
-			
-			// event listener
-			for (var eventType in this._listener) {
-				this._listener[eventType].forEach(function(elem, index, arr) {
-					this.registerListener(this._img, eventType, elem);
-				}, this);
+		this.checkWidget();
+		
+		if (this.domref == null) {
+			this._create();
+		} else {
+			// create image
+			if (this._image != null && this._img == null) {
+				this._img = document.createElement("img");
+				this._img.obj = this;
+				this._img.control = this._list;
+				this._img.alt = this._text;
+				this._img.src = this._image.src;
+				this.domref.insertBefore(this._img, this._span);
+				base2.DOM.EventTarget(this._img);
+				
+				// event listener
+				for (var eventType in this._listener) {
+					this._listener[eventType].forEach(function(elem, index, arr){
+						this.registerListener(this._img, eventType, elem);
+					}, this);
+				}
 			}
+			
+			// simply update image information
+			else if (this._image != null) {
+				this._img.src = this._image.src;
+				this._img.alt = this._text;
+			}
+				
+			// delete image
+			else if (this._img != null && this._image == null) {
+				this.domref.removeChild(this._img);
+				this._img = null;
+				
+				// event listener
+				for (var eventType in this._listener) {
+					this._listener[eventType].forEach(function(elem, index, arr){
+						gara.EventManager.removeListener(this._img, eventType, elem);
+					}, this);
+				}
+			}
+			
+			if ((this._list.getStyle() & JSWT.CHECK) == JSWT.CHECK) {
+				this._checkbox.style.display = "inline";
+			} else {
+				this._checkbox.style.display = "none";
+			}
+			
+			this._spanText.nodeValue = this._text;
 		}
 		
+		this.removeClassName("selected");
 
-		// simply update image information
-		else if (this._image != null) {
-			this._img.src = this._image.src;
-			this._img.alt = this._text;
-		}
-
-		// delete image
-		else if (this._img != null && this._image == null) {
-			this.domref.removeChild(this._img);
-			this._img = null;
-
-			// event listener
-			for (var eventType in this._listener) {
-				this._listener[eventType].forEach(function(elem, index, arr) {
-					gara.EventManager.getInstance().removeListener({
-						domNode : this._img,
-						type: eventType, 
-						listener : elem
-					});
-				}, this);
-			}
-		}
-
-		this._spanText.nodeValue = this._text;
+		if (this._selected) {
+			this.addClassName("selected");
+		}		
 		this.domref.className = this._className;
+		this.releaseChange();
 	}
 });
-/*	$Id: TreeItem.class.js 121 2007-12-27 21:18:06Z tgossmann $
+/*	$Id: TreeItem.class.js 176 2008-11-22 01:27:51Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -4208,11 +5125,15 @@ $class("TreeItem", {
 		
 		this.$base(parent, style);
 
+		this._images = [];
+		this._texts = [];
+
 		this._items = new Array();
 		this._expanded = true;
 		this._checked = false;
+		this._grayed = false;
+		this._selected = false;
 		this._changed = false;
-		this._childContainer = null;
 		this._parent = parent;
 		this._tree = null;
 
@@ -4228,6 +5149,9 @@ $class("TreeItem", {
 		this._img = null;
 		this._span = null;
 		this._spanText = null;
+		this._toggleNode = null;
+		this._childContainer = null;
+		this._checkbox = null;
 	},
 
 	/**
@@ -4241,6 +5165,7 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	_addItem : function(item, index) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
 			throw new TypeError("item is not type of gara.jswt.TreeItem");
 		}
@@ -4250,6 +5175,8 @@ $class("TreeItem", {
 		} else {
 			this._items.push(item);
 		}
+		
+		this._changed = true;
 	},
 
 	/**
@@ -4262,20 +5189,10 @@ $class("TreeItem", {
 	 * @param {boolean} wether this item is at the bottom position or not
 	 * @return {void}
 	 */
-	create : function() {
+	_create : function() {
 		/*
 		 * DOM of created item:
 		 * 
-		 * old:
-		 * <li>
-		 *  <span class="toggler [togglerExpanded] [togglerCollapsed]"></span>
-		 *  <span class="textBox">
-		 *   [<img src=""/>]
-		 *   <span class="text"></span>
-		 *  </span>
-		 * </li>
-		 * 
-		 * new:
 		 * <li>
 		 *  <span class="toggler [togglerExpanded] [togglerCollapsed]"></span>
 		 *  [<img src=""/>]
@@ -4283,49 +5200,69 @@ $class("TreeItem", {
 		 * </li>
 		 */
 
+		if ($class.instanceOf(this._parent, gara.jswt.Tree)) {
+			this._parentNode = this._parent.domref;
+		} else if ($class.instanceOf(this._parent, gara.jswt.TreeItem)) {
+			this._parentNode = this._parent._getChildContainer();
+		}
+
 		var parentItems = this._parent.getItems();
-		
+
 		this.removeClassName("bottom");
 		if (parentItems.indexOf(this) == parentItems.length - 1) {
 			// if bottom
 			this.addClassName("bottom");
 		}
 
-		// create item noe
+		// create item node
 		this.domref = document.createElement("li");
 		this.domref.className = this._className;
 		this.domref.obj = this;
 		this.domref.control = this._tree;
 		base2.DOM.EventTarget(this.domref);
-	
-		// create item nodes
-		this.toggleNode = document.createElement("span");
-		this.toggleNode.obj = this;
-		this.toggleNode.control = this._tree;
-		base2.DOM.EventTarget(this.toggleNode);
-		
-		this._span = document.createElement("span");
-		this._span.obj = this;
-		this._span.control = this._tree;
-		this._span.className = "text";
-		this._spanText = document.createTextNode(this._text);
-		this._span.appendChild(this._spanText);
-		base2.DOM.EventTarget(this._span);
-	
+
+		// toggler
+		this._toggleNode = document.createElement("span");
+		this._toggleNode.obj = this;
+		this._toggleNode.control = this._tree;
+		base2.DOM.EventTarget(this._toggleNode);
+				
 		// set this.toggler
-		this.toggleNode.className = "toggler";
-		this.toggleNode.className += this._hasChilds() 
+		this._toggleNode.className = "toggler";
+		this._toggleNode.className += this._hasChilds() 
 			? (this._expanded
 				? " togglerExpanded"
 				: " togglerCollapsed")
 			: "";
-		this.domref.appendChild(this.toggleNode);
-	
+		this.domref.appendChild(this._toggleNode);
+
+		// checkbox
+		this._checkbox = document.createElement("input");
+		this._checkbox.type = "checkbox";
+		this._checkbox.obj = this;
+		this._checkbox.control = this._list;
+		this._checkbox.style.display = "none";
+		if (this._grayed) {
+			this._checkbox.disabled = true;
+		}
+		if (this._checked) {
+			this._checkbox.checked = true;
+		}
+		if ((this._tree.getStyle() & JSWT.CHECK) == JSWT.CHECK) {
+			this._checkbox.style.display = "inline";
+		}
+		base2.DOM.EventTarget(this._checkbox);
+		gara.EventManager.addListener(this._checkbox, "mousedown", this);
+		gara.EventManager.addListener(this._checkbox, "keydown", this);
+		
+		this.domref.appendChild(this._checkbox);
+
+
 		// set image
-		if (this._image != null) {
+		if (this.getImage() != null) {
 			this._img = document.createElement("img");
 			this._img.obj = this;
-			this._img.src = this._image.src;
+			this._img.src = this.getImage().src;
 			this._img.control = this._tree;
 			base2.DOM.EventTarget(this._img);
 	
@@ -4333,7 +5270,15 @@ $class("TreeItem", {
 			this.domref.appendChild(this._img);
 		}
 
-		
+		// span and text
+		this._span = document.createElement("span");
+		this._span.obj = this;
+		this._span.control = this._tree;
+		this._span.className = "text";
+		this._spanText = document.createTextNode(this.getText());
+		this._span.appendChild(this._spanText);
+		base2.DOM.EventTarget(this._span);
+
 		this.domref.appendChild(this._span);
 	
 		// if childs are available, create container for them
@@ -4344,9 +5289,11 @@ $class("TreeItem", {
 		/* register user-defined listeners */
 		for (var eventType in this._listeners) {
 			this._listeners[eventType].forEach(function(elem, index, arr) {
-				this.registerListener(eventType, elem);
+				this._registerListener(eventType, elem);
 			}, this);
 		}
+		
+		this._parentNode.appendChild(this.domref);
 	},
 
 	/**
@@ -4358,6 +5305,7 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	_createChildContainer : function() {
+		this.checkWidget();
 		this._childContainer = document.createElement('ul');
 		base2.DOM.EventTarget(this._childContainer);
 	
@@ -4383,12 +5331,45 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	_deselectItems : function() {
+		this.checkWidget();
 		this._items.forEach(function(child, index, arr) {
 			if (child._hasChilds()) {
 				child._deselectItems();
 			}
-			this._tree.deselect(child);
+			this._tree._deselect(child);
 		}, this);
+	},
+	
+	dispose : function() {
+		this.$base();
+
+		if (this._childContainer != null) {
+			this._items.forEach(function(item, index, arr){
+				item.dispose();
+			}, this);
+
+			this.domref.removeChild(this._childContainer);
+			delete this._childContainer;
+		}
+
+		if (this._img != null) {
+			this.domref.removeChild(this._img);
+			delete this._img;
+			this._image = null;
+		}
+
+		
+		this.domref.removeChild(this._toggleNode);
+		this.domref.removeChild(this._span);
+
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+
+		delete this._toggleNode;
+		delete this._span;
+		delete this._spanText;
+		delete this.domref;
 	},
 
 	/**
@@ -4414,9 +5395,11 @@ $class("TreeItem", {
 	 * @return {boolean} the checked state
 	 */
 	getChecked : function() {
+		this.checkWidget();
+		this._checked = this._checkbox.checked;
 		return this._checked;
 	},
-	
+
 	/**
 	 * @method
 	 * Returns the expanded state for this item
@@ -4425,7 +5408,20 @@ $class("TreeItem", {
 	 * @return {boolean} the expanded state
 	 */
 	getExpanded : function() {
+		this.checkWidget();
 		return this._expanded;
+	},
+
+	getGrayed : function() {
+		this.checkWidget();
+		return this._grayed;
+	},
+
+	getImage : function(columnIndex) {
+		this.checkWidget();
+		if (typeof(columnIndex) == "undefined")
+			columnIndex = 0;
+		return this._images[columnIndex];
 	},
 
 	/**
@@ -4438,6 +5434,7 @@ $class("TreeItem", {
 	 * @return {gara.jswt.TreeItem} the item
 	 */
 	getItem : function(index) {
+		this.checkWidget();
 		if (index >= this._items.length) {
 			throw new gara.OutOfBoundsException("Your item lives outside of this Tree");
 		}
@@ -4493,6 +5490,13 @@ $class("TreeItem", {
 		}
 	},
 
+	getText : function(columnIndex) {
+		this.checkWidget();
+		if (typeof(columnIndex) == "undefined")
+			columnIndex = 0;
+		return this._texts[columnIndex];
+	},
+
 	/**
 	 * @method
 	 * Returns wether there are items or not
@@ -4515,6 +5519,13 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	handleEvent : function(e) {
+		this.checkWidget();
+
+		if (e.target == this._checkbox
+				&& (e.type == "mousedown"
+					|| e.type == "keydown" && e.keyCode == 32)) {
+			e.garaDetail = gara.jswt.JSWT.CHECK;
+		}
 		var obj = e.target.obj || null;
 
 		switch (e.type) {
@@ -4522,7 +5533,7 @@ $class("TreeItem", {
 				if ($class.instanceOf(obj, gara.jswt.TreeItem)) {
 					var item = obj;
 
-					if (e.target == this.toggleNode) {
+					if (e.target == this._toggleNode) {
 						if (this._expanded) {
 							this.setExpanded(false);
 						} else {
@@ -4534,11 +5545,11 @@ $class("TreeItem", {
 				break;
 
 			case "dblclick":
-				if ($class.instanceOf(obj, gara.jswt.TreeItem)) {
+				/*if ($class.instanceOf(obj, gara.jswt.TreeItem)) {
 					var item = obj;
 
 					// toggle childs
-					if (e.target != this.toggleNode) {
+					if (e.target != this._toggleNode) {
 						if (this._expanded) {
 							this.setExpanded(false);
 						} else {
@@ -4547,7 +5558,7 @@ $class("TreeItem", {
 
 						this._tree.update();
 					}
-				}
+				}*/
 				break;
 				
 			case "keyup":
@@ -4569,6 +5580,7 @@ $class("TreeItem", {
 	 * @return {int} the index of the specified item
 	 */
 	indexOf : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
 			throw new TypeError("item not instance of gara.jswt.TreeItem");
 		}
@@ -4591,13 +5603,13 @@ $class("TreeItem", {
 	 * @param {Object} listener the listener
 	 * @return {void}
 	 */
-	registerListener : function(eventType, listener) {
+	_registerListener : function(eventType, listener) {
 		if (this._img != null) {
-			gara.EventManager.getInstance().addListener(this._img, eventType, listener);
+			gara.EventManager.addListener(this._img, eventType, listener);
 		}
 	
 		if (this._span != null) {
-			gara.EventManager.getInstance().addListener(this._span, eventType, listener);
+			gara.EventManager.addListener(this._span, eventType, listener);
 		}
 	},
 	
@@ -4610,8 +5622,13 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	remove : function(index) {
+		this.checkWidget();
 		var item = this._items.removeAt(index)[0];
-		this._childContainer.removeChild(item.domref);
+		this._tree._removeItem(item);		
+
+		if (!item.isDisposed()) {
+			item.dispose();
+		}
 		delete item;
 	},
 
@@ -4625,6 +5642,7 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	removeRange : function(start, end) {
+		this.checkWidget();
 		for (var i = start; i <= end; ++i) {
 			this.remove(i);
 		}
@@ -4639,6 +5657,7 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	removeFromArray : function(indices) {
+		this.checkWidget();
 		indices.forEach(function(item, index, arr) {
 			this.remove(index);
 		}, this);
@@ -4652,6 +5671,7 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	removeAll : function() {
+		this.checkWidget();
 		while (this._items.length) {
 			var item = this._items.pop();
 			this.domref.removeChild(item.domref);
@@ -4667,15 +5687,8 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	setActive : function(active) {
+		this.checkWidget();
 		this._active = active;
-	
-		if (active) {
-			this._span.className += " active";
-		} else {
-			this._span.className = this._span.className.replace(/ *active/, "");
-		}
-	
-		this._changed = true;
 	},
 
 	/**
@@ -4687,14 +5700,14 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	setChecked : function(checked) {
-		//TODO: Respect selection flag from tree - if this has been done here...
-		if (checked) {
-			this._span.className = "text selected";
-		} else {
-			this._span.className = "text";
+		if (!this._grayed) {
+			this._checked = checked;
+			if (this._checked) {
+				this._checkbox.checked = true;
+			} else {
+				this._checkbox.checked = false;
+			}
 		}
-		
-		this._checked = checked;
 	},
 
 	/**
@@ -4706,6 +5719,7 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	setExpanded : function(expanded) {
+		this.checkWidget();
 		this._expanded = expanded;
 
 		if (!expanded) {
@@ -4715,8 +5729,58 @@ $class("TreeItem", {
 		this._changed = true;
 	},
 	
+	setGrayed : function(grayed) {
+		this._grayed = grayed;
+		if (this._grayed) {
+			this._checkbox.disabled = true;
+		} else {
+			this._checkbox.disabled = false;
+		}
+	},
+	
+	setImage : function(columnIndex, image) {
+		if (typeof(image) == "undefined") {
+			image = columnIndex;
+			columnIndex = 0;
+		}
+		
+		this._images[columnIndex] = image;
+	},
+	
+	_setSelected : function(selected) {
+		this.checkWidget();
+		this._selected = selected;
+	},
+	
+	setText : function(columnIndex, text) {
+		if (typeof(columnIndex) == "string") {
+			text = columnIndex;
+			columnIndex = 0;
+		}
+		
+		this._texts[columnIndex] = text;
+	},
+	
 	toString : function() {
 		return "[gara.jswt.TreeItem]";
+	},
+	
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+		if (this._img != null) {
+			gara.EventManager.removeListener(this._img, eventType, listener);
+		}
+	
+		if (this._span != null) {
+			gara.EventManager.removeListener(this._span, eventType, listener);
+		}
 	},
 	
 	/**
@@ -4728,72 +5792,110 @@ $class("TreeItem", {
 	 * @return {void}
 	 */
 	update : function() {
-		if (this._hasChilds()) {
-			this.toggleNode.className = strReplace(this.toggleNode.className, " togglerCollapsed", "");
-			this.toggleNode.className = strReplace(this.toggleNode.className, " togglerExpanded", "");
-	
-			if (this._expanded) {
-				this.toggleNode.className += " togglerExpanded";
-			} else {
-				this.toggleNode.className += " togglerCollapsed";
+		this.checkWidget();
+		
+		if (this.domref == null) {
+			this._create();
+		} else if (this.hasChanged()) {
+			if (this._hasChilds()) {
+				this._toggleNode.className = strReplace(this._toggleNode.className, " togglerCollapsed", "");
+				this._toggleNode.className = strReplace(this._toggleNode.className, " togglerExpanded", "");
+				
+				if (this._expanded) {
+					this._toggleNode.className += " togglerExpanded";
+				}
+				else {
+					this._toggleNode.className += " togglerCollapsed";
+				}
+			} else if (!this._hasChilds() && this._childContainer != null) {
+				this._toggleNode.className = "toggler";
 			}
-		}
 
-		// create image
-		if (this._image != null && this._img == null) {
-			this._img = document.createElement("img");
-			this._img.obj = this;
-			this._img.control = this._tree;
-			this._img.alt = this._text;
-			this._img.src = this._image.src;
-			this.domref.insertBefore(this._img, this._span);
-			base2.DOM.EventTarget(this._img);
-		}
-
-		// update image information
-		else if (this._image != null) {
-			this._img.src = this._image.src;
-			this._img.alt = this._text;
-		}
-		
-		// delete image
-		else if (this._img != null && this._image == null) {
-			this.domref.removeChild(this._img);
-			this._img = null;
-		}
-		
-		// if childs are available, create container for them
-		if (this._hasChilds() && this._childContainer == null) {
-			this._createChildContainer();
-		}
-
-		// update expanded state
-		if (this._childContainer != null) {
-			if (this._expanded) {
-				this._childContainer.style.display = "block";
-			} else {
-				this._childContainer.style.display = "none";
+			// create image
+			if (this.getImage() != null && this._img == null) {
+				this._img = document.createElement("img");
+				this._img.obj = this;
+				this._img.control = this._tree;
+				this._img.alt = this.getText();
+				this._img.src = this.getImage().src;
+				this.domref.insertBefore(this._img, this._span);
+				base2.DOM.EventTarget(this._img);
 			}
-		}
-		// delete childContainer
-		else if (!this._hasChilds() && this._childContainer != null) {
-			this.domref.removeChild(this._childContainer);
-			this._childContainer = null;
-		}
-		
-		// check for bottom style
-		var parentItems = this._parent.getItems();
-		this.removeClassName("bottom");
-		if (parentItems.indexOf(this) == parentItems.length - 1) {
-			// if bottom
-			this.addClassName("bottom");
+
+			// update image information
+			else if (this.getImage() != null) {
+				this._img.src = this.getImage().src;
+				this._img.alt = this._text;
+			}
+
+			// delete image
+			else if (this._img != null && this.getImage() == null) {
+				this.domref.removeChild(this._img);
+				this._img = null;
+			}
+
+			// if childs are available, create container for them
+			if (this._hasChilds() && this._childContainer == null) {
+				this._createChildContainer();
+			}
+
+			// update expanded state
+			if (this._childContainer != null) {
+				if (this._expanded) {
+					this._childContainer.style.display = "block";
+				} else {
+					this._childContainer.style.display = "none";
+				}
+			}
+			// delete childContainer
+			else if (!this._hasChilds() && this._childContainer != null) {
+				this.domref.removeChild(this._childContainer);
+				this._childContainer = null;
+			}
+
+			// check for bottom style
+			var parentItems = this._parent.getItems();
+			this.removeClassName("bottom");
+			if (parentItems.indexOf(this) == parentItems.length - 1) {
+				// if bottom
+				this.addClassName("bottom");
+			}
+
+			if ((this._tree.getStyle() & JSWT.CHECK) == JSWT.CHECK) {
+				this._checkbox.style.display = "inline";
+			} else {
+				this._checkbox.style.display = "none";
+			}
+
+			this._spanText.nodeValue = this.getText();
+			this.domref.className = this._className;
+
+			this.releaseChange();
 		}
 
-		this._spanText.nodeValue = this._text;
-		this.domref.className = this._className;
+		if (this._selected) {
+			this._span.className = "text selected";
+		} else {
+			this._span.className = "text";
+		}
+
+		if (this._active) {
+			this._span.className += " active";
+		} else {
+			this._span.className = this._span.className.replace(/ *active/, "");
+		}
+		
+		// update items
+		this._items.forEach(function(item, index, arr) {
+			if (item.isDisposed()) {
+				this.remove(index);
+			} else {
+				item.update();
+			}
+		}, this);
 	}
 });
-/*	$Id: TabItem.class.js 124 2007-12-29 18:38:17Z tgossmann $
+/*	$Id: TabItem.class.js 171 2008-11-14 15:58:31Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -4838,6 +5940,10 @@ $class("TabItem", {
 		this._active = false;
 		this._content = null;
 		this._control = null;
+		
+		this._clientArea = null;
+		this._clientContent = null;
+		this._clientAppended = false;
 
 		this._toolTipText = null;
 		this._span = null;
@@ -4885,6 +5991,23 @@ $class("TabItem", {
 		this._span.appendChild(this._spanText);
 		this.domref.appendChild(this._span);
 		base2.DOM.EventTarget(this._span);
+		
+		this._clientContent = document.createElement("div");
+		this._clientContent.style.display = "none";
+		if(this._control != null) {
+			this._control.update();
+			this._clientContent.appendChild(this._control.domref);
+		} else {
+			if (typeof(this._content) == "string") {
+				this._clientContent.appendChild(document.createTextNode(this._content));
+			} else {
+				this._clientContent.appendChild(this._content);
+			}
+		}
+		if (this._clientArea != null) {
+			this._clientArea.appendChild(this._clientContent);
+			this._clientAppended = true;
+		}
 
 		// register listener
 		for (var eventType in this._listener) {
@@ -4895,6 +6018,29 @@ $class("TabItem", {
 		this._changed = false;
 		return this.domref;
 	},
+	
+	dispose : function() {
+		this.$base();
+
+		if (this._img != null) {
+			this.domref.removeChild(this._img);
+			delete this._img;
+			this._image = null;
+		}
+
+		this.domref.removeChild(this._span);
+
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+
+		if (this._control != null) {
+			this._control.dispose();
+		}
+		
+		delete this._span;
+		delete this.domref;
+	},
 
 	/**
 	 * @method
@@ -4904,6 +6050,7 @@ $class("TabItem", {
 	 * @return {string} the content;
 	 */
 	getContent : function() {
+		this.checkWidget();
 		return this._content;
 	},
 
@@ -4915,6 +6062,7 @@ $class("TabItem", {
 	 * @return {gara.jswt.Control} the control
 	 */
 	getControl : function() {
+		this.checkWidget();
 		return this._control;
 	},
 
@@ -4926,6 +6074,7 @@ $class("TabItem", {
 	 * @return {string} the tooltip text 
 	 */
 	getToolTipText : function() {
+		this.checkWidget();
 		return this._toolTipText;
 	},
 
@@ -4940,6 +6089,7 @@ $class("TabItem", {
 	 * @return {void} 
 	 */
 	handleEvent : function(e) {
+		this.checkWidget();
 		
 		switch (e.type) {
 			
@@ -4960,9 +6110,9 @@ $class("TabItem", {
 	 * @author Thomas Gossmann
 	 * @return {void}
 	 */
-	registerListener : function() {
+	_registerListener : function() {
 		if (this.domref != null) {
-			gara.EventManager.getInstance().addListener(this.domref, eventType, listener);
+			gara.EventManager.addListener(this.domref, eventType, listener);
 		}
 	},
 
@@ -4976,6 +6126,7 @@ $class("TabItem", {
 	 * @return {void}
 	 */
 	_setActive : function(active) {
+		this.checkWidget();
 		this._active = active;
 
 		if (active) {
@@ -4985,6 +6136,10 @@ $class("TabItem", {
 		}
 
 		this._changed = true;
+	},
+	
+	_setClientArea : function(clientArea) {
+		this._clientArea = clientArea;
 	},
 
 	/**
@@ -4997,6 +6152,7 @@ $class("TabItem", {
 	 * @return {void}
 	 */
 	setContent : function(content) {
+		this.checkWidget();
 		this._content = content;
 		this._changed = true;
 	},
@@ -5011,6 +6167,7 @@ $class("TabItem", {
 	 * @return {void} 
 	 */
 	setControl : function(control) {
+		this.checkWidget();
 		if (!$class.instanceOf(control, gara.jswt.Control)) {
 			throw new TypeError("control is not instance of gara.jswt.Control");
 		}
@@ -5030,6 +6187,24 @@ $class("TabItem", {
 		this._toolTipText = text;
 		this._changed = true;
 	},
+	
+	toString : function() {
+		return "[gara.jswt.TabItem]";
+	},
+
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+		if (this.domref != null) {
+			gara.EventManager.removeListener(this.domref, eventType, listener);
+		}
+	},
 
 	/**
 	 * @method
@@ -5040,6 +6215,7 @@ $class("TabItem", {
 	 * @return {void}
 	 */
 	update : function() {
+		this.checkWidget();
 		// create image
 		if (this._image != null && this._img == null) {
 			this._img = document.createElement("img");
@@ -5072,13 +6248,20 @@ $class("TabItem", {
 			// event listener
 			for (var eventType in this._listener) {
 				this._listener[eventType].forEach(function(elem, index, arr) {
-					gara.EventManager.getInstance().removeListener({
-						domNode : this._img,
-						type: eventType, 
-						listener : elem
-					});
+					gara.EventManager.removeListener(this._img, eventType, elem);
 				}, this);
 			}
+		}
+		
+		if (this._clientArea != null && !this._clientAppended) {
+			this._clientArea.appendChild(this._clientContent);
+			this._clientAppended = true;
+		}
+		
+		if (this._active) {
+			this._clientContent.style.display = "block";
+		} else {
+			this._clientContent.style.display = "none";
 		}
 
 		this._spanText.nodeValue = this._text;
@@ -5147,6 +6330,7 @@ $class("TableColumn", {
 
 		this._width = null;
 		this._img = null;
+		this._span = null;
 		this._spanText = null
 		this._operator = null;
 		
@@ -5161,7 +6345,6 @@ $class("TableColumn", {
 		this.domref = document.createElement("th");
 		this.domref.obj = this;
 		this.domref.control = this._table;
-		base2.DOM.EventTarget(this.domref);
 
 		if (this._image != null) {
 			this._img = document.createElement("img");
@@ -5174,45 +6357,94 @@ $class("TableColumn", {
 		}
 
 		this._operator = document.createElement("span");
+		this._operator.className = "mover";
 		this._operator.obj = this;
 		this._operator.control = this._table;
-		base2.DOM.EventTarget(this._operator);
 		this.domref.appendChild(this._operator);
 
+		this._span = document.createElement("span");
+		this._span.obj = this;
+		this._span.control = this._table;
+		this._span.className = "text";
 		this._spanText = document.createTextNode(this._text);
-		this.domref.appendChild(this._spanText);
-	},
-	
-	_computeWidth : function() {
-		if (this.domref != null) {
-			var paddingLeft = getStyle(this.domref, "padding-left", "paddingLeft");
-			var paddingRight = getStyle(this.domref, "padding-right", "paddingRight");
-			this._width = this.domref.clientWidth - parseInt(paddingLeft) - parseInt(paddingRight); 
+		this._span.appendChild(this._spanText);
+		this.domref.appendChild(this._span);
+
+		base2.DOM.EventTarget(this.domref);		
+		base2.DOM.EventTarget(this._operator);
+		base2.DOM.EventTarget(this._span);
+
+		if (this._parentNode != null) {
+			this._parentNode.appendChild(this.domref);
 		}
 	},
-	
+
+	_computeWidth : function() {
+		this.checkWidget();
+		if (this.domref != null && this.domref.style.display != "none") {
+			var paddingLeft = getStyle(this.domref, "padding-left", "paddingLeft");
+			var paddingRight = getStyle(this.domref, "padding-right", "paddingRight");
+			this._width = this.domref.clientWidth - parseInt(paddingLeft) - parseInt(paddingRight);
+			//this._width = this.domref.clientWidth; 
+		}
+	},
+
+	dispose : function() {
+		this.$base();
+		
+		if (this._img != null) {
+			this.domref.removeChild(this._img);
+			delete this._img;
+			delete this._image;
+		}
+		this.domref.removeChild(this._operator);
+		this.domref.removeChild(this._span);
+		
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+
+		delete this._operator;
+		delete this._span;
+		delete this.domref;
+	},
+
 	getWidth : function() {
+		this.checkWidget();
 		if (this._width == null || this._width == "auto") {
 			this._computeWidth();
 		}
 		
 		return this._width;
 	},
-	
+
 	handleEvent : function(e) {
+		this.checkWidget();
 		switch(e.type) {
 			case "mousedown":
 				if (e.target == this._operator && this._resizable) {
 					this._isResizing = true;
-					if (this._width == null || this._width == "auto") {
-						this._computeWidth();
-					}
+
+					this.allColsWidth = 0;
+					var columns = this._table.getColumns();
+					columns.forEach(function(item, index, arr) {
+						var width = item.getWidth();
+						item.domref.style.width = width + "px";
+						this.allColsWidth += width;
+					}, this);
+					
+					var order = this._table.getColumnOrder();
+					var thisColumnIndex = columns.indexOf(this);
+					var thisColumnOrder = order.indexOf(thisColumnIndex);
+					this.nextColumn = columns[order[thisColumnOrder + 1]];
+					this.nextColumn.domref.style.width = "auto";
+					this.lessColsWidth = this.allColsWidth - this.getWidth() - this.nextColumn.getWidth();
 
 					this.resizeStart = e.clientX;
 					this.startWidth = this._width;
 
-					gara.EventManager.getInstance().addListener(document, "mousemove", this);
-					gara.EventManager.getInstance().addListener(document, "mouseup", this);
+					gara.EventManager.addListener(document, "mousemove", this);
+					gara.EventManager.addListener(document, "mouseup", this);
 				}
 
 				if (e.target == this.domref && this._moveable) {
@@ -5222,7 +6454,7 @@ $class("TableColumn", {
 					var order = this._table.getColumns();
 					var offset = order.indexOf(this);
 
-					this._shadow = new gara.jswt.Table(this._table.domref.parentNode, this._table.getStyle());
+					this._shadow = new gara.jswt.Table(document.getElementsByTagName("body")[0], this._table.getStyle() &~ JSWT.CHECK);
 					this._shadow.setHeaderVisible(this._table.getHeaderVisible());
 
 					this._table.getColumns().forEach(function(col, index, arr) {
@@ -5234,7 +6466,7 @@ $class("TableColumn", {
 						}
 					}, this);
 
-					var cols = this._table.getColumnCount();
+					//var cols = this._table.getColumnCount();
 					this._table.getItems().forEach(function(item, index, arr) {
 						var i = new gara.jswt.TableItem(this._shadow);
 						i.setText(item.getText(offset));
@@ -5249,8 +6481,8 @@ $class("TableColumn", {
 					this._shadow.domref.style.opacity = "0.3";
 					this._shadow.domref.style.width = shadowWidth + "px";
 					
-					gara.EventManager.getInstance().addListener(document, "mousemove", this);
-					gara.EventManager.getInstance().addListener(document, "mouseup", this);
+					gara.EventManager.addListener(document, "mousemove", this);
+					gara.EventManager.addListener(document, "mouseup", this);
 				}
 				break;
 			
@@ -5274,16 +6506,19 @@ $class("TableColumn", {
 
 			case "mouseup":
 				if (this._isResizing) {
-					gara.EventManager.getInstance().removeListener({domNode:document, type:"mousemove", listener:this});
-					gara.EventManager.getInstance().removeListener({domNode:document, type:"mouseup", listener:this});
+					var nextWidth = this.allColsWidth - (this.lessColsWidth + this.getWidth()); 
+					this.nextColumn.setWidth(nextWidth);
+					this.nextColumn.domref.style.width = nextWidth + "px";
+					gara.EventManager.removeListener(document, "mousemove", this);
+					gara.EventManager.removeListener(document, "mouseup", this);
 					this._isResizing = false;
 				}
 				
 				if (this._isMoving) {
-					gara.EventManager.getInstance().removeListener({domNode:document, type:"mousemove", listener:this});
-					gara.EventManager.getInstance().removeListener({domNode:document, type:"mouseup", listener:this});
+					gara.EventManager.removeListener(document, "mousemove", this);
+					gara.EventManager.removeListener(document, "mouseup", this);
 					this._isMoving = false;
-					this._table.domref.parentNode.removeChild(this._shadow.domref);
+					this._shadow.dispose();
 					
 					delete this._shadow;
 					
@@ -5292,12 +6527,12 @@ $class("TableColumn", {
 					if (e.target.obj && $class.instanceOf(e.target.obj, gara.jswt.TableColumn)
 						&& e.target.obj.getParent() == this._table) {
 						var col = e.target.obj;
-						var colIndex = this._table.getColumns().indexOf(col);
 						var colOrder = this._table.getColumnOrder();
+						var colIndex = this._table.getColumns().indexOf(col);
 						var orderIndex = colOrder.indexOf(colIndex);
 						var thisColIndex = this._table.getColumns().indexOf(this);
 						colOrder.remove(thisColIndex);
-						colOrder.insertAt(thisColIndex, orderIndex);
+						colOrder.insertAt(orderIndex, thisColIndex);
 						this._table.update();
 					}
 				}
@@ -5305,17 +6540,59 @@ $class("TableColumn", {
 		}
 	},
 	
-	registerListener : function() {
+	_registerListener : function() {
 		
 	},
 	
 	setWidth : function(width) {
+		this.checkWidget();
 		this._width = width;
 	},
 	
+	toString : function() {
+		return "[gara.jswt.TableColumn]";
+	},
+	
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+	},
+	
 	update : function() {
+		this.checkWidget();
 		if (this.domref == null) {
 			this._create();
+		}
+
+		if (this.hasChanged()) {
+			// create image
+			if (this._image != null && this._img == null) {
+				this._img = document.createElement("img");
+				this._img.obj = this;
+				this._img.control = this._table;
+				this._img.src = this._image.src;
+				this.domref.insertBefore(this._img, this._operator);
+				base2.DOM.EventTarget(this._img);
+			}
+
+			// update image information
+			else if (this._image != null) {
+				this._img.src = this._image.src;
+			}
+
+			// delete image
+			else if (this._img != null && this._image == null) {
+				this.domref.removeChild(this._img);
+				this._img = null;
+			}
+
+			this._spanText.nodeValue = this._text;
 		}
 
 		this.removeClassName("operator");
@@ -5330,6 +6607,8 @@ $class("TableColumn", {
 		if (!isNaN(this._width) && this._width != null) {
 			this.domref.style.width = this._width + "px";
 		}
+
+		this.releaseChange();
 	}
 });
 /*	$Id $
@@ -5377,15 +6656,19 @@ $class("TableItem", {
 		this._table._addItem(this, index);
 
 		this._cells = [];
+		this._checkboxTd = null;
+		this._checkbox = null;
 
 		this._active = false;
 		this._checked = false;
+		this._grayed = false;
 		this._selected = false;
 
 		this.domref = null;
 	},
 	
 	clear : function() {
+		this.checkWidget();
 		this._text = "";
 		this._image = null;
 		this._cells = [];
@@ -5397,6 +6680,25 @@ $class("TableItem", {
 		this.domref.obj = this;
 		this.domref.control = this._table;
 		base2.DOM.EventTarget(this.domref);
+
+		this._checkbox = document.createElement("input");
+		this._checkbox.type = "checkbox";
+		this._checkbox.obj = this;
+		this._checkbox.control = this._table;
+		if (this._grayed) {
+			this._checkbox.disabled = true;
+		}
+		if (this._checked) {
+			this._checkbox.checked = true;
+		}
+		this._checkboxTd = document.createElement("td");
+		this._checkboxTd.appendChild(this._checkbox);
+		if ((this._table.getStyle() & JSWT.CHECK) == JSWT.CHECK) {
+			this.domref.appendChild(this._checkboxTd);
+		}
+		base2.DOM.EventTarget(this._checkbox);
+		gara.EventManager.addListener(this._checkbox, "mousedown", this);
+		gara.EventManager.addListener(this._checkbox, "keydown", this);
 
 		var order = this._table.getColumnOrder();
 		for (var i = 0, len = order.length; i < len; ++i) {
@@ -5420,9 +6722,57 @@ $class("TableItem", {
 		}
 
 		this._changed = false;
+
+		if (this._parentNode != null) {
+			this._parentNode.appendChild(this.domref);
+		}
+	},
+
+	dispose : function() {
+		this.$base();
+
+		var cell;
+		for (var i = 0, len = this._cells.length; i < len; i++) {
+			cell = this._cells[i];
+			if (cell.img) {
+				cell.td.removeChild(cell.img);
+				delete cell.img;
+				cell.image = null;
+			}
+			this.domref.removeChild(cell.td);
+
+			delete cell.td;
+		}
+		this._cells.clear();
+		delete this._cells;
+
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+
+		delete this.domref;
+	},
+
+	/**
+	 * @method
+	 * Returns the checked state for this item
+	 * 
+	 * @author Thomas Gossmann
+	 * @return {boolean} the checked state
+	 */
+	getChecked : function() {
+		this.checkWidget();
+		this._checked = this._checkbox.checked;
+		return this._checked;
+	},
+
+	getGrayed : function() {
+		this.checkWidget();
+		return this._grayed;
 	},
 
 	getText : function(index) {
+		this.checkWidget();
 		if (this._cells[index]) {
 			return this._cells[index].text;
 		}
@@ -5430,6 +6780,7 @@ $class("TableItem", {
 	},
 
 	getImage : function(index) {
+		this.checkWidget();
 		if (this._cells[index]) {
 			return this._cells[index].image;
 		}
@@ -5437,15 +6788,41 @@ $class("TableItem", {
 	},
 
 	handleEvent : function(e) {
-		
+		this.checkWidget();
+
+		if (e.target == this._checkbox
+				&& (e.type == "mousedown"
+					|| e.type == "keydown" && e.keyCode == 32)) {
+			e.garaDetail = gara.jswt.JSWT.CHECK;
+		}
 	},
 
-	registerListener : function(eventType, listener) {
+	_registerListener : function(eventType, listener) {
 		
 	},
 
 	setActive : function(active) {
 		this._active = active;
+	},
+
+	setChecked : function(checked) {
+		if (!this._grayed) {
+			this._checked = checked;
+			if (this._checked) {
+				this._checkbox.checked = true;
+			} else {
+				this._checkbox.checked = false;
+			}
+		}
+	},
+
+	setGrayed : function(grayed) {
+		this._grayed = grayed;
+		if (this._grayed) {
+			this._checkbox.disabled = true;
+		} else {
+			this._checkbox.disabled = false;
+		}
 	},
 
 	setImage : function(index, image) {
@@ -5479,12 +6856,14 @@ $class("TableItem", {
 		this._changed = true;
 	},
 
-	setSelected : function(selected) {
+	_setSelected : function(selected) {
+		this.checkWidget();
 		this._selected = selected;
 		this._changed = true;
 	},
 
 	setText : function(index, text) {
+		this.checkWidget();
 		if (typeof(text) == "undefined") {
 			text = index;
 		}
@@ -5510,50 +6889,75 @@ $class("TableItem", {
 
 		this._changed = true;
 	},
+	
+	toString : function() {
+		return "[gara.jswt.TableItem]";
+	},
+	
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+
+	},
 
 	update : function() {
-		while (this.domref.childNodes.length) {
-			this.domref.removeChild(this.domref.childNodes[0]);
-		}
-
-		var order = this._table.getColumnOrder();
-		for (var i = 0, len = order.length; i < len; ++i) {
-			var cell = this._cells[order[i]];
-
-			if (this.hasChanged()) {
-				if (!cell.td) {
-					cell.td = document.createElement("td");
-					cell.td.obj = this;
-					cell.td.control = this._table;
-					base2.DOM.EventTarget(cell.td);
-					cell.textNode = document.createTextNode(cell.text);
-					cell.td.appendChild(cell.textNode);
-				}
-
-				if (cell.image) {
-					if (!cell.img) {
-						cell.img = document.createElement("img");
-						cell.img.obj = this;
-						cell.img.control = this._table;
-						
-						base2.DOM.EventTarget(cell.img);
-						cell.td.insertBefore(cell.img, cell.textNode);
-					}
-					cell.img.src = cell.image.src;
-				}
-
-				cell.td.className = "";
-
-				if (this._selected && i == 0) {
-					cell.td.className = "selected";
-				}
-
-				cell.textNode.value = cell.text;
+		this.checkWidget();
+		
+		if (this.domref == null) {
+			this._create();
+		} else {
+			while (this.domref.childNodes.length) {
+				this.domref.removeChild(this.domref.childNodes[0]);
+			}
+			if ((this._table.getStyle() & JSWT.CHECK) == JSWT.CHECK) {
+				this.domref.appendChild(this._checkboxTd);
 			}
 
-			this.domref.appendChild(cell.td);
+			var order = this._table.getColumnOrder();
+			for (var i = 0, len = order.length; i < len; ++i) {
+				var cell = this._cells[order[i]];
+				
+				if (this.hasChanged()) {
+					if (!cell.td) {
+						cell.td = document.createElement("td");
+						cell.td.obj = this;
+						cell.td.control = this._table;
+						base2.DOM.EventTarget(cell.td);
+						cell.textNode = document.createTextNode(cell.text);
+						cell.td.appendChild(cell.textNode);
+					}
+					
+					if (cell.image) {
+						if (!cell.img) {
+							cell.img = document.createElement("img");
+							cell.img.obj = this;
+							cell.img.control = this._table;
+							
+							base2.DOM.EventTarget(cell.img);
+							cell.td.insertBefore(cell.img, cell.textNode);
+						}
+						cell.img.src = cell.image.src;
+					}
+					
+					cell.td.className = "";
+					
+					if (this._selected && i == 0) {
+						cell.td.className = "selected";
+					}
+					
+					cell.textNode.nodeValue = cell.text;
+				}
+				
+				this.domref.appendChild(cell.td);
+			}
 		}
-
+		
 		this.removeClassName("selected");
 
 		if (this._selected) {
@@ -5564,7 +6968,7 @@ $class("TableItem", {
 		this.releaseChange();
 	}
 });
-/*	$Id: ControlManager.class.js 82 2007-08-31 01:53:43Z tgossmann $
+/*	$Id: ControlManager.class.js 140 2008-07-20 22:24:27Z tgossmann $
 
 		gara - Javascript Toolkit
 	===========================================================================
@@ -5595,7 +6999,7 @@ $class("TableItem", {
  */
 $class("ControlManager", {
 	$implements : gara.jswt.FocusListener,
-	
+
 	_instance : $static(null),
 
 	$constructor : function() {
@@ -5604,8 +7008,8 @@ $class("ControlManager", {
 
 		base2.DOM.EventTarget(document);
 
-		gara.EventManager.getInstance().addListener(document, "keydown", this);
-		gara.EventManager.getInstance().addListener(document, "mousedown", this);
+		gara.EventManager.addListener(document, "keydown", this);
+		gara.EventManager.addListener(document, "mousedown", this);
 	},
 	
 	getInstance : $static(function() {
@@ -5626,8 +7030,6 @@ $class("ControlManager", {
 		if (!$class.instanceOf(control, gara.jswt.Control)) {
 			throw new TypeError("control is not a gara.jswt.Control");
 		}
-
-//		console.log("ControlManager.focusGained() new active control is: " + control);
 		
 		if (this._activeControl != null && this._activeControl != control) {
 			this._activeControl.looseFocus();
@@ -5647,20 +7049,20 @@ $class("ControlManager", {
 	},
 
 	handleEvent : function(e) {
-//		console.log("ControlMananger.handleEvent("+e.type+"): activeControl: " + this._activeControl);
-		if (e.type == "keydown") {
-//			console.log("ControlManager.handleEvent(keydown) on " + e.target);
-			if (this._activeControl != null && this._activeControl.handleEvent) {
-				this._activeControl.handleEvent(e);
-			}
-		}
+		switch(e.type) {
+			case "mousedown":
+				if (this._activeControl != null && (e.target.control
+						? e.target.control != this._activeControl : true)) {
+					this._activeControl.looseFocus();
+					this._activeControl = null;
+				}
+				break;
 
-		if (e.type == "mousedown") {
-			if (this._activeControl != null && (e.target.control
-				? e.target.control != this._activeControl : true)) {
-				this._activeControl.looseFocus();
-				this._activeControl = null;
-			}
+			case "keydown":
+				if (this._activeControl != null && this._activeControl.handleEvent) {
+					this._activeControl.handleEvent(e);
+				}
+				break;
 		}
 	},
 
@@ -5723,7 +7125,7 @@ $class("Menu", {
 		this.$base(parent, style);
 
 		// Menu default style
-		if (this._style == JSWT.DEFAULT) {
+		if ((this._style & JSWT.DEFAULT) == JSWT.DEFAULT) {
 			this._style = JSWT.BAR;
 		}
 
@@ -5731,11 +7133,17 @@ $class("Menu", {
 			this._style = JSWT.POP_UP;
 		}
 		
+		if ($class.instanceOf(parent, gara.jswt.MenuItem) 
+				&& (parent.getStyle() & JSWT.CASCADE) != JSWT.CASCADE) {
+			throw new Exception("parent has no JSWT.CASCADE style!");
+		}
+		
 		if ($class.instanceOf(parent, gara.jswt.MenuItem)) {
 			this._style = JSWT.DROP_DOWN;
 		}
 		
 		this._items = [];
+		this._menuListener = [];
 
 		// location
 		this._x = 0;
@@ -5743,16 +7151,19 @@ $class("Menu", {
 
 		// flags
 		this._enabled = false;
-		this._visible = false;
-		this._visibleEvent = null;
-		this._justVisible = false;
+		this._visible = true;
+		
+		if ((this._style & JSWT.POP_UP) == JSWT.POP_UP) {
+			this._visible = false;
+		}
 		
 		this._className = this._baseClass = "jsWTMenu";
 
-		window.oncontextmenu = function() {return false;};
+		//window.oncontextmenu = function() {return false;};
 	},
 
 	_addItem : function(item, index) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.MenuItem)) {
 			throw new TypeError("item is not instance of gara.jswt.MenuItem");
 		}
@@ -5764,38 +7175,76 @@ $class("Menu", {
 		}
 	},
 	
-	_create : function() {
-		var parentNode = document.getElementsByTagName("body")[0];
+	addMenuListener : function(listener) {
+		this.checkWidget();
+		if (!$class.instanceOf(listener, gara.jswt.MenuListener)) {
+			throw new TypeError("listener is not instance of gara.jswt.MenuListener");
+		}
+		
+		if (!this._menuListener.contains(listener)) {
+			this._menuListener.push(listener);
+		}
+	},
 
-//		if ($class.instanceOf(this._parent, gara.jswt.Widget)) {
-//			parentNode = this._parent.domref;
-//		}
+	_create : function() {
 
 		this.domref = document.createElement("ul");
 		this.domref.obj = this;
 		this.domref.control = this;
-		
-		if ((this._style & JSWT.POP_UP) == JSWT.POP_UP
-			|| (this._style & JSWT.DROP_DOWN) == JSWT.DROP_DOWN) {
+		base2.DOM.EventTarget(this.domref);
+
+		if ((this._style & JSWT.BAR) == JSWT.BAR) {
+			this.addClassName("jsWTMenuBar");
+			this._parentNode = this._parent;
+		}
+
+		if ((this._style & JSWT.POP_UP) == JSWT.POP_UP) {
+			this.addClassName("jsWTMenuPopUp");
 			this.domref.style.display = "none";
 			this.domref.style.position = "absolute";
+			this._parentNode = document.getElementsByTagName("body")[0];
 		}
-		
-//		if ((this._style & JSWT.POP_UP) == JSWT.POP_UP) {
-//			parentNode = document.getElementsByTagName("body")[0];
-//		}
+
+		if ((this._style & JSWT.DROP_DOWN) == JSWT.DROP_DOWN) {
+			this.addClassName("jsWTMenuDropDown");
+			this.domref.style.position = "absolute";
+			this._parentNode = this._parent.domref;
+		}
+
+		/* buffer unregistered user-defined listeners */
+		var unregisteredListener = {};
+		for (var eventType in this._listener) {
+			unregisteredListener[eventType] = this._listener[eventType].concat([]);
+		}
+
+		/* Menu event listener */
+		this.addListener("click", this);
 
 		/* register user-defined listeners */
-		for (var eventType in this._listener) {
-			this._listener[eventType].forEach(function(elem, index, arr) {
-				this.registerListener(eventType, elem);
+		for (var eventType in unregisteredListener) {
+			unregisteredListener[eventType].forEach(function(elem, index, arr) {
+				this._registerListener(eventType, elem);
 			}, this);
 		}
 
-		parentNode.appendChild(this.domref);
+		this._parentNode.appendChild(this.domref);
+	},
+	
+	dispose : function() {
+		this.$base();
+
+		this._items.forEach(function(item, index, arr) {
+			item.dispose();
+		}, this);
+
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+		delete this.domref;
 	},
 
 	getItem : function(index) {
+		this.checkWidget();
 		if (index > this._items.length || index < 0) {
 			throw new gara.OutOfBoundsException("Menu doesn't have that much items");
 		}
@@ -5824,21 +7273,28 @@ $class("Menu", {
 	},
 	
 	handleEvent : function(e) {
+		this.checkWidget();
+		e.widget = this;
 		switch(e.type) {
 			case "mousedown":
-				if ((!e.target.control || e.target.control != this)
-					&& !this._justVisible 
-					&& this._visibleEvent != e) {
-
+				if ((e.target.control ? e.target.control != this : true)
+						&& (this.getStyle() & JSWT.POP_UP) == JSWT.POP_UP
+						&& !$class.instanceOf(e.target.obj, gara.jswt.MenuItem)) {
 					this.setVisible(false);
 				}
-				this._justVisible = false;
-				this._visibleEvent = e;
+				break;
+				
+			case "click":
+				if (e.target.obj && $class.instanceOf(e.target.obj, gara.jswt.MenuItem)) {
+					e.target.obj._select(e);
+				}
 				break;
 		}
+		e.stopPropagation();
 	},
 
 	indexOf : function(item) {
+		this.checkWidget();
 		if (!$class.instanceOf(item, gara.jswt.MenuItem)) {
 			throw new TypeError("item is not instance of gara.jswt.MenuItem");
 		}
@@ -5858,9 +7314,20 @@ $class("Menu", {
 	 * @author Thomas Gossmann
 	 * @return {void}
 	 */
-	registerListener : function(eventType, listener) {
+	_registerListener : function(eventType, listener) {
 		if (this.domref != null) {
-			gara.EventManager.getInstance().addListener(this.domref, eventType, listener);
+			gara.EventManager.addListener(this.domref, eventType, listener);
+		}
+	},
+
+	removeMenuListener : function(listener) {
+		this.checkWidget();
+		if (!$class.instanceOf(listener, gara.jswt.MenuListener)) {
+			throw new TypeError("listener is not instance of gara.jswt.MenuListener");
+		}
+
+		if (this._menuListener.contains(listener)) {
+			this._menuListener.remove(listener);
 		}
 	},
 
@@ -5869,20 +7336,28 @@ $class("Menu", {
 		this._y = y;
 	},
 
-	setVisible : function(visible) {
+	setVisible : function(visible, event) {
+		this.checkWidget();
 		this._visible = visible;
 		this.update();
 		if (visible) {
-			this._justVisible = true;
-			gara.EventManager.getInstance().addListener(document, "mousedown", this);
+			gara.EventManager.addListener(document, "mousedown", this);
 			if ($class.instanceOf(this._parent, gara.jswt.Control)) {
 				this._parent.addListener("mousedown", this);
 			}
+
+			this._menuListener.forEach(function(listener, index, arr) {
+				listener.menuShown(this);
+			}, this);
 		} else {
-			gara.EventManager.getInstance().removeListener({domNode:document,type:"mousedown",listener:this});
+			gara.EventManager.removeListener(document, "mousedown", this);
 			if ($class.instanceOf(this._parent, gara.jswt.Control)) {
 				this._parent.removeListener("mousedown", this);
 			}
+
+			this._menuListener.forEach(function(listener, index, arr) {
+				listener.menuHidden(this);
+			}, this);
 		}
 	},
 
@@ -5890,13 +7365,27 @@ $class("Menu", {
 		return "[gara.jswt.Menu]";
 	},
 
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+		if (this.domref != null) {
+			gara.EventManager.removeListener(this.domref, eventType, listener);
+		}
+	},
+
 	update : function() {
+		this.checkWidget();
 		if (!this.domref) {
 			this._create();
 		}
 
-		if ((this._style & JSWT.POP_UP) == JSWT.POP_UP
-			|| (this._style & JSWT.DROP_DOWN) == JSWT.DROP_DOWN) {
+		if ((this._style & JSWT.POP_UP) == JSWT.POP_UP) {
 			this.domref.style.top = this._y + "px";
 			this.domref.style.left = this._x + "px";
 		}
@@ -5912,7 +7401,9 @@ $class("Menu", {
 		// update items
 		this._items.forEach(function(item, index, arr) {
 
-			// create item ...
+			item.update();
+			
+			/* create item ...
 			if (!item.isCreated()) {
 				var node = item._create();
 				var nextNode = index == 0 
@@ -5930,7 +7421,7 @@ $class("Menu", {
 			if (item.hasChanged()) {
 				item.update();
 				item.releaseChange();
-			}
+			}*/
 		}, this);
 	}
 });
@@ -5978,54 +7469,180 @@ $class("MenuItem", {
 		}
 		this.$base(parent, style);
 		this._parent = parent;
-		this._menu = parent;
-		this._menu._addItem(this, index);
+		this._parent._addItem(this, index);
 		this._span = null;
 		this._spanText = null;
 		this._img = null;
+		this._hr = null;
+
+		this._selectionListener = [];
+
+		this._menu = null;
+		this._enabled = true;
+		this._selected = false;
+	},
+
+	/**
+	 * @method
+	 * Adds a selection listener on the MenuItem
+	 * 
+	 * @author Thomas Gossmann
+	 * @param {gara.jswt.SelectionListener} listener the desired listener to be added to this menuitem
+	 * @throws {TypeError} if the listener is not an instance SelectionListener
+	 * @return {void}
+	 */
+	addSelectionListener : function(listener) {
+		this.checkWidget();
+		if (!$class.instanceOf(listener, gara.jswt.SelectionListener)) {
+			throw new TypeError("listener is not instance of gara.jswt.SelectionListener");
+		}
+
+		if (!this._selectionListener.contains(listener)) {
+			this._selectionListener.push(listener);
+		}
+	},
+
+	_create : function() {
+		this.domref = document.createElement("li");
+		this.domref.obj = this;
+		this.domref.control = this._parent;
+
+		if ((this._style & JSWT.SEPARATOR) == JSWT.SEPARATOR) {
+			this.domref.className = "jsWTMenuItemSeparator";
+			if ((this._parent.getStyle() & JSWT.BAR) != JSWT.BAR) {
+				this._hr = document.createElement("hr");
+				this.domref.appendChild(this._hr);
+			}
+		} else {
+			// create item nodes
+			this._img = null;
+			
+			// set image
+			if (this._image != null) {
+				this._img = document.createElement("img");
+				this._img.obj = this;
+				this._img.control = this._parent;
+				this._img.src = this._image.src;
+				this._img.alt = this._text;
+				
+				// put the image into the dom
+				this.domref.appendChild(this._img);
+				base2.DOM.EventTarget(this._img);
+			}
+			
+			this._spanText = document.createTextNode(this._text);
+			
+			this._span = document.createElement("span");
+			this._span.obj = this;
+			this._span.control = this._parent;
+			this._span.appendChild(this._spanText);
+			this.domref.appendChild(this._span);
+			
+			base2.DOM.EventTarget(this.domref);
+			base2.DOM.EventTarget(this._span);
+			
+			/* buffer unregistered user-defined listeners */
+			var unregisteredListener = {};
+			for (var eventType in this._listener) {
+				unregisteredListener[eventType] = this._listener[eventType].concat([]);
+			}
+			
+			/* Menu event listener */
+			try {
+				var node = this.domref;
+				this.domref.attachEvent("onmouseover", function(){
+					node.className += " hover";
+				});
+				this.domref.attachEvent("onmouseout", function(){
+					node.className = node.className.replace(new RegExp('\\shover', 'g'), '');
+				});
+			} catch (e) {}
+
+			/* register user-defined listeners */
+			for (var eventType in unregisteredListener) {
+				unregisteredListener[eventType].forEach(function(elem, index, arr){
+					this.registerListener(eventType, elem);
+				}, this);
+			}
+			
+			if (this._menu != null) {
+				this.addClassName("jsWTMenuItemCascade");
+				this._menu.update();
+			}
+
+			if (!this._enabled) {
+				this.addClassName("disabled");
+			}
+
+			if (this._selected) {
+				this.addClassName("checked");
+			}
+
+			this.domref.className = this._className;
+		}
+		this._changed = false;
+		this.domref;
+		
+		var index = this._parent.indexOf(this);
+		var parentItems = this._parent.getItems();
+		var parentDomref = this._parent.domref;
+		
+		var nextNode = index == 0 
+			? parentDomref.firstChild
+			: parentItems[index - 1].domref.nextSibling;
+
+		if (!nextNode) {
+			parentDomref.appendChild(this.domref);					
+		} else {
+			parentDomref.insertBefore(this.domref, nextNode);
+		}
 	},
 	
-	_create : function() {
-		this.domref = document.createElement("li");this.domref.className = this._className;
-		this.domref.obj = this;
-		this.domref.control = this._menu;
+	dispose : function() {
+		this.$base();
 
-		// create item nodes
-		this._img = null;
-
-		// set image
-		if (this._image != null) {
-			this._img = document.createElement("img");
-			this._img.obj = this;
-			this._img.control = this._menu;
-			this._img.src = this._image.src;
-			this._img.alt = this._text;
-
-			// put the image into the dom
-			this.domref.appendChild(this._img);
-			base2.DOM.EventTarget(this._img);
+		if (this._menu != null) {
+			this._menu.dispose();
+			delete this._menu;
 		}
 
-		this._spanText = document.createTextNode(this._text);
+		if (this._img != null) {
+			this.domref.removeChild(this._img);
+			delete this._img;
+			this._image = null;
+		}
 		
-		this._span = document.createElement("span");
-		this._span.obj = this;
-		this._span.control = this._menu;
-		this._span.appendChild(this._spanText);
-		this.domref.appendChild(this._span);
+		if (this._hr != null) {
+			this.domref.removeChild(this._hr);
+		}
 		
-		base2.DOM.EventTarget(this.domref);
-		base2.DOM.EventTarget(this._span);
-
-		// register listener
-		for (var eventType in this._listener) {
-			this._listener[eventType].forEach(function(elem, index, arr) {
-				this.registerListener(eventType, elem);
-			}, this);
+		if (this._span != null) {
+			this.domref.removeChild(this._span);
 		}
 
-		this._changed = false;
-		return this.domref;
+		if (this._parentNode != null) {
+			this._parentNode.removeChild(this.domref);
+		}
+
+		delete this._hr;
+		delete this._span;
+		delete this.domref;
+	},
+	
+	getEnabled : function() {
+		return this._enabled;
+	},
+	
+	getMenu : function() {
+		return this._menu;
+	},
+	
+	getParent : function() {
+		return this._parent;
+	},
+	
+	getSelection : function() {
+		return this._selected;
 	},
 	
 	/**
@@ -6036,67 +7653,1295 @@ $class("MenuItem", {
 	 * @author Thomas Gossmann
 	 * @return {void}
 	 */
-	registerListener : function(eventType, listener) {
+	_registerListener : function(eventType, listener) {
+		if (this.domref != null) {
+			gara.EventManager.addListener(this.domref, eventType, listener);
+		}
+		
 		if (this._img != null) {
-			gara.EventManager.getInstance().addListener(this._img, eventType, listener);
+			gara.EventManager.addListener(this._img, eventType, listener);
 		}
 
 		if (this._span != null) {
-			gara.EventManager.getInstance().addListener(this._span, eventType, listener);
+			gara.EventManager.addListener(this._span, eventType, listener);
 		}
 	},
 	
+	/**
+	 * @method
+	 * Removes a selection listener from this MenuItem
+	 * 
+	 * @author Thomas Gossmann
+	 * @param {gara.jswt.SelectionListener} listener the listener to remove from this menuitem
+	 * @throws {TypeError} if the listener is not an instance SelectionListener
+	 * @return {void}
+	 */
+	removeSelectionListener : function(listener) {
+		this.checkWidget();
+		if (!$class.instanceOf(listener, gara.jswt.SelectionListener)) {
+			throw new TypeError("listener is not instance of gara.jswt.SelectionListener");
+		}
+
+		if (this._selectionListener.contains(listener)) {
+			this._selectionListener.remove(listener);
+		}
+	},
+	
+	_select : function(e) {
+		e.item = this;
+		if ((this._style & JSWT.SEPARATOR) == JSWT.SEPARATOR 
+				|| !this._enabled) {
+			return;
+		}
+
+		if ((this._style & JSWT.CHECK) == JSWT.CHECK) {
+			this._selected = !this._selected;
+			this._changed = true;
+		}
+
+		this.update();
+
+		// blurring menu, if POP_UP
+		var parent = this;
+		while (parent.getParent && parent.getParent() != null
+				&& ($class.instanceOf(parent.getParent(), gara.jswt.Menu)
+					|| $class.instanceOf(parent.getParent(), gara.jswt.MenuItem)
+				)) {
+			parent = parent.getParent();
+		}
+
+		if ((parent.getStyle() & JSWT.POP_UP) == JSWT.POP_UP) {
+			parent.setVisible(false);
+		}
+
+		// notify selection listener
+		this._selectionListener.forEach(function(listener, index, arr) {
+			listener.widgetSelected(e);
+		}, this);
+	},
+
+	setEnabled : function(enabled) {
+		this._enabled = enabled;
+		this._changed = true;
+		
+		if (this.domref != null) {
+			this.update();
+		}
+	},
+
+	setImage : function(image) {
+		this.$base(image);
+		
+		if (this.domref != null) {
+			this.update();
+		}
+	},
+
+	setMenu : function(menu) {
+		this.checkWidget();
+		if (!$class.instanceOf(menu, gara.jswt.Menu)) {
+			throw new TypeError("menu is not instance of gara.jswt.Menu");
+		}
+
+		this._menu = menu;
+		this._changed = true;
+	},
+
+	setSelection : function(selected) {
+		this._selected = selected;
+	},
+
+	setText : function(text) {
+		this.$base(text);
+		
+		if (this.domref != null) {
+			this.update();
+		}
+	},
+
 	toString : function() {
 		return "[gara.jswt.MenuItem]";
 	},
-	
-	update : function() {
-		// create image
-		if (this._image != null && this._img == null) {
-			this._img = document.createElement("img");
-			this._img.obj = this;
-			this._img.control = this._menu;
-			this._img.alt = this._text;
-			this._img.src = this._image.src;
-			this.domref.insertBefore(this._img, this._span);
-			base2.DOM.EventTarget(this._img);
-			
-			// event listener
-			for (var eventType in this._listener) {
-				this._listener[eventType].forEach(function(elem, index, arr) {
-					this.registerListener(this._img, eventType, elem);
-				}, this);
-			}
+
+	/**
+	 * @method
+	 * Unregister listeners for this widget. Implementation for gara.jswt.Widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_unregisterListener : function(eventType, listener) {
+		if (this.domref != null) {
+			gara.EventManager.removeListener(this.domref, eventType, listener);
 		}
 		
-
-		// simply update image information
-		else if (this._image != null) {
-			this._img.src = this._image.src;
-			this._img.alt = this._text;
+		if (this._img != null) {
+			gara.EventManager.removeListener(this._img, eventType, listener);
 		}
 
-		// delete image
-		else if (this._img != null && this._image == null) {
-			this.domref.removeChild(this._img);
-			this._img = null;
+		if (this._span != null) {
+			gara.EventManager.removeListener(this._span, eventType, listener);
+		}
+	},
 
-			// event listener
-			for (var eventType in this._listener) {
-				this._listener[eventType].forEach(function(elem, index, arr) {
-					gara.EventManager.getInstance().removeListener({
-						domNode : this._img,
-						type: eventType, 
-						listener : elem
-					});
-				}, this);
+	update : function() {
+		if (!this.domref) {
+			this._create();
+		} else if (this._changed){
+			this.checkWidget();
+			
+			// create image
+			if (this._image != null && this._img == null) {
+				this._img = document.createElement("img");
+				this._img.obj = this;
+				this._img.control = this._menu;
+				this._img.alt = this._text;
+				this._img.src = this._image.src;
+				this.domref.insertBefore(this._img, this._span);
+				base2.DOM.EventTarget(this._img);
+				
+				// event listener
+				for (var eventType in this._listener) {
+					this._listener[eventType].forEach(function(elem, index, arr) {
+						this.registerListener(this._img, eventType, elem);
+					}, this);
+				}
 			}
+	
+			// simply update image information
+			else if (this._image != null) {
+				this._img.src = this._image.src;
+				this._img.alt = this._text;
+			}
+	
+			// delete image
+			else if (this._img != null && this._image == null) {
+				this.domref.removeChild(this._img);
+				this._img = null;
+	
+				// event listener
+				for (var eventType in this._listener) {
+					this._listener[eventType].forEach(function(elem, index, arr) {
+						gara.EventManager.removeListener({
+							domNode : this._img,
+							type: eventType, 
+							listener : elem
+						});
+					}, this);
+				}
+			}
+	
+			this.removeClassName("disabled");
+			this.removeClassName("checked");
+			this.removeClassName("jsWTMenuItemCascade");
+			if (this._menu != null) {
+				this.addClassName("jsWTMenuItemCascade");
+				this._menu.update();
+			}
+
+			if (!this._enabled) {
+				this.addClassName("disabled");
+			}
+			
+			if (this._selected) {
+				this.addClassName("checked");
+			}
+	
+			this._spanText.nodeValue = this._text;
+			this.domref.className = this._className;
+			
+			this._changed = false;
 		}
 
-		this._spanText.nodeValue = this._text;
-		this.domref.className = this._className;
+		// update sub menu
+		if (this._menu != null) {
+			this._menu.update();
+		}
 	}
 });
+/*	$Id: $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class DialogManager
+ * @author Thomas Gossmann
+ * @namespace gara.jswt
+ * @private
+ */
+$class("DialogManager", {
+
+	_instance : $static(null),
+
+	$constructor : function() {
+		this._activeDialog = null;
+		this._dialogs = [];
+		
+		base2.DOM.EventTarget(document);
+		gara.EventManager.addListener(document, "keydown", this);
+	},
+
+	getInstance : $static(function() {
+		if (this._instance == null) {
+			this._instance = new gara.jswt.DialogManager();
+		}
+
+		return this._instance;
+	}),
+
+	activate : function(dialog) {
+		if (!$class.instanceOf(dialog, gara.jswt.Dialog)) {
+			throw new TypeError("dialog is not a gara.jswt.Dialog");
+		}
+
+		if (this._activeDialog != dialog) {
+			if (this._activeDialog != null) {
+				this._activeDialog.domref.style.zIndex = 600;
+			}
+			
+			this._activeDialog = dialog;
+			this._activeDialog.domref.style.zIndex = 601;
+		}
+	},
+
+	addDialog : function(dialog) {
+		if (!$class.instanceOf(dialog, gara.jswt.Dialog)) {
+			throw new TypeError("dialog is not a gara.jswt.Dialog");
+		}
+
+		if (!this._dialogs.contains(dialog)) {
+			this._dialogs.push(dialog);
+		}
+	},
+	
+	getActiveDialog : function() {
+		if (this._activeDialog != null) {
+			return this._activeDialog;
+		}
+		return null;
+	},
+	
+	getDialogs : function() {
+		return this._dialogs;
+	},
+
+	handleEvent : function(e) {
+		switch(e.type) {
+			case "mousedown":
+				if (e.target.obj 
+						&& $class.instanceOf(e.target.obj, gara.jswt.Dialog)) {
+					console.log("DialogMananger.handleEvent(mousedown)");
+					this.activate(e.target.obj);
+				}
+				break;
+			
+			case "keydown":
+				if (this._activeDialog != null && e.keyCode == 9) {
+					return false;
+				} 
+				break;
+		}
+
+	},
+
+	removeDialog : function(dialog) {
+		if (!$class.instanceOf(dialog, gara.jswt.Dialog)) {
+			throw new TypeError("dialog is not a gara.jswt.Dialog");
+		}
+
+		if (this._dialogs.contains(dialog)) {
+			if (this._activeDialog == dialog) {
+				this._activeDialog = null;
+			}
+			this._dialogs.remove(dialog);
+		}
+	},
+
+	toString : function() {
+		return "[gara.jswt.DialogManager]";
+	}
+});
+/*	$Id: $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class Dialog
+ * @author Thomas Gossmann
+ * @namespace gara.jswt
+ */
+$class("Dialog", {
+
+	/**
+	 * @constructor
+	 */
+	$constructor : function(parent, style) {
+		if (typeof(style) == "undefined") {
+			style = parent;
+			this._parentWindow = window.top;
+		} else {
+			this._parentWindow = parent;
+		}
+
+		this._style = style;
+		this._disposed = false;
+		this._text = " ";
+		
+		this.domref = null;
+		this._parentWindow = window;
+		this._modalLayer = null;
+		this._dialogBar;
+		this._dialogBarLeft;
+		this._dialogBarText;
+		this._dialogBarButtons;
+		this._dialogContent;
+		this._barCancelButton;
+
+		this._dX;
+		this._dY;
+
+		
+		this._tabIndexes = [];	
+		this._tabbableTags = ["A","BUTTON","TEXTAREA","INPUT","IFRAME"]; 
+
+		gara.jswt.DialogManager.getInstance().addDialog(this);
+	},
+
+	/**
+	 * @method
+	 * 
+	 * Creates the frame for the dialog. Content is populated by a
+	 * specialised subclass.
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_create : function() {
+		if ((this._style & JSWT.APPLICATION_MODAL) == JSWT.APPLICATION_MODAL) {
+			this._disableTabIndexes();
+			var modalLayer;
+			if (modalLayer = document.getElementById("jsWTModalLayer")) {
+				modalLayer.style.display = "block";
+			} else {
+				modalLayer = document.createElement("div");
+				modalLayer.id = "jsWTModalLayer";
+				document.getElementsByTagName("body")[0].appendChild(modalLayer);
+			}
+
+			modalLayer.style.width = this._getViewportWidth() + "px";
+			modalLayer.style.height = this._getViewportHeight() + "px";
+		}
+
+		this._parent = this._parentWindow.document.getElementsByTagName("body")[0];
+
+		this.domref = document.createElement("div");
+		this.domref.className = "jsWTDialog";
+		this.domref.obj = this;
+		
+		this._dialogBar = document.createElement("div");
+		this._dialogBar.className = "jsWTDialogBar";
+		
+		this._dialogContent = document.createElement("div");
+		this._dialogContent.className = "jsWTDialogContent";
+		
+		this._dialogBarLeft = document.createElement("div");
+		this._dialogBarLeft.className = "jsWTDialogBarLeft";
+
+		this._dialogBarText = document.createElement("div");
+		this._dialogBarText.className = "jsWTDialogBarText";
+
+		this._dialogBarButtons = document.createElement("div");
+		this._dialogBarButtons.className = "jsWTDialogBarButtons";
+
+		var clearer = document.createElement("div");
+		clearer.className = "jsWTDialogBarClearer";
+
+		this._barCancelButton = document.createElement("span");
+		this._barCancelButton.className = "jsWTDialogCancelButton";
+
+		this._dialogContent = document.createElement("div");
+		this._dialogContent.className = "jsWTDialogContent";
+
+		this.domref.appendChild(this._dialogBar);
+		this.domref.appendChild(this._dialogContent);
+
+		this._dialogBar.appendChild(this._dialogBarLeft);
+		this._dialogBar.appendChild(this._dialogBarText);
+		this._dialogBar.appendChild(this._dialogBarButtons);
+		this._dialogBarText.appendChild(document.createTextNode(this._text));
+		this._dialogBarButtons.appendChild(this._barCancelButton);
+		this._dialogBar.appendChild(clearer);
+		
+		base2.DOM.EventTarget(this._parentWindow);
+		base2.DOM.EventTarget(this._parentWindow.document);
+		base2.DOM.EventTarget(this.domref);
+		base2.DOM.EventTarget(this._dialogBar);
+		base2.DOM.EventTarget(this._barCancelButton);
+		
+		gara.EventManager.addListener(this.domref, "mousedown", this);
+		gara.EventManager.addListener(this._barCancelButton, "mousedown", this);
+		gara.EventManager.addListener(this._parentWindow, "resize", this);
+		
+		this._parent.appendChild(this.domref);
+		
+		gara.jswt.DialogManager.getInstance().activate(this);
+	},
+
+	/**
+	 * @method
+	 * Disable tab indexes when dialog is opened
+	 * 
+	 * Code below taken from subModal {@link http://gabrito.com/files/subModal/}
+	 * 
+	 * @private
+	 */
+	_disableTabIndexes : function() {
+		if (document.all) {
+			var i = 0;
+			for (var j = 0; j < this._tabbableTags.length; j++) {
+				var tagElements = document.getElementsByTagName(this._tabbableTags[j]);
+				for (var k = 0 ; k < tagElements.length; k++) {
+					this._tabIndexes[i] = tagElements[k].tabIndex;
+					tagElements[k].tabIndex="-1";
+					i++;
+				}
+			}
+		}
+	},
+
+	/**
+	 * @method
+	 * Deletes and destroys the dialog
+	 * 
+	 *  @private
+	 *  @author Thomas Gossmann
+	 *  @return {void}
+	 */
+	dispose : function() {
+		gara.EventManager.removeListener(this.domref, "mousedown", this);
+		gara.EventManager.removeListener(this._barCancelButton, "mousedown", this);
+		gara.EventManager.removeListener(window, "resize", this);
+
+		if ((this._style & JSWT.APPLICATION_MODAL) == JSWT.APPLICATION_MODAL) {
+			this._restoreTabIndexes();
+		}
+		gara.jswt.DialogManager.getInstance().removeDialog(this);
+		this.domref.obj = null;
+		this._parent.removeChild(this.domref);
+		
+		if ((this._style & JSWT.APPLICATION_MODAL) == JSWT.APPLICATION_MODAL) {
+			document.getElementById("jsWTModalLayer").style.display = "none";
+		}
+
+		this._disposed = true;
+	},
+
+	/**
+	 * @method
+	 * Returns the title text from the Dialog
+	 * 
+	 * @return {String} the title
+	 * @author Thomas Gossmann
+	 */
+	getText : function() {
+		return this._text;
+	},
+
+	/**
+	 * @method
+	 * Gets height of the viewport
+	 * 
+	 * Code below taken from - http://www.evolt.org/article/document_body_doctype_switching_and_more/17/30655/
+	 * Modified 4/22/04 to work with Opera/Moz (by webmaster at subimage dot com)
+	 * Gets the full width/height because it's different for most browsers.
+	 * 
+	 * Found on {@link http://gabrito.com/files/subModal/}
+	 * 
+	 * @private
+	 * @return {int} viewport height
+	 */
+	_getViewportHeight : function() {
+		if (window.innerHeight!=window.undefined) return window.innerHeight;
+		if (document.compatMode=='CSS1Compat') return document.documentElement.clientHeight;
+		if (document.body) return document.body.clientHeight;
+		return window.undefined;
+	},
+
+	/**
+	 * @method
+	 * Gets width of the viewport
+	 * 
+	 * Code below taken from - http://www.evolt.org/article/document_body_doctype_switching_and_more/17/30655/
+	 * Modified 4/22/04 to work with Opera/Moz (by webmaster at subimage dot com)
+	 * Gets the full width/height because it's different for most browsers.
+	 * 
+	 * Found on {@link http://gabrito.com/files/subModal/}
+	 * 
+	 * @private
+	 * @return {int} viewport width
+	 */
+	_getViewportWidth : function() {
+		if (window.innerWidth!=window.undefined) return window.innerWidth;
+		if (document.compatMode=='CSS1Compat') return document.documentElement.clientWidth;
+		if (document.body) return document.body.clientWidth;
+		return window.undefined;
+	},
+
+	/**
+	 * @method
+	 * Handling events on the dialog widget
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @param {Event} e
+	 * @return {void}
+	 */
+	handleEvent : function(e) {
+		switch(e.type) {
+			case "mousedown":
+				gara.jswt.DialogManager.getInstance().activate(this);
+				if (e.target == this._barCancelButton) {
+					this.dispose();
+				} else if (e.target == this._dialogBar 
+						|| e.target == this._dialogBarText
+						|| e.target == this._dialogBarButtons){
+					gara.EventManager.addListener(this._parentWindow.document, "mousemove", this);
+					gara.EventManager.addListener(this._dialogBar, "mouseup", this);
+					this._dX = e.clientX - this.domref.offsetLeft;
+					this._dY = e.clientY - this.domref.offsetTop;
+				}
+				break;
+
+			case "mouseup":
+				gara.EventManager.removeListener(this._parentWindow.document, "mousemove", this);
+				gara.EventManager.removeListener(this._dialogBar, "mouseup", this);
+				break;
+
+			case "mousemove":
+				this.domref.style.left = (e.clientX - this._dX) + "px";
+				this.domref.style.top = (e.clientY - this._dY) + "px";
+				break;
+
+			case "resize":
+				if (modalLayer = document.getElementById("jsWTModalLayer")) {
+					modalLayer.style.width = this._getViewportWidth() + "px";
+					modalLayer.style.height = this._getViewportHeight() + "px";
+				}
+				break;
+		}
+	},
+	
+	isDisposed : function() {
+		return this._disposed;
+	},
+
+	open : $abstract(function() {}),
+
+	/**
+	 * @method
+	 * Restores tab indexes when dialog is closed
+	 * 
+	 * Code below taken from subModal {@link http://gabrito.com/files/subModal/}
+	 * 
+	 * @private
+	 */
+	_restoreTabIndexes : function() {
+		if (document.all) {
+			var i = 0;
+			for (var j = 0; j < this._tabbableTags.length; j++) {
+				var tagElements = document.getElementsByTagName(this._tabbableTags[j]);
+				for (var k = 0 ; k < tagElements.length; k++) {
+					tagElements[k].tabIndex = this._tabIndexes[i];
+					tagElements[k].tabEnabled = true;
+					i++;
+				}
+			}
+		}
+	},
+
+	/**
+	 * @method
+	 * Set the title text
+	 * @param {String} text the new title
+	 * @return {void}
+	 */
+	setText : function(text) {
+		this._text = text;
+	},
+
+	toString : function() {
+		return "[gara.jswt.Dialog]";
+	}
+});	
+/*	$Id: $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+function getStyle(el, styleProp, ieStyleProp)
+{
+	var x = el;
+	if (x.currentStyle)
+		var y = x.currentStyle[ieStyleProp];
+	else if (window.getComputedStyle)
+		var y = document.defaultView.getComputedStyle(x,null).getPropertyValue(styleProp);
+	return y;
+}
+
+/**
+ * @class MessageBox
+ * @author Thomas Gossmann
+ * @extends gara.jswt.Dialog
+ * @namespace gara.jswt
+ */
+$class("InputDialog", {
+	$extends : gara.jswt.Dialog, 
+
+	/**
+	 * @constructor
+	 */
+	$constructor : function(parent, style) {
+		this.$base(parent, style);
+		
+		this._callback = null;
+		this._context = window;
+		this._message = "";
+		this._value = "";
+		this._style |= JSWT.APPLICATION_MODAL;
+		
+		this._input;
+		this._btnOk;
+		this._btnCancel;
+	},
+
+	/**
+	 * @method
+	 * 
+	 * Creates the frame for the dialog. Content is populated by a
+	 * specialised subclass.
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_create : function() {
+		this.$base();
+		
+		this.domref.className += " jsWTInputDialog";
+		var text = document.createElement("div");
+		text.className = "jsWTInputDialogContentText";
+		text.appendChild(document.createTextNode(this._message));
+		
+		
+		this._input = document.createElement("input");
+		this._input.type = "text";
+		this._input.value = this._value;
+		base2.DOM.EventTarget(this._input);
+		gara.EventManager.addListener(this._input, "keydown", this);
+
+		text.appendChild(this._input);		
+		this._dialogContent.appendChild(text);
+
+		var buttons = document.createElement("div");
+		buttons.className = "jsWTInputDialogButtonBar";
+		
+		this._btnOk = document.createElement("input");
+		this._btnOk.type = "button";
+		this._btnOk.value = gara.i18n.get("ok");
+		base2.DOM.EventTarget(this._btnOk);
+		buttons.appendChild(this._btnOk);
+		gara.EventManager.addListener(this._btnOk, "click", this);
+
+		this._btnCancel = document.createElement("input");
+		this._btnCancel.type = "button";
+		this._btnCancel.value = gara.i18n.get("cancel");
+		base2.DOM.EventTarget(this._btnCancel);
+		buttons.appendChild(this._btnCancel);
+		gara.EventManager.addListener(this._btnCancel, "click", this);
+
+		this._dialogContent.appendChild(buttons);
+		
+		this._input.focus();
+		
+		
+		// position
+		var left = this._getViewportWidth() / 2 - this.domref.clientWidth/2;
+		var top = this._getViewportHeight() / 2 - this.domref.clientHeight/2;
+		
+		this.domref.style.left = left + "px";
+		this.domref.style.top = top + "px";
+	},
+
+	getMessage : function() {
+		return this._message;
+	},
+	
+	getValue : function() {
+		return this._value;
+	},
+	
+	handleEvent : function(e) {
+		this.$base(e);
+		if (this._disposed && this._callback != null) {
+			this._callback.call(this._context, null);
+		}
+		switch(e.type) {
+			case "keydown":
+				// ESC
+				if (e.target == this._input && e.keyCode == 27) {
+					this.dispose();
+					this._callback.call(this._context, null);
+				}
+
+				// ENTER
+				if (e.target == this._input 
+						&& (e.keyCode == 13 || e.keyCode == 10) 
+						&& this._callback != null) {
+					this.dispose();
+					this._callback.call(this._context, this._input.value);
+				}
+				break;
+			
+			case "click":
+				var response;
+				switch(e.target) {
+					case this._btnOk:
+						response = this._input.value;
+						break;
+
+					default:
+					case this._btnCancel:
+						response = null;
+						break;
+				}
+				this.dispose();
+				if (this._callback != null) {
+					this._callback.call(this._context, response);
+				}
+				break;
+		}
+	},
+
+	open: function(callback, context) {
+		this._create();
+		this._callback = callback;
+		this._context = context || window;
+	},
+	
+	setMessage : function(message) {
+		this._message = message;
+	},
+	
+	setValue : function(value) {
+		this._value = value;
+	},
+
+	toString : function() {
+		return "[gara.jswt.MessageBox]";
+	}
+});	
+/*	$Id: $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+function getStyle(el, styleProp, ieStyleProp)
+{
+	var x = el;
+	if (x.currentStyle)
+		var y = x.currentStyle[ieStyleProp];
+	else if (window.getComputedStyle)
+		var y = document.defaultView.getComputedStyle(x,null).getPropertyValue(styleProp);
+	return y;
+}
+
+/**
+ * @class MessageBox
+ * @author Thomas Gossmann
+ * @extends gara.jswt.Dialog
+ * @namespace gara.jswt
+ */
+$class("IframeDialog", {
+	$extends : gara.jswt.Dialog,
+	
+	/**
+	 * @constructor
+	 */
+	$constructor : function(parent, style) {
+		this.$base(parent, style);
+
+		this._width = 0;
+		this._height = 0;
+		this._title = "";
+		this._iframe;
+		this._overlay;
+		this._iDoc = null;
+	},
+
+	/**
+	 * @method
+	 * 
+	 * Creates the frame for the dialog. Content is populated by a
+	 * specialised subclass.
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_create : function(src) {
+		this.$base();
+		
+		this._overlay = document.createElement("div");
+		this._overlay.style.position = "absolute";
+		this._overlay.style.left = "0";
+		this._overlay.style.right = "0";
+		this._overlay.style.top = "0";
+		this._overlay.style.bottom = "0";
+		
+		this.domref.className += " jsWTIframeDialog";
+		this._iframe = document.createElement("iframe");
+		this._iframe.src = src;
+		this._iframe.style.width = "100%";
+		this._iframe.style.height = "100%";
+		this._dialogContent.appendChild(this._iframe);
+
+		if ((this._style & gara.jswt.JSWT.ICON_WORKING) == gara.jswt.JSWT.ICON_WORKING) {
+			this._overlay.className = "loading";
+			this._showOverlay();
+		}
+		
+		this.domref.style.width = this._width + "px";
+		this._dialogContent.style.height = this._height + "px";
+		this._dialogContent.style.position = "relative";
+		
+		base2.DOM.EventTarget(this._iframe);
+		base2.DOM.EventTarget(this._dialogContent);
+		
+		gara.EventManager.addListener(this._iframe, "load", this);
+
+		this._dialogBarText.appendChild(document.createTextNode(this._title));
+		this._dialogBarText.style.width = (this._width - 40) + "px";
+
+		// position
+		var left = this._getViewportWidth() / 2 - this.domref.clientWidth/2;
+		var top = this._getViewportHeight() / 2 - this.domref.clientHeight/2;
+
+		this.domref.style.left = left + "px";
+		this.domref.style.top = top + "px";
+	},
+
+	getHeight : function() {
+		return this._height;
+	},
+
+	getTitle : function() {
+		return this._title;
+	},
+
+	getWidth : function() {
+		return this._width;
+	},
+	
+	handleEvent : function(e) {
+		this.$base(e);
+		
+		switch (e.type) {
+			case "load":
+				if (this._iDoc == null) {
+					try {
+						this._iDoc = this._iframe.contentDocument; // W3C
+					} catch (e) {
+						try {
+							this._iDoc = this._iframe.document; // IE (6?)
+						} catch (e) {}
+					}
+				}
+				
+				if (this._iDoc != null) {
+					try {
+						this._iDoc.obj = this;
+						base2.DOM.EventTarget(this._iDoc);
+						gara.EventManager.addListener(this._iDoc, "mousedown", this);
+					} catch(e) {}
+				}
+
+				if ((this._style & gara.jswt.JSWT.ICON_WORKING) == gara.jswt.JSWT.ICON_WORKING) {
+					this._overlay.className = "";
+					this._hideOverlay();
+				}
+				break;
+			
+			case "mousedown":
+				gara.jswt.DialogManager.getInstance().activate(this);
+				if (e.target == this._dialogBar ||
+					e.target == this._dialogBarText ||
+					e.target == this._dialogBarButtons) {
+					
+					gara.jswt.DialogManager.getInstance().getDialogs().forEach(function(diag, index, arr) {
+						if ($class.instanceOf(diag, gara.jswt.IframeDialog)) {
+							diag._showOverlay();
+						}
+					}, this);
+				}
+				break;
+				
+			case "mouseup":
+				gara.jswt.DialogManager.getInstance().getDialogs().forEach(function(diag, index, arr) {
+					if ($class.instanceOf(diag, gara.jswt.IframeDialog)) {
+						diag._hideOverlay();
+					}
+				}, this);
+				break;
+		}
+	},
+	
+	_hideOverlay : function() {
+		this._dialogContent.removeChild(this._overlay);
+	},
+
+	open: function(src) {
+		this._create(src);
+	},
+	
+	_showOverlay : function() {
+		this._dialogContent.appendChild(this._overlay);
+	},
+
+	setHeight : function(height) {
+		this._height = height;
+	},
+
+	setTitle : function(title) {
+		this._title = title;
+	},
+
+	setWidth : function(width) {
+		this._width = width;
+	},
+
+	toString : function() {
+		return "[gara.jswt.IframeDialog]";
+	}
+});
+/*	$Id: $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+function getStyle(el, styleProp, ieStyleProp)
+{
+	var x = el;
+	if (x.currentStyle)
+		var y = x.currentStyle[ieStyleProp];
+	else if (window.getComputedStyle)
+		var y = document.defaultView.getComputedStyle(x,null).getPropertyValue(styleProp);
+	return y;
+}
+
+/**
+ * @class MessageBox
+ * @author Thomas Gossmann
+ * @extends gara.jswt.Dialog
+ * @namespace gara.jswt
+ */
+$class("MessageBox", {
+	$extends : gara.jswt.Dialog, 
+
+	/**
+	 * @constructor
+	 */
+	$constructor : function(parent, style) {
+		this.$base(parent, style);
+		
+		this._callback = null;
+		this._context = window;
+		this._message = "";
+		this._style |= JSWT.APPLICATION_MODAL;
+
+		this._btnOk;
+		this._btnYes;
+		this._btnNo;
+		this._btnAbort;
+		this._btnRetry;
+		this._btnIgnore;
+		this._btnCancel;
+	},
+
+	/**
+	 * @method
+	 * 
+	 * Creates the frame for the dialog. Content is populated by a
+	 * specialised subclass.
+	 * 
+	 * @private
+	 * @author Thomas Gossmann
+	 * @return {void}
+	 */
+	_create : function() {
+		this.$base();
+		
+		this.domref.className += " jsWTMessageBox";
+		var text = document.createElement("div");
+		text.className = "jsWTMessageBoxContentText";
+		text.appendChild(document.createTextNode(this._message));
+		
+		// ICON_ERROR, ICON_INFORMATION, ICON_QUESTION, ICON_WARNING, ICON_WORKING
+		if ((this._style & JSWT.ICON_ERROR) == JSWT.ICON_ERROR) {
+			text.className += " jsWTIconError";
+		}
+
+		if ((this._style & JSWT.ICON_INFORMATION) == JSWT.ICON_INFORMATION) {
+			text.className += " jsWTIconInformation";
+		}
+
+		if ((this._style & JSWT.ICON_QUESTION) == JSWT.ICON_QUESTION) {
+			text.className += " jsWTIconQuestion";
+		}
+
+		if ((this._style & JSWT.ICON_WARNING) == JSWT.ICON_WARNING) {
+			text.className += " jsWTIconWarning";
+		}
+
+		if ((this._style & JSWT.ICON_WORKING) == JSWT.ICON_WORKING) {
+			text.className += " jsWTIconWorking";
+		}
+		
+		this._dialogContent.appendChild(text);
+
+		var buttons = document.createElement("div");
+		buttons.className = "jsWTMessageBoxButtonBar";
+		
+		if ((this._style & JSWT.OK) == JSWT.OK) {
+			this._btnOk = document.createElement("input");
+			this._btnOk.type = "button";
+			this._btnOk.value = gara.i18n.get("ok");
+			base2.DOM.EventTarget(this._btnOk);
+			buttons.appendChild(this._btnOk);
+			gara.EventManager.addListener(this._btnOk, "click", this);
+		}
+		
+		if ((this._style & JSWT.YES) == JSWT.YES) {
+			this._btnYes = document.createElement("input");
+			this._btnYes.type = "button";
+			this._btnYes.value = gara.i18n.get("yes");
+			base2.DOM.EventTarget(this._btnYes);
+			buttons.appendChild(this._btnYes);
+			gara.EventManager.addListener(this._btnYes, "click", this);
+		}
+		
+		if ((this._style & JSWT.NO) == JSWT.NO) {
+			this._btnNo = document.createElement("input");
+			this._btnNo.type = "button";
+			this._btnNo.value = gara.i18n.get("no");
+			base2.DOM.EventTarget(this._btnNo);
+			buttons.appendChild(this._btnNo);
+			gara.EventManager.addListener(this._btnNo, "click", this);
+		}
+		
+		if ((this._style & JSWT.ABORT) == JSWT.ABORT) {
+			this._btnAbort = document.createElement("input");
+			this._btnAbort.type = "button";
+			this._btnAbort.value = gara.i18n.get("abort");
+			base2.DOM.EventTarget(this._btnAbort);
+			buttons.appendChild(this._btnAbort);
+			gara.EventManager.addListener(this._btnAbort, "click", this);
+		}
+		
+		if ((this._style & JSWT.RETRY) == JSWT.RETRY) {
+			this._btnRetry = document.createElement("input");
+			this._btnRetry.type = "button";
+			this._btnRetry.value = gara.i18n.get("retry");
+			base2.DOM.EventTarget(this._btnRetry);
+			buttons.appendChild(this._btnRetry);
+			gara.EventManager.addListener(this._btnRetry, "click", this);
+		}
+
+		if ((this._style & JSWT.IGNORE) == JSWT.IGNORE) {
+			this._btnIgnore = document.createElement("input");
+			this._btnIgnore.type = "button";
+			this._btnIgnore.value = gara.i18n.get("ignore");
+			base2.DOM.EventTarget(this._btnIgnore);
+			buttons.appendChild(this._btnIgnore);
+			gara.EventManager.addListener(this._btnIgnore, "click", this);
+		}
+
+		if ((this._style & JSWT.CANCEL) == JSWT.CANCEL) {
+			this._btnCancel = document.createElement("input");
+			this._btnCancel.type = "button";
+			this._btnCancel.value = gara.i18n.get("cancel");
+			base2.DOM.EventTarget(this._btnCancel);
+			buttons.appendChild(this._btnCancel);
+			gara.EventManager.addListener(this._btnCancel, "click", this);
+		}
+
+		this._dialogContent.appendChild(buttons);
+		
+		// position
+		var left = this._getViewportWidth() / 2 - this.domref.clientWidth/2;
+		var top = this._getViewportHeight() / 2 - this.domref.clientHeight/2;
+		
+		this.domref.style.left = left + "px";
+		this.domref.style.top = top + "px";
+	},
+
+	getMessage : function() {
+		return this._message;
+	},
+	
+	handleEvent : function(e) {
+		this.$base(e);
+		if (this._disposed && this._callback != null) {
+			this._callback.call(this._context, JSWT.CANCEL);
+		}
+		switch(e.type) {
+			case "click":
+				var response;
+				switch(e.target) {
+					case this._btnOk:
+						response = JSWT.OK;
+						break;
+					
+					case this._btnYes:
+						response = JSWT.YES;
+						break;
+						
+					case this._btnNo:
+						response = JSWT.NO;
+						break;
+					
+					case this._btnAbort:
+						response = JSWT.ABORT;
+						break;
+					
+					case this._btnRetry:
+						response = JSWT.RETRY;
+						break;
+					
+					case this._btnIgnore:
+						response = JSWT.IGNORE;
+						break;
+					
+					default:
+					case this._btnCancel:
+						response = JSWT.CANCEL;
+						break;
+				}
+				this.dispose();
+				if (this._callback != null) {
+					this._callback.call(this._context, response);
+				}
+				break;
+		}
+	},
+
+	open: function(callback, context){
+		this._create();
+		this._callback = callback || null;
+		this._context = context || window;
+	},
+	
+	setMessage : function(message) {
+		this._message = message;
+	},
+
+	toString : function() {
+		return "[gara.jswt.MessageBox]";
+	}
+});	
 var jswtPkg = new gara.Package({
 	name : "jswt",
 	exports : "JSWT,ControlManager,Widget,Control,Composite,Item,List,ListItem,Tree,TreeItem,TabFolder,TabItem,FocusListener,SelectionListener"
@@ -6299,6 +9144,37 @@ $interface("ITableLabelProvider", {
 */
 
 /**
+ * @interface ILabelProviderListener
+ * @namespace gara.jsface
+ * @author Thomas Gossmann
+ */
+$interface("ILabelProviderListener", {
+	labelProviderChanged : function() {}
+});
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
  * @class LabelProvider
  * @namespace gara.jsface
  * @author Thomas Gossmann
@@ -6372,12 +9248,34 @@ $class("BaseLabelProvider", {
 	
 	$constructor : function() {
 		this.$base();
+		this._listener = null;
+	},
+	
+	addListener : function(listener) {
+		if (!$class.instanceOf(listener, gara.jsface.ILabelProviderListener)) {
+			throw new TypeError("listener not type of gara.jsface.ILabelProviderListener");
+		}
+		
+		if (this._listener == null) {
+			this._listener = [];
+		}
+		
+		this._listener.add(listener);
 	},
 	
 	isLabelProperty : function(element, property) {
 		return true;
-	}
+	},
 
+	removeListener : function(listener) {
+		if (!$class.instanceOf(listener, gara.jsface.ILabelProviderListener)) {
+			throw new TypeError("listener not type of gara.jsface.ILabelProviderListener");
+		}
+
+		if (this._listener != null && this._listener.contains(listener)) {
+			this._listener.remove(listener);
+		}
+	}
 });
 /*	$Id $
 
@@ -6423,6 +9321,7 @@ $class("CellLabelProvider", {
 		if ($class.instanceOf(labelProvider, gara.jsface.CellLabelProvider)) {
 			return labelProvider;
 		}
+		return new gara.jsface.WrappedViewerLabelProvider(labelProvider);
 	}),
 
 	update : $abstract(function(cell){})
@@ -6470,6 +9369,10 @@ $class("ColumnLabelProvider", {
 
 	getText : function(element) {
 		return element == null ? "" : element.toString();
+	},
+	
+	isLabelProperty : function(element, property) {
+		return true;
 	},
 	
 	update : function(cell) {
@@ -6521,6 +9424,7 @@ $class("WrappedViewerLabelProvider", {
 		
 		this._labelProvider = this.defaultLabelProvider;
 		this._tableLabelProvider;
+		this._viewerLabelProvider;
 		
 		this.setProviders(labelProvider);
 	},
@@ -6538,9 +9442,24 @@ $class("WrappedViewerLabelProvider", {
 	},
 
 	setProviders : function(provider) {
-		if ($class.instanceOf(provider, gara.jsface.ITableLabelProvider)) {
-			this._tableLabelProvider = provider;
+//		if ($class.instanceOf(provider, gara.jsface.ITableLabelProvider))
+//			this._tableLabelProvider = provider;
+
+//		if ($class.instanceOf(provider, gara.jsface.IViewerLabelProvider))
+//			this._viewerLabelProvider = provider;
+
+		if ($class.instanceOf(provider, gara.jsface.ILabelProvider))
+			this._labelProvider = provider;
+	},
+	
+	update : function(cell) {
+		if (!$class.instanceOf(cell, gara.jsface.ViewerCell)) {
+			throw new TypeError("cell is not instance of gara.jsface.ViewerCell");
 		}
+		
+		var element = cell.getElement();
+		cell.setText(this.getText(element));
+		cell.setImage(this.getImage(element));
 	}
 });
 /*	$Id $
@@ -6727,6 +9646,202 @@ $interface("ITreeContentProvider", {
 */
 
 /**
+ * @interface ISelectionChangedListener
+ * @namespace gara.jsface
+ * @author Thomas Gossmann
+ */
+$interface("ISelectionChangedListener", {
+	selectionChanged : function(listener){}
+});
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @interface ICheckStateListener
+ * @namespace gara.jsface
+ * @author Thomas Gossmann
+ */
+$interface("ICheckStateListener", {
+	checkStateChanged : function(listener){}
+});
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @interface ICheckable
+ * @namespace gara.jsface
+ * @author Thomas Gossmann
+ */
+$interface("ICheckable", {
+	addCheckStateListener : function(listener){},
+
+	getChecked : function(element){},
+
+	removeCheckStateListener : function(listener){},
+
+	setChecked : function(element, checked) {}
+});
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class CheckStateChangedEvent
+ * @namespace gara.jsface
+ * @author Thomas Gossmann
+ */
+$class("CheckStateChangedEvent", {
+	$constructor : function(source, element, state) {
+		this._source = source;
+		this._element = element;
+		this._state = state;
+	},
+
+	getElement : function() {
+		return this._element;
+	},
+
+	getSource : function() {
+		return this._source;
+	},
+
+	getState : function() {
+		return this._state;
+	},
+
+	toString : function() {
+		return "[gara.jsface.CheckStateChangedEvent]";
+	}
+});
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class SelectionChangedEvent
+ * @namespace gara.jsface
+ * @author Thomas Gossmann
+ */
+$class("SelectionChangedEvent", {
+	$constructor : function(source, selection) {
+		this._source = source;
+		this._selection = selection;
+	},
+
+	getSelection : function() {
+		return this._selection;
+	},
+
+	getSource : function() {
+		return this._source;
+	},
+	
+	toString : function() {
+		return "[gara.jsface.SelectionChangedEvent]";
+	}
+});
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
  * @class Viewer
  * @author Thomas Gossmann
  * @namespace gara.jsface
@@ -6736,7 +9851,23 @@ $class("Viewer", {
 	 * @constructor
 	 */
 	$constructor : function() {
+		this._selectionChangedListeners = [];
+	},
+	
+	addSelectionChangedListener : function(listener) {
+		if (!$class.instanceOf(listener, gara.jsface.ISelectionChangedListener)) {
+			throw new TypeError("listener not instance of gara.jsface.ISelectionChangedListener");
+		}
 		
+		if (!this._selectionChangedListeners.contains(listener)) {
+			this._selectionChangedListeners.push(listener);
+		}
+	},
+	
+	_fireSelectionChanged : function(event) {
+		this._selectionChangedListeners.forEach(function(listener, index, arr) {
+			listener.selectionChanged(event);
+		});
 	},
 
 	getControl : $abstract(function() {}),
@@ -6759,6 +9890,14 @@ $class("Viewer", {
 	inputChange : function(input, oldInput) {},
 
 	refresh : $abstract(function() {}),
+	
+	removeSelectionChangedListener : function(listener) {
+		if (!$class.instanceOf(listener, gara.jsface.ISelectionChangedListener)) {
+			throw new TypeError("listener not instance of gara.jsface.ISelectionChangedListener");
+		}
+		
+		this._selectionChangedListeners.remove(listener);
+	},
 
 	setInput : $abstract(function(input) {})
 });
@@ -6868,6 +10007,7 @@ $class("ContentViewer", {
  * @author Thomas Gossmann
   */
 $class("StructuredViewer", {
+	$implements : [gara.jswt.SelectionListener],
 	$extends : gara.jsface.ContentViewer,
 
 	/**
@@ -6877,9 +10017,23 @@ $class("StructuredViewer", {
 		this._map = [];
 		this._items = [];
 		
-		this._elementMap = {};
+		this._sorter = null;
+		this._filters = [];
+		
+		this._elementMap = null;
 	},
 	
+	addFilter : function(filter) {
+		if (!$class.instanceOf(filter, gara.jsface.ViewerFilter)) {
+			throw new TypeError("filter not instance of gara.jsface.ViewerFilter");
+		}
+
+		if (!this._filters.contains(filter)) {
+			this._filters.push(filter);
+		}
+		this.refresh();
+	},
+
 	_associate : function(element, item) {
 		var data = item.getData();
 		if (data != element) {
@@ -6909,6 +10063,41 @@ $class("StructuredViewer", {
 
 	_doUpdateItem : $abstract(function(widget, element){}),
 
+	_doFindInputItem : $abstract(function(element){}),
+
+	_findItem : $final(function(element) {
+		var results = this._findItems(element);
+		return results.length == 0 ? null : results[0];
+	}),
+
+	_findItems : $final(function(element) {
+		if (!element.hasOwnProperty("__garaUID")) {
+			return [];
+		}
+		var result = this._doFindInputItem(element);
+		if (result != null) {
+			return [result];
+		}
+		
+		if (this._usingElementMap()) {
+			var widgetOrWidgets = null;
+			if (element.hasOwnProperty("__garaUID")
+					&& this._elementMap.hasOwnProperty(element.__garaUID)) {
+				widgetOrWidgets = this._elementMap[element.__garaUID];
+			}
+
+			if (widgetOrWidgets == null) {
+				return [];
+			} else if ($class.instanceOf(widgetOrWidgets, gara.jswt.Widget)) {
+				return [widgetOrWidgets];
+			} else {
+				return widgetOrWidgets;
+			}
+		}
+
+		return [];
+	}),
+
 	_getRawChildren : function(parent) {
 		var result = null;
 		if (parent != null) {
@@ -6918,27 +10107,122 @@ $class("StructuredViewer", {
 			}
 		}
 
-		return (result != null) ? result : [0];
+		return (result != null && $class.instanceOf(result, Array)) ? result : [];
+	},
+
+	_getItemFromElementMap : function(element) {
+		if (element == null) {
+			return null;
+		}
+		
+		var id;
+		if (typeof(element) == "object" && element.hasOwnProperty("__garaUID")) {
+			id = element.__garaUID;
+		} else {
+			id = element;
+		}
+
+		if (this._elementMap.hasOwnProperty(id)) {
+			return this._elementMap[id];
+		}
+		
+		return null;
 	},
 	
+	_getFilteredChildren : function(parent) {
+		var children = this._getRawChildren(parent);
+		this._filters.forEach(function(f, i, a) {
+			children = f.filter(this, parent, children);
+		}, this);
+		return children;
+	},
+	
+	_getSelection : function() {
+		var control = this.getControl();
+		if (control == null || control.isDisposed()) {
+			return [];
+		}
+		return this._getSelectionFromWidget();
+	},
+	
+	_getSelectionFromWidget : $abstract(function() {}),
+
 	_getSortedChildren : function(parent) {
-		return this._getRawChildren(parent);
+		var children = this._getFilteredChildren(parent);
+		if (this._sorter != null) {
+			children = this._sorter.sort(this, children);
+		}
+		return children;
+	},
+	
+	getSorter : function() {
+		if ($class.instanceOf(this._sorter, gara.jsface.ViewerSorter)) 
+			return this._sorter;
+		return null;
 	},
 
 	_getRoot : function() {
 		return this._input;
 	},
-
-	_internalRefresh : function() {},
-
-	_mapElement : function(element, item) {
-		if (this._elementMap.hasOwnProperty(element)) {
-			this._elementMap[element] = item;
+	
+	_hookControl : function(control) {
+		control.addSelectionListener(this);
+	},
+	
+	_handleSelect : function(event) {
+		control = this.getControl();
+		if (control != null && !control.isDisposed()) {
+			this._updateSelection(this._getSelection());
 		}
 	},
 
-	refresh : function(updateLabels) {
-		this._internalRefresh();
+	_internalRefresh : $abstract(function(element, updateLabels) {}),
+
+	_mapElement : function(element, item) {
+		if (this._elementMap == null) {
+			this._elementMap = {};
+		}
+		
+		// generating hash (unique-id)
+		var d = new Date();
+		var id = d.valueOf();
+
+		if (typeof(element) == "object") {
+			if (!element.hasOwnProperty("__garaUID")) {
+				element.__garaUID = id;
+			} else {
+				id = element.__garaUID;
+			}
+		} else {
+			id = element;
+		}
+
+		this._elementMap[id] = item;
+	},
+
+	refresh : function(first, second) {
+		var element, updateLabels;
+		if (typeof(first) == "boolean") {
+			updateLabels = first;
+		} else if (typeof(first) == "object") {
+			element = first;
+		}
+
+		if (typeof(second) == "boolean") {
+			updateLabels = second;
+		}
+
+		this._internalRefresh(element, updateLabels);
+	},
+	
+	setFilters : function(filters) {
+		if (filters.length == 0) {
+			this._filters = [];
+		} else {
+			filters.forEach(function(filter, i, a){
+				this.addFilter(filter);
+			}, this);
+		}
 	},
 
 	setInput : function(input) {
@@ -6946,22 +10230,55 @@ $class("StructuredViewer", {
 		this.$base(input);
 	},
 
+	setSorter : function(sorter) {
+		if (!$class.instanceOf(sorter, gara.jsface.ViewerSorter)) {
+			throw new TypeError("sorter not instance of gara.jsface.ViewerSorter");
+		}
+
+		this._sorter = sorter;
+		this.refresh();
+	},
+
 	_unmapAllElements : function() {
-		this._map.clear();
-		this._items.clear();
+		this._elementMap = {};
 	},
 
 	_unmapElement : function(element, item) {
-		if ($class.instanceOf(item, Array)) {
-			this._elementMap[element] = item;
+		if (this._elementMap == null || element == null
+				|| !(typeof(element) == "object" && element.hasOwnProperty("__garaUID"))) {
+			return;
+		}
+		
+		var id;
+		if (typeof(element) == "object" && element.hasOwnProperty("__garaUID")) {
+			id = element.__garaUID;
 		} else {
-			delete this._elementMap[element];
+			id = element;
+		}
+		
+		if ($class.instanceOf(item, Array)) {
+			this._elementMap[id] = item;
+		} else {
+			delete this._elementMap[id];
 		}
 	},
 
 	_updateItem : function(widget, element) {
 		this._doUpdateItem(widget, element);
-	}, 
+	},
+	
+	_usingElementMap : function() {
+		return this._elementMap != null;
+	},
+	
+	_updateSelection : function(selection) {
+		var event = new gara.jsface.SelectionChangedEvent(this, selection);
+		this._fireSelectionChanged(event);
+	},
+	
+	widgetSelected : function(e) {
+		this._handleSelect(e);
+	}
 });
 /*	$Id $
 
@@ -7000,9 +10317,38 @@ $class("AbstractListViewer", {
 	 * 
 	 */
 	$constructor : function() {
+		this._storedSelection = [];
 	},
 
-	_createListItem : $abstract(function(element, index) {}),
+	_createListItem : $abstract(function(element, style, index) {}),
+	
+	/* Method declared on StructuredViewer. */
+	_doFindInputItem : function(element) {
+		// compare with root
+		var root = this._getRoot();
+		if (root == null) {
+			return null;
+		}
+
+		if (root == element) {
+			return this.getControl();
+		}
+		return null;
+	},
+	
+	_doGetSelection : $abstract(function() {}),
+	
+	_doUpdateItem : function(item, element) {
+		if (item.isDisposed()) {
+			this._unmapElement(element, item);
+			return;
+		}
+
+		item.setText(this._getLabelProviderText(this.getLabelProvider(), element));
+		item.setImage(this.getLabelProvider().getImage(element));
+
+		this._associate(element, item);
+	},
 
 	getControl : $abstract(function() {}),
 
@@ -7014,64 +10360,153 @@ $class("AbstractListViewer", {
 
 		return text;
 	},
+	
+	_getSelectionFromWidget : function() {
+		var items = this._doGetSelection();
+		var list = [];
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			var e = item.getData();
+			if (e != null) {
+				list.push(e);
+			}
+		}
+		return list;
+	},
 
 	inputChanged : function(input, oldInput) {
 		this._listRemoveAll();
+		this.getControl().setSelection([]);
 
-		var children = this._getRawChildren(this._getRoot());
-		
-		for (var i = 0, len = children.length; i < len; ++i) {
-			var el = children[i];
-			this._mapElement(el, this._createListItem(el));
-		}
-		
 		this._internalRefresh();
 	},
 
-	_internalRefresh : function() {
+	_internalRefresh : function(element, updateLabels) {
+		if (element == null || element == this._getRoot()) {
+			// store selection
+			var selected = [];
+			var selection = this.getControl().getSelection();
+			for (var i = 0; i < selection.length; ++i) {
+				selected.push(selection[i].getData());
+			}
+
+			var elementChildren = this._getSortedChildren(this._getRoot());
+			var items = this.getControl().getItems();
+			var itemCount = items.length;			
+			var min = Math.min(elementChildren.length, items.length);
+			
+			
+			// dispose of items, optimizing for the case where elements have
+			// been deleted but not reordered, or all elements have been removed.
+			var numItemsToDispose = items.length - min;
+			if (numItemsToDispose > 0) {
+				var children = [];
+				for (var i = 0; i < elementChildren.length; i++) {
+					children.push(elementChildren[i]);
+				}
+	
+				var i = 0;
+				while (numItemsToDispose > 0 && i < items.length) {
+					var data = items[i].getData();
+					if (data == null || items.length - i <= numItemsToDispose || !children.contains(data)) {
+						if (data != null) {
+							this._disassociate(items[i]);
+						}
+						items[i].dispose();
+						items.removeAt(i);
+						numItemsToDispose--;
+					} else {
+						i++;
+					}
+				}
+			}
+
+			// compare first min items, and update item if necessary
+			// need to do it in two passes:
+			// 1: disassociate old items
+			// 2: associate new items
+			// because otherwise a later disassociate can remove a mapping made for
+			// a previous associate,
+			// making the map inconsistent
+			for (var i = 0; i < min; ++i) {
+				var item = items[i];
+				var oldElement = item.getData();
+				if (oldElement != null) {
+					var newElement = elementChildren[i];
+					if (newElement != oldElement) {
+						if (newElement == oldElement) {
+							// update the data to be the new element, since
+							// although the elements
+							// may be equal, they may still have different labels
+							// or elementChildren
+							var data = item.getData();
+							if (data != null) {
+								this._unmapElement(data, item);
+							}
+							item.setData(newElement);
+							this._mapElement(newElement, item);
+						} else {
+							this._disassociate(item);
+							// Clear the text and image to force a label update
+							item.setImage(null);
+							item.setText("");
+
+							if (storedSelection.contains(items[i])) {
+								storedSelection.remove(items[i]);
+							}
+						}
+					}
+				}
+			}
+
+			for (var i = 0; i < min; ++i) {
+				var item = items[i];
+				var newElement = elementChildren[i];
+				if (item.getData() == null) {
+					// old and new elements are not equal
+					this._associate(newElement, item);
+					this._updateItem(item, newElement);
+				} else {
+					// old and new elements are equal
+					if (updateLabels) {
+						this._updateItem(item, newElement);
+					}
+				}
+			}
+
+			// add any remaining elements
+			if (min < elementChildren.length) {
+				for (var i = min; i < elementChildren.length; ++i) {
+					//this._createListItem(widget, elementChildren[i], i);
+					var item = this._createListItem(elementChildren[i], gara.jswt.JSWT.DEFAULT, i);
+					this._associate(elementChildren[i], item);
+				}
+			}
+
+			// restore selection
+			var selection = [];
+			selected.forEach(function(elem, i, arr) {
+				var item = this._getItemFromElementMap(elem);
+				if (item != null) {
+					selection.push(item);
+				}
+			}, this);
+			this.getControl().update();
+			this.getControl().setSelection(selection);
+			this.getControl().update();
+		} else {
+			var item = this._getItemFromElementMap(element);
+			if (item != null) {
+				this._updateItem(item, element);
+			}
+		}
+		
 		this.getControl().update();
-		this.getControl().setSelection([]);
 	},
 
 	_listRemoveAll : $abstract(function() {}),
 
-	_listSetItems : $abstract(function() {}),
-
-	refresh : function() {
-		var children = this._getRawChildren(this._getRoot());
-		var handledChildren = [];
-
-		for (var i = 0, len = children.length; i < len; ++i) {
-			var el = children[i];
-
-			// add item
-			if (!this._map.contains(el)) {
-				this._mapElement(el, this._createListItem(el, i));
-			}
-			// update
-			else {
-				var item = this._items[this._map.indexOf(el)];
-				item.setText(this._getLabelProviderText(this.getLabelProvider(), el));
-				item.setImage(this.getLabelProvider().getImage(el));
-			}
-			handledChildren.push(el);
-		}
-
-		// delete loop
-		for (var i = 0, len = this._map.length; i < len; ++i) {
-			var el = this._map[i];
-
-			// delete item in the widget
-			if (!handledChildren.contains(el)) {
-				this.getControl().remove(i);
-				this._unmapElement(el);
-			}
-		}
-
-		delete handledChildren;
-
-		this._internalRefresh();
-	}
+	_listSetItems : $abstract(function() {})
 });
 /*	$Id $
 
@@ -7104,18 +10539,27 @@ $class("AbstractListViewer", {
  */
 $class("ListViewer", {
 	$extends : gara.jsface.AbstractListViewer,
-	
+
 	$constructor : function(parent, style) {
-		this._list = new gara.jswt.List(parent, style);
+		if ($class.instanceOf(parent, gara.jswt.List)) {
+			this._list = parent;
+		} else {
+			this._list = new gara.jswt.List(parent, style);
+		}
+		this._hookControl(this._list);
 	},
-	
-	_createListItem : function(el, index) {
-		var item = new gara.jswt.ListItem(this._list, gara.jswt.JSWT.DEFAULT, index);
+
+	_createListItem : function(el, style, index) {
+		var item = new gara.jswt.ListItem(this._list, style, index);
 		item.setText(this._getLabelProviderText(this.getLabelProvider(), el));
 		item.setImage(this.getLabelProvider().getImage(el));
 		item.setData(el);
 		
 		return item;
+	},
+	
+	_doGetSelection : function() {
+		return this._list.getSelection();
 	},
 	
 	getControl : function() {
@@ -7174,10 +10618,6 @@ $class("ColumnViewer", {
 	},
 
 	_createViewerColumn : function(columnOwner, labelProvider) {
-		if (!$class.instanceOf(columnOwner, gara.jswt.TableColumn)) {
-			throw new TypeError("columnOwner not instance of gara.jswt.TableColumn");
-		}
-
 		if (!$class.instanceOf(labelProvider, gara.jsface.CellLabelProvider)) {
 			throw new TypeError("labelProvider not instance of gara.jsface.CellLabelProvider");
 		}
@@ -7186,20 +10626,20 @@ $class("ColumnViewer", {
 		column.setLabelProvider(labelProvider, false);
 		return column;
 	},
+	
+	_getColumnViewerOwner : $abstract(function(columnIndex) {}),
 
 	_getViewerColumn : function(columnIndex) {
-		var viewer;
 		var columnOwner = this._getColumnViewerOwner(columnIndex);
 
 		if (columnOwner == null) {
 			return null;
 		}
 
-		viewer = columnOwner.getData(gara.jsface.ViewerColumn.COLUMN_VIEWER_KEY);
+		var viewer = columnOwner.getData(gara.jsface.ViewerColumn.COLUMN_VIEWER_KEY);
 
 		if (viewer == null) {
-			viewer = this._createViewerColumn(columnOwner, gara.jsface.CellLabelProvider
-					.createViewerLabelProvider(this.getLabelProvider()));
+			viewer = this._createViewerColumn(columnOwner, gara.jsface.CellLabelProvider.createViewerLabelProvider(this.getLabelProvider()));
 		}
 
 		return viewer;
@@ -7213,12 +10653,28 @@ $class("ColumnViewer", {
 			|| $class.instanceOf(labelProvider, gara.jsface.CellLabelProvider))) {
 			throw new TypeError("labelProvider is not instance of either gara.jsface.ITableLabelProvider, gara.jsface.ILabelProvider or gara.jsface.CellLabelProvider");
 		}
+		
+		this._updateColumnParts(labelProvider);
 
 		this.$base(labelProvider);
 	},
 
 	toString : function() {
 		return "[gara.jsface.ColumnViewer]";
+	},
+
+	_updateCell : function(rowItem, column, element) {
+		this._cell.update(rowItem, column, element);
+		return this._cell;
+	},
+
+	_updateColumnParts : function(labelProvider) {
+		var column, i = 0;
+
+		while ((column = this._getViewerColumn(i++)) != null) {
+			column.setLabelProvider(gara.jsface.CellLabelProvider
+					.createViewerLabelProvider(labelProvider), false);
+		}
 	}
 });
 /*	$Id $
@@ -7260,13 +10716,98 @@ $class("AbstractTreeViewer", {
 	$constructor : function() {
 	},
 	
-	_createTreeItem : $abstract(function(element) {}),
-	
-	_doUpdateItem : function(widget, element) {
-
+	_createTreeItem : function (parent, element, index) {
+		var item = this._newItem(parent, gara.jswt.JSWT.NULL, index);
+		this._updateItem(item, element);
 	},
 	
+	_disassociate : function(item) {
+		this.$base(item);
+		this._disassociateChildren(item);
+	},
+	
+	_disassociateChildren : function(item) {
+		var items = this._getChildren(item);
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].getData() != null) {
+				this._disassociate(items[i]);
+			}
+		}
+	},
+	
+	_doGetColumnCount : function() {
+		return 0;
+	},
+	
+	_doGetSelection : $abstract(function() {}),
+	
+	/* Method declared on StructuredViewer. */
+	_doFindInputItem : function(element) {
+		// compare with root
+		var root = this._getRoot();
+		if (root == null) {
+			return null;
+		}
+
+		if (root == element) {
+			return this.getControl();
+		}
+		return null;
+	},
+
+	/* Method declared on StructuredViewer. */
+	_doFindItem : function(element) {
+		// compare with root
+		var root = getRoot();
+		if (root == null) {
+			return null;
+		}
+
+		var items = this._getChildren(this.getControl());
+		if (items != null) {
+			for (var i = 0; i < items.length; i++) {
+				var o = this._internalFindItem(items[i], element);
+				if (o != null) {
+					return o;
+				}
+			}
+		}
+		return null;
+	},
+	
+	_doUpdateItem : function(item, element) {
+		if (item.isDisposed()) {
+			this._unmapElement(element, item);
+			return;
+		}
+
+		var viewerRowFromItem = this._getViewerRowFromItem(item);
+		var columnCount = this._doGetColumnCount();
+		if (columnCount == 0) // If no columns are created then fake one
+			columnCount = 1;
+
+		for (var column = 0; column < columnCount; column++) {
+			var columnViewer = this._getViewerColumn(column);
+			var cellToUpdate = this._updateCell(viewerRowFromItem, column, element);
+			
+			columnViewer.refresh(cellToUpdate);
+
+			// As it is possible for user code to run the event
+			// loop check here.
+			if (item.isDisposed()) {
+				this._unmapElement(element, item);
+				return;
+			}
+		}
+		
+		this._associate(element, item);
+	},
+
+	_getChildren : $abstract(function() {}),
+
 	getControl : $abstract(function() {}),
+	
+	_getExpanded : $abstract(function(item) {}),
 
 	_getLabelProviderText : function(labelProvider, element) {
 		var text = labelProvider.getText(element);
@@ -7276,80 +10817,232 @@ $class("AbstractTreeViewer", {
 
 		return text;
 	},
+	
+	_getRawChildren : function(parent) {
+		var cp = this.getContentProvider();
+		if (parent == this._getRoot()) {
+			return this.$base(parent);
+		} else if ($class.instanceOf(cp, gara.jsface.ITreeContentProvider)) {
+			var result = cp.getChildren(parent);
+			if (result != null) {
+				return result;
+			}
+		}
+		
+		return [];
+	},
+
+	_getSelectionFromWidget : function() {
+		var items = this._doGetSelection();
+		var list = [];
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			var e = item.getData();
+			if (e != null) {
+				list.push(e);
+			}
+		}
+		return list;
+	},
 
 	inputChanged : function(input, oldInput) {
 		this._treeRemoveAll();
-
-		var children = this._getRawChildren(this._getRoot());
-
-		for (var i = 0; i < children.length; ++i) {
-			var el = children[i];
-			this._createTreeItem(this.getControl(), el, i);
-		}
-
 		this._internalRefresh();
 	},
+	
+	_internalFindItem : function(parent, element) {
+		// compare with node
+		var data = parent.getData();
+		if (data != null) {
+			if (data == element) {
+				return parent;
+			}
+		}
+ 
+		// recurse over children
+		var items = this._getChildren(parent);
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			var w = this._internalFindItem(item, element);
+			if (w != null) {
+				return w;
+			}
+		}
+		return null;
+	},
 
-	_internalRefresh : function() {
+	_internalRefresh : function(element, updateLabels) {
+		var test;
+		// save selected elements
+		var selected = [];
+		var selection = this.getControl().getSelection();
+		for (var i = 0; i < selection.length; ++i) {
+			selected.push(selection[i].getData());
+		}
+		
+		if (element == null || element == this._getRoot()) {
+			this._internalRefreshItems(this.getControl(), this._getRoot(), updateLabels);
+		} else {
+			var items = this._findItems(element);
+			if (items.length != 0) {
+				for (var i = 0; i < items.length; i++) {
+					this._internalRefreshItems(items[i], element, updateLabels);
+				}
+			}
+		}
+
+		// restore selection
+		var selection = [];
+		selected.forEach(function(elem, i, arr) {
+			var item = this._getItemFromElementMap(elem);
+			if (item != null) {
+				selection.push(item);
+			}
+		}, this);
+		this.getControl().update();
+		this.getControl().setSelection(selection);
 		this.getControl().update();
 	},
-
+	
+	_internalRefreshItems : function(widget, element, updateLabels) {
+		this._updateChildren(widget, element, updateLabels);
+		var children = this._getChildren(widget);
+		if (children != null) {
+			for (var i = 0; i < children.length; i++) {
+				var item = children[i];
+				var data = item.getData();
+				if (data != null) {
+					this._internalRefreshItems(item, data, updateLabels);
+				}
+			}
+		}
+	},
+	
+	_newItem : $abstract(function(parent, style, index) {}),
+	
+	_setExpanded : $abstract(function(item, expanded) {}),
+	
 	_treeRemoveAll : $abstract(function() {}),
 	
-	refresh : function() {
-		var children = this._getRawChildren(this._getRoot());
-		var handledChildren = [];
+	_updateChildren : function(widget, parent, updateLabels) {
+		var elementChildren = this._getSortedChildren(parent);
+		var tree = this.getControl();
+		var items = this._getChildren(widget);
 
-		// adding and updating recursively
-		this._refreshItems(children, handledChildren);		
+		// save the expanded elements
+		var expanded = [];
 
-		// delete loop
-		var tmpMap = this._map.concat([]);
-		for (var i = 0, len = tmpMap.length; i < len; ++i) {
-			var el = tmpMap[i];
-
-			// delete item in the widget
-			if (!handledChildren.contains(el)) {
-				var item = this._items[tmpMap.indexOf(el)];
-				var parent = item.getParentItem();
-				if (parent == null) {
-					parent = item.getParent();
+		for (var i = 0; i < items.length; ++i) {
+			if (this._getExpanded(items[i])) {
+				var element = items[i].getData();
+				if (element != null) {
+					expanded.push(element);
 				}
-				parent.remove(parent.indexOf(item));
-				this._unmapElement(el);
 			}
 		}
 
-		delete handledChildren;
-		delete tmpMap;
-
-		this._internalRefresh();
-	},
-
-	// @TODO: instead of refreshItems => refresh(parentNode)
-	_refreshItems : function(children, handledCollector) {
-		for (var i = 0, len = children.length; i < len; ++i) {
-			var el = children[i];
-
-			// add item
-			if (!this._map.contains(el)) {
-				var parent = this.getContentProvider().getParent(el);
-				var item = this._items[this._map.indexOf(parent)];
-				this._createTreeItem(item, el, i);
+		var min = Math.min(elementChildren.length, items.length);
+		// dispose of surplus items, optimizing for the case where elements have
+		// been deleted but not reordered, or all elements have been removed.
+		var numItemsToDispose = items.length - min;
+		if (numItemsToDispose > 0) {
+			var children = [];
+			for (var i = 0; i < elementChildren.length; i++) {
+				children.push(elementChildren[i]);
 			}
-			// update
-			else {
-				var item = this._items[this._map.indexOf(el)];
-				item.setText(this._getLabelProviderText(this.getLabelProvider(), el));
-				item.setImage(this.getLabelProvider().getImage(el));
-			}
-			handledCollector.push(el);
 
-			// refresh childs
-			if (this.getContentProvider().hasChildren(el)) {
-				this._refreshItems(this.getContentProvider().getChildren(el), handledCollector);
+			var i = 0;
+			while (numItemsToDispose > 0 && i < items.length) {
+				var data = items[i].getData();
+				if (data == null || items.length - i <= numItemsToDispose || !children.contains(data)) {
+					if (data != null) {
+						this._disassociate(items[i]);
+					}
+					items[i].dispose();
+					items.removeAt(i);
+					numItemsToDispose--;
+				} else {
+					i++;
+				}
 			}
 		}
+		
+		// compare first min items, and update item if necessary
+		// need to do it in two passes:
+		// 1: disassociate old items
+		// 2: associate new items
+		// because otherwise a later disassociate can remove a mapping made for
+		// a previous associate,
+		// making the map inconsistent
+		for (var i = 0; i < min; ++i) {
+			var item = items[i];
+			var oldElement = item.getData();
+			if (oldElement != null) {
+				var newElement = elementChildren[i];
+				if (newElement == oldElement) {
+					// update the data to be the new element, since
+					// although the elements
+					// may be equal, they may still have different labels
+					// or children
+					var data = item.getData();
+					if (data != null) {
+						this._unmapElement(data, item);
+					}
+					item.setData(newElement);
+					this._mapElement(newElement, item);
+				} else {
+					this._disassociate(item);
+					// Clear the text and image to force a label update
+					item.setImage(null);
+					item.setText("");
+				}
+			}
+		}
+
+		for (var i = 0; i < min; ++i) {
+			var item = items[i];
+			var newElement = elementChildren[i];
+			if (item.getData() == null) {
+				// old and new elements are not equal
+				this._associate(newElement, item);
+				this._updateItem(item, newElement);
+			} else {
+				// old and new elements are equal
+				if (updateLabels) {
+					this._updateItem(item, newElement);
+				}
+			}
+		}
+
+		// Restore expanded state for items that changed position.
+		for (var i = 0; i < min; ++i) {
+			var item = items[i];
+			var newElement = elementChildren[i];
+			this._setExpanded(item, expanded.contains(newElement));
+		}
+
+		// add any remaining elements
+		if (min < elementChildren.length) {
+			for (var i = min; i < elementChildren.length; ++i) {
+				this._createTreeItem(widget, elementChildren[i], i);
+			}
+
+			// Need to restore expanded state in a separate pass
+			// because createTreeItem does not return the new item.
+			// Avoid doing this unless needed.
+			if (expanded.length > 0) {
+				// get the items again, to include the new items
+				items = this._getChildren(widget);
+				for (var i = min; i < elementChildren.length; ++i) {
+					// Restore expanded state for items that changed position.
+					// Only need to call setExpanded if element was expanded
+					if (expanded.contains(elementChildren[i])) {
+						this._setExpanded(items[i], true);
+					}
+				}
+			}
+		}
+
 	},
 
 	setContentProvider : function(contentProvider) {
@@ -7392,37 +11085,94 @@ $class("TreeViewer", {
 	$extends : gara.jsface.AbstractTreeViewer,
 
 	$constructor : function(parent, style) {
-		this._tree = new gara.jswt.Tree(parent, style);
+		if ($class.instanceOf(parent, gara.jswt.Tree)) {
+			this._tree = parent;
+		} else {
+			this._tree = new gara.jswt.Tree(parent, style);
+		}
+		this._hookControl(this._tree);
+		this._cachedRow = null;
 	},
-
-	_createTreeItem : function(parent, el, index) {
-		var item = new gara.jswt.TreeItem(parent, gara.jswt.JSWT.DEFAULT, index);
-		item.setText(this._getLabelProviderText(this.getLabelProvider(), el));
-		item.setImage(this.getLabelProvider().getImage(el));
-		item.setData(el);
-
-		this._mapElement(el, item);
-
-		if (this.getContentProvider().hasChildren(el)) {
-			var children = this.getContentProvider().getChildren(el);
-			for (var i = 0, len = children.length; i < len; ++i) {
-				this._createTreeItem(item, children[i], i);
+	
+	_createNewRowPart : function(parent, style, rowIndex) {
+		if (parent == null) {
+			if (rowIndex >= 0) {
+				return this._getViewerRowFromItem(new gara.jswt.TreeItem(this._tree, style, rowIndex));
 			}
+			return this._getViewerRowFromItem(new gara.jswt.TreeItem(this._tree, style));
 		}
 
-		return item;
+		if (rowIndex >= 0) {
+			return this._getViewerRowFromItem(new gara.jswt.TreeItem(parent.getItem(), gara.jswt.JSWT.NONE, rowIndex));
+		}
+
+		return this._getViewerRowFromItem(new gara.jswt.TreeItem(parent.getItem(), gara.jswt.JSWT.NONE));
+	},
+
+	_getColumnViewerOwner : function(columnIndex) {
+		if (columnIndex < 0 || (columnIndex > 0 && columnIndex >= this._tree.getColumnCount())) {
+			return null;
+		}
+
+		if (this._tree.getColumnCount() == 0)// Hang it off the table if it
+			return this._tree;
+
+		return this._tree.getColumn(columnIndex);
+	},
+	
+	doGetColumnCount : function() {
+		return this._tree.getColumnCount();
+	},
+	
+	_doGetSelection : function() {
+		return this._tree.getSelection();
+	},
+	
+	_getChildren : function(widget) {
+		if ($class.instanceOf(widget, gara.jswt.TreeItem)
+				|| $class.instanceOf(widget, gara.jswt.Tree)) {
+			return widget.getItems().concat([]);
+		}
+		return null;
 	},
 
 	getControl : function() {
 		return this._tree;
 	},
 	
+	_getExpanded : function(item) {
+		return item.getExpanded();
+	},
+	
 	_getViewerRowFromItem : function(item) {
-		return null;
+		if( this._cachedRow == null ) {
+			this._cachedRow = new gara.jsface.TreeViewerRow(item);
+		} else {
+			this._cachedRow.setItem(item);
+		}
+		
+		return this._cachedRow;
 	},
 
 	getTree : function() {
 		return this._tree;
+	},
+	
+	_newItem : function(parent, style, index) {
+		var item;
+
+		if ($class.instanceOf(parent, gara.jswt.TreeItem)) {
+			item = this._createNewRowPart(this._getViewerRowFromItem(parent),
+					style, index).getItem();
+		} else {
+			item = this._createNewRowPart(null, style, index).getItem();
+		}
+
+		return item;
+	},
+	
+	_setExpanded : function(item, expanded) {
+		item.setExpanded(expanded);
 	},
 
 	_treeRemoveAll : function() {
@@ -7468,6 +11218,20 @@ $class("AbstractTableViewer", {
 	_createItem : function(element, index) {
 		this._updateItem(this._internalCreateNewRowPart(gara.jswt.JSWT.NONE, index).getItem(), element);
 	},
+	
+	/* Method declared on StructuredViewer. */
+	_doFindInputItem : function(element) {
+		// compare with root
+		var root = this._getRoot();
+		if (root == null) {
+			return null;
+		}
+
+		if (root == element) {
+			return this.getControl();
+		}
+		return null;
+	},
 
 	_doClear : $abstract(function(index) {}),
 
@@ -7477,6 +11241,8 @@ $class("AbstractTableViewer", {
 
 	_doGetItems : $abstract(function() {}),
 	
+	_doGetSelection : $abstract(function() {}),
+
 	_doRemoveRange : $abstract(function(from, to) {}),
 
 	_doUpdateItem : function(widget, element) {
@@ -7526,13 +11292,26 @@ $class("AbstractTableViewer", {
 		return this._doGetColumn(columnIndex);
 	},
 	
+	_getSelectionFromWidget : function() {
+		var items = this._doGetSelection();
+		var list = [];
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			var e = item.getData();
+			if (e != null) {
+				list.push(e);
+			}
+		}
+		return list;
+	},
+
 	inputChanged : function(input, oldInput) {
 		this._internalRefresh();
 	},
 
 	_internalCreateNewRowPart : $abstract(function(style, index){}),
 
-	_internalRefresh : function(element) {
+	_internalRefresh : function(element, updateLabels) {
 		if (element == null || element == this._getRoot()) {
 			this._internalRefreshAll();
 		} else {
@@ -7583,12 +11362,8 @@ $class("AbstractTableViewer", {
 		for (var i = min; i < children.length; ++i) {
 			this._createItem(children[i], i);
 		}
-	},
-
-	_updateCell : function(rowItem, column, element) {
-		this._cell.update(rowItem, column, element);
-		return this._cell;
 	}
+
 });
 /*	$Id $
 
@@ -7623,7 +11398,12 @@ $class("TableViewer", {
 	$extends : gara.jsface.AbstractTableViewer,
 	
 	$constructor : function(parent, style) {
-		this._table = new gara.jswt.Table(parent, style);
+		if ($class.instanceOf(parent, gara.jswt.Table)) {
+			this._table = parent;
+		} else {
+			this._table = new gara.jswt.Table(parent, style);
+		}
+		this._hookControl(this._table);
 	},
 	
 	_doClear : function(index) {
@@ -7640,6 +11420,10 @@ $class("TableViewer", {
 	
 	_doGetItems : function() {
 		return this._table.getItems();
+	},
+	
+	_doGetSelection : function() {
+		return this._table.getSelection();
 	},
 	
 	_doRemoveRange : function(from, to) {
@@ -7717,40 +11501,235 @@ $class("TableViewer", {
 */
 
 /**
- * @class Viewer
- * @author Thomas Gossmann
+ * @class CheckboxListViewer
+ * @extends gara.jsface.ListViewer
  * @namespace gara.jsface
+ * @author Thomas Gossmann
  */
-$class("Viewer", {
-	/**
-	 * @constructor
-	 */
-	$constructor : function() {
-		
+$class("CheckboxListViewer", {
+	$extends : gara.jsface.ListViewer,
+	
+	$implements : [gara.jsface.ICheckable],
+	
+	$constructor : function(list) {
+		if (!$class.instanceOf(list, gara.jswt.List)) {
+			throw new TypeError("list not instance of gara.jswt.List");
+		}
+		this._checkStateListener = [];
+		this.$base(list);
 	},
 
-	getControl : $abstract(function() {}),
+	newCheckList : $static(function(parent, style) {
+		var list = new gara.jswt.List(parent, style | gara.jswt.JSWT.CHECK);
+		return new gara.jsface.CheckboxListViewer(list);
+	}),
+	
+	_fireCheckStateChanged : function(event) {
+		this._checkStateListener.forEach(function(listener, index, arr) {
+			listener.checkStateChanged(event);
+		});
+	},
 
-	getInput : $abstract(function() {}),
+	addCheckStateListener : function(listener) {
+		if (!$class.instanceOf(listener, gara.jsface.ICheckStateListener)) {
+			throw new TypeError("listener not instance of gara.jsface.ICheckStateListener");
+		}
+		
+		if (!this._checkStateListener.contains(listener)) {
+			this._checkStateListener.push(listener);
+		}
+	},
+
+	getChecked : function(element) {
+		var item = this._getItemFromElementMap(element);
+		if (item != null) {
+			return item.getChecked();
+		}
+		return null;		
+	},
 
 	/**
-	 * Internal hook Method called when the input to this viewer is
-     * initially set or subsequently changed.
+     * Returns a list of elements corresponding to checked table items in this
+     * viewer.
      * <p>
-     * The default implementation does nothing. Subclassers may override 
-     * this method to do something when a viewer's input is set.
-     * A typical use is populate the viewer.
+     * This method is typically used when preserving the interesting
+     * state of a viewer; <code>setCheckedElements</code> is used during the restore.
      * </p>
-     * 
-     * @param input the new input of this viewer, or <code>null</code> if none
-     * @param oldInput the old input element or <code>null</code> if there
-     *   was previously no input
-	 */
-	inputChange : function(input, oldInput) {},
+     *
+     * @return {Array} the array of checked elements
+     */
+	getCheckedElements : function() {
+		var items = this._list.getItems();
+		var checkedItems = [];
+		items.forEach(function(item, index, arr) {
+			if (item.getChecked()) {
+				checkedItems.push(item.getData());
+			}
+		}, this);
+		return checkedItems;
+	},
 
-	refresh : $abstract(function() {}),
+	/**
+     * Returns the grayed state of the given element.
+     *
+     * @param {object} element the element
+     * @return {boolean} <code>true</code> if the element is grayed,
+     *   and <code>false</code> if not grayed
+     */
+	getGrayed : function(element) {
+		var item = this._getItemFromElementMap(element);
+		if (item != null) {
+			return item.getGrayed();
+		}
+		return null;
+	},
 
-	setInput : $abstract(function(input) {})
+	/**
+     * Returns a list of elements corresponding to grayed nodes in this
+     * viewer.
+     * <p>
+     * This method is typically used when preserving the interesting
+     * state of a viewer; <code>setGrayedElements</code> is used during the restore.
+     * </p>
+     *
+     * @return {Array} the array of grayed elements
+     */
+	getGrayedElements : function() {
+		var items = this._list.getItems();
+		var checkedItems = [];
+		items.forEach(function(item, index, arr) {
+			if (item.getGrayed()) {
+				checkedItems.push(item.getData());
+			}
+		}, this);
+		return checkedItems;
+	},
+
+	_handleSelect : function(event) {
+		this.$base(event);
+		
+		if (event.garaDetail && event.garaDetail == gara.jswt.JSWT.CHECK) {
+			var item = event.item;
+			var data = item.getData();
+			if (data != null) {
+				// negated state, because state changes after mouseup and we are in mousedown event
+				this._fireCheckStateChanged(new gara.jsface.CheckStateChangedEvent(this, data, !item.getChecked()));
+			}
+		}
+	},
+
+	removeCheckStateListener : function(listener){
+		if (!$class.instanceOf(listener, gara.jsface.ICheckStateListener)) {
+			throw new TypeError("listener not instance of gara.jsface.ICheckStateListener");
+		}
+		
+		this._checkStateListener.remove(listener);
+	},
+
+	/**
+     * Sets to the given value the checked state for all elements in this viewer.
+     *
+     * @param {boolean} state <code>true</code> if the element should be checked,
+     *  and <code>false</code> if it should be unchecked
+     */
+    setAllChecked : function(state) {
+        var items = this._list.getItems();
+		items.forEach(function(item, index, arr) {
+			item.setChecked(state);
+		}, this);
+    },
+
+    /**
+     * Sets to the given value the grayed state for all elements in this viewer.
+     *
+     * @param {boolean} state <code>true</code> if the element should be grayed,
+     *  and <code>false</code> if it should be ungrayed
+     */
+    setAllGrayed : function(state) {
+        var items = this._list.getItems();
+		items.forEach(function(item, index, arr) {
+			item.setGrayed(state);
+		}, this);
+    },
+
+	setChecked : function(element, checked) {
+		var item = this._getItemFromElementMap(element);
+		if (item != null) {
+			item.setChecked(checked);
+			return true;
+		}
+		return false;
+	},
+	
+	/**
+     * Sets which nodes are checked in this viewer.
+     * The given list contains the elements that are to be checked;
+     * all other nodes are to be unchecked.
+     * <p>
+     * This method is typically used when restoring the interesting
+     * state of a viewer captured by an earlier call to <code>getCheckedElements</code>.
+     * </p>
+     *
+     * @param {Array} elements the list of checked elements (element type: <code>Object</code>)
+     */
+    setCheckedElements : function(elements) {
+		var items = this._list.getItems();
+		items.forEach(function(item, index, arr) {
+			var element = item.getData();
+			if (element != null) {
+				var check = elements.contains(element);
+				// only set if different, to avoid flicker
+				if (item.getChecked() != check) {
+				    item.setChecked(check);
+				}
+			}
+		});
+	},
+
+	/**
+     * Sets the grayed state for the given element in this viewer.
+     *
+     * @param {object} element the element
+     * @param {boolean} state <code>true</code> if the item should be grayed,
+     *  and <code>false</code> if it should be ungrayed
+     * @return {boolean} <code>true</code> if the element is visible and the gray
+     *  state could be set, and <code>false</code> otherwise
+     */
+	setGrayed : function(element, grayed) {
+		var item = this._getItemFromElementMap(element);
+		if (item != null) {
+			item.setGrayed(grayed);
+			return true;
+		}
+		return false;
+	},
+	
+	/**
+     * Sets which nodes are grayed in this viewer.
+     * The given list contains the elements that are to be grayed;
+     * all other nodes are to be ungrayed.
+     * <p>
+     * This method is typically used when restoring the interesting
+     * state of a viewer captured by an earlier call to <code>getGrayedElements</code>.
+     * </p>
+     *
+     * @param elements the array of grayed elements
+     *
+     * @see #getGrayedElements
+     */
+	setGrayedElements : function(elements) {
+		var items = this._list.getItems();
+		items.forEach(function(item, index, arr) {
+			var element = item.getData();
+			if (element != null) {
+				var check = elements.contains(element);
+				// only set if different, to avoid flicker
+				if (item.getGrayed() != check) {
+				    item.setGrayed(check);
+				}
+			}
+		});
+	},
 });
 /*	$Id $
 
@@ -7862,12 +11841,10 @@ $class("ViewerCell", {
 
 /**
  * @class ViewerColumn
- * @extends gara.jsface.ColumnViewer
  * @namespace gara.jsface
  * @author Thomas Gossmann
  */
 $class("ViewerColumn", {
-	$extends : gara.jsface.ColumnViewer,
 
 	COLUMN_VIEWER_KEY : $static("jsface.columnViewer"),
 
@@ -7889,7 +11866,7 @@ $class("ViewerColumn", {
 		if (!$class.instanceOf(columnOwner, gara.jswt.Widget)) {
 			throw new TypeError("columnOwner not instance of gara.jswt.Widget");
 		}
-		
+
 		columnOwner.setData(this.COLUMN_VIEWER_KEY, this);
 		this._labelProvider = null;
 	},
@@ -7911,12 +11888,13 @@ $class("ViewerColumn", {
 	 * 
 	 * @param {gara.jsface.CellLabelProvider} labelProvider
 	 *            the new CellLabelProvider
+	 * @param {bool} registerListener
+	 *            wether a listener should registered on the labelProvider or not
 	 */
-	setLabelProvider : function(labelProvider) {
+	setLabelProvider : function(labelProvider, registerListener) {
 		if (!$class.instanceOf(labelProvider, gara.jsface.CellLabelProvider)) {
 			throw new TypeError("labelProvider not instance of gara.jsface.CellLabelProvider");
 		}
-
 		this._labelProvider = labelProvider;
 	},
 
@@ -8074,6 +12052,450 @@ $class("TableViewerRow", {
 		this._item = item;
 	}
 });
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class TreeViewerRow
+ * @extends gara.jsface.ViewerRow
+ * @namespace gara.jsface
+ * @author Thomas Gossmann
+ */
+$class("TreeViewerRow", {
+	$extends : gara.jsface.ViewerRow,
+
+	$constructor : function(item) {
+		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
+			throw new TypeError("item is not instance of gara.jswt.TreeItem");
+		}
+		this._item = item;
+	},
+
+	getItem : function() {
+		return this._item;
+	},
+
+	getColumnCount : function() {
+		return this._item.getParent().getColumnCount();		
+	},
+
+	getImage : function(columnIndex) {
+		return this._item.getImage(columnIndex);
+	},
+
+	getText : function(columnIndex) {
+		return this._item.getText(columnIndex);
+	},
+
+	getElement : function() {
+		return this._item.getData();
+	},
+
+	getControl : function() {
+		return this._item.getParent();
+	},
+
+	setText : function(columnIndex, text) {
+		this._item.setText(columnIndex, text == null ? "" : text);
+	},
+
+	setImage : function(columnIndex, image) {
+		var oldImage = this._item.getImage(columnIndex);
+		if (oldImage != image) {
+			this._item.setImage(columnIndex, image);
+		}
+	},
+
+	setItem : function(item) {
+		if (!$class.instanceOf(item, gara.jswt.TreeItem)) {
+			throw new TypeError("item is not instance of gara.jswt.TreeItem");
+		}
+		this._item = item;
+	}
+});
+
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class ViewerComparator
+ * @namespace gara.jsface
+ * @author Thomas Gossmann
+ */
+$class("ViewerComparator", {
+
+	$constructor : function() {
+	},
+
+	/**
+     * Returns the category of the given element. The category is a
+     * number used to allocate elements to bins; the bins are arranged
+     * in ascending numeric order. The elements within a bin are arranged
+     * via a second level sort criterion.
+     * <p>
+     * The default implementation of this framework method returns
+     * <code>0</code>. Subclasses may reimplement this method to provide
+     * non-trivial categorization.
+     * </p>
+     *
+     * @param {object} element the element
+     * @return the category
+     */
+	category : function(element) {
+        return 0;
+	},
+
+	/**
+     * Returns a negative, zero, or positive number depending on whether
+     * the first element is less than, equal to, or greater than
+     * the second element.
+     * <p>
+     * The default implementation of this method is based on
+     * comparing the elements' categories as computed by the <code>category</code>
+     * framework method. Elements within the same category are further 
+     * subjected to a case insensitive compare of their label strings, either
+     * as computed by the content viewer's label provider, or their 
+     * <code>toString</code> values in other cases. Subclasses may override.
+     * </p>
+     * 
+     * @param {gara.jsface.Viewer} viewer the viewer
+     * @param {object} e1 the first element
+     * @param {object} e2 the second element
+     * @return a negative number if the first element is less  than the 
+     *  second element; the value <code>0</code> if the first element is
+     *  equal to the second element; and a positive number if the first
+     *  element is greater than the second element
+     */
+    compare : function(e1, e2) {
+		var a = e1.toString().toLowerCase();
+		var b = e2.toString().toLowerCase();
+
+		if (a < b) {
+			return -1;
+		} else if (a > b) {
+			return 1;
+		}
+
+		return 0;
+	},
+
+	/**
+     * Returns whether this viewer sorter would be affected 
+     * by a change to the given property of the given element.
+     * <p>
+     * The default implementation of this method returns <code>false</code>.
+     * Subclasses may reimplement.
+     * </p>
+     *
+     * @param {object} element the element
+     * @param {string} property the property
+     * @return <code>true</code> if the sorting would be affected,
+     *    and <code>false</code> if it would be unaffected
+     */
+    isSorterProperty : function(element, property) {
+        return false;
+    },
+
+	/**
+     * Sorts the given elements in-place, modifying the given array.
+     * <p>
+     * The default implementation of this method uses the 
+     * Array#sort algorithm on the given array, 
+     * calling <code>compare</code> to compare elements.
+     * </p>
+     * <p>
+     * Subclasses may reimplement this method to provide a more optimized implementation.
+     * </p>
+     *
+     * @param {gara.jsface.Viewer} viewer the viewer
+     * @param {object[]} elements the elements to sort
+     */
+    sort : function(viewer, elements) {
+		console.log("sort");
+		return elements.sort(this.compare);
+    },
+
+	toString : function() {
+		return "[gara.jsface.ViewerComparator]";
+	}
+});
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class ViewerSorter
+ * @namespace gara.jsface
+ * @extends gara.jsface.ViewerComparator
+ * @author Thomas Gossmann
+ */
+$class("ViewerSorter", {
+	$extends : gara.jsface.ViewerComparator,
+
+	$constructor : function() {
+	},
+
+	toString : function() {
+		return "[gara.jsface.ViewerSorter]";
+	}
+});
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class ViewerFilter
+ * @namespace gara.jsface
+ * @author Thomas Gossmann
+  */
+$class("ViewerFilter", {
+	
+	/**
+	 * @constructor
+	 */
+	$constructor : function() {
+	},
+	
+	/**
+     * Filters the given elements for the given viewer.
+     * The input array is not modified.
+     * <p>
+     * The default implementation of this method calls 
+     * <code>select</code> on each element in the array, 
+     * and returns only those elements for which <code>select</code>
+     * returns <code>true</code>.
+     * </p>
+     * @param {gara.jsface.Viewer} viewer the viewer
+     * @param {object} parent the parent element
+     * @param {object[]} elements the elements to filter
+     * @return {object[]} the filtered elements
+     */
+    filter : function(viewer, parent, elements) {
+        out = [];
+		elements.forEach(function(elem, index, arr){
+			if (this.select(viewer, parent, elem)) {
+				out.push(elem);
+			}
+		}, this);
+
+        return out;
+    },
+    
+    /**
+     * Returns whether this viewer filter would be affected 
+     * by a change to the given property of the given element.
+     * <p>
+     * The default implementation of this method returns <code>false</code>.
+     * Subclasses should reimplement.
+     * </p>
+     *
+     * @param {object} element the element
+     * @param {String} property the property
+     * @return <code>true</code> if the filtering would be affected,
+     *    and <code>false</code> if it would be unaffected
+     */
+    isFilterProperty : function(element, property) {
+        return false;
+    },
+
+    /**
+     * Returns whether the given element makes it through this filter.
+     *
+     * @param {gara.jsface.Viewer} viewer the viewer
+     * @param {object} parentElement the parent element
+     * @param {object} element the element
+     * @return {boolean} <code>true</code> if element is included in the
+     *   filtered set, and <code>false</code> if excluded
+     */
+    select : $abstract(function(viewer, parentElement, element){}),
+
+	toString : function() {
+		return "[gara.jsface.ViewerFilter]";
+	}
+});
+/*	$Id $
+
+		gara - Javascript Toolkit
+	===========================================================================
+
+		Copyright (c) 2007 Thomas Gossmann
+	
+		Homepage:
+			http://gara.creative2.net
+
+		This library is free software;  you  can  redistribute  it  and/or
+		modify  it  under  the  terms  of  the   GNU Lesser General Public
+		License  as  published  by  the  Free Software Foundation;  either
+		version 2.1 of the License, or (at your option) any later version.
+
+		This library is distributed in  the hope  that it  will be useful,
+		but WITHOUT ANY WARRANTY; without  even  the  implied  warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See  the  GNU
+		Lesser General Public License for more details.
+
+	===========================================================================
+*/
+
+/**
+ * @class PatternFilter
+ * @extends ViewerFilter
+ * @namespace gara.jsface
+ * @author Thomas Gossmann
+ */
+$class("PatternFilter", {
+	$extends : gara.jsface.ViewerFilter,
+
+	/**
+	 * @constructor
+	 */
+	$constructor : function() {
+		this._pattern = "";
+	},
+
+	isElementVisible : function(viewer, element) {
+		return this._isParentMatch(viewer, element) || this._isLeafMatch(viewer, element);
+	},
+
+	_isLeafMatch : function(viewer, element) {
+		var lblProvider = viewer.getLabelProvider();
+		if ($class.instanceOf(lblProvider, gara.jsface.ITableLabelProvider)) {
+			var cols = viewer.getControl().getColumnCount();
+			for (var i = 0; i < cols; ++i) {
+				var labelText = lblProvider.getColumnText(element, i);
+				if (labelText != null) {
+					var result = this._match(labelText);
+					if (result) {
+						return result;
+					}
+				}
+			}
+			return false;
+		} else {
+			var labelText = lblProvider.getText(element);
+			if (labelText == null) {
+				return false;
+			}
+	        return this._match(labelText);
+		}
+
+	},
+
+	_isParentMatch : function(viewer, element) {
+		var cp = viewer.getContentProvider();
+
+		if ($class.instanceOf(cp, gara.jsface.ITreeContentProvider)) {
+			var children = cp.getChildren(element);
+
+	        if (children != null && children.length > 0) {
+				var elementFound = false;
+				for (var i = 0; i < children.length && !elementFound; i++) {
+					elementFound = this.isElementVisible(viewer, children[i]);
+				}
+				return elementFound;
+			}
+		}
+        return false;
+	},
+
+	_match : function(text) {
+		return text.toLowerCase().indexOf(this._pattern.toLowerCase()) != -1;
+	},
+
+	select : function(viewer, parentElement, element) {
+		if (this._pattern == "") {
+			return true;
+		}
+		var result = this.isElementVisible(viewer, element);
+		return result;
+	},
+	
+	setPattern : function(pattern) {
+		this._pattern = pattern;
+	},
+
+	toString : function() {
+		return "[gara.jsface.PatternFilter]";
+	}
+});
+	
 var jswtPkg = new gara.Package({
 	name : "jswt",
 	exports : "IBaseLabelProvider,ILabelProvider,ITableLabelProvider,LabelProvider"

@@ -1,10 +1,10 @@
 <?php
-namespace net::keeko::utils::webform;
+namespace net\keeko\utils\webform;
 
 class ComboBox extends Control {
 
 	private $options = array();
-	
+
 	public function __construct(Webform $webform) {
 		parent::__construct($webform);
 	}
@@ -17,25 +17,26 @@ class ComboBox extends Control {
 		} else if ($val != null && $val != $value) {
 			$checked = false;
 		}
-		
+
 		$option = new Option();
 		$option->setValue($value);
 		$option->setLabel($label);
 		$option->setChecked($checked);
 		$this->options[] = $option;
-		
+
 		return $option;
 	}
 
 	public function toXml() {
-		$xml = new DOMDocument();
+		$xml = new \DOMDocument();
 		$root = $xml->createElement('control');
 		$root->setAttribute('id', $this->id);
 		$root->setAttribute('label', $this->label);
-		$root->setAttribute('name', $this->name);
+		$root->setAttribute('name', $this->getName());
 		$root->setAttribute('description', $this->description);
 		$root->setAttribute('title', $this->title);
 		$root->setAttribute('type', 'ComboBox');
+		$root->setAttribute('error', $this->error ? 'yes' : 'no');
 		$root->setAttribute('required', $this->required ? 'yes' : 'no');
 		$root->setAttribute('disabled', $this->disabled ? 'yes' : 'no');
 

@@ -1,5 +1,5 @@
 <?php
-namespace net::keeko::utils::webform;
+namespace net\keeko\utils\webform;
 
 class Option {
 
@@ -23,7 +23,7 @@ class Option {
 	}
 
 	public function toXml() {
-		$xml = new DOMDocument();
+		$xml = new \DOMDocument();
 		$root = $xml->createElement('option');
 		$root->setAttribute('label', $this->label);
 		$root->setAttribute('value', $this->value);

@@ -1395,7 +1395,7 @@ abstract class BaseUser extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addRole(net\keeko\cms\core\entities\Role $l)
+	public function addRole(\net\keeko\cms\core\entities\Role $l)
 	{
 		if ($this->collRoles === null) {
 			$this->initRoles();
@@ -1551,7 +1551,7 @@ abstract class BaseUser extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addRoleUser(net\keeko\cms\core\entities\RoleUser $l)
+	public function addRoleUser(\net\keeko\cms\core\entities\RoleUser $l)
 	{
 		if ($this->collRoleUsers === null) {
 			$this->initRoleUsers();
@@ -1754,7 +1754,7 @@ abstract class BaseUser extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUserExtVal(net\keeko\cms\core\entities\UserExtVal $l)
+	public function addUserExtVal(\net\keeko\cms\core\entities\UserExtVal $l)
 	{
 		if ($this->collUserExtVals === null) {
 			$this->initUserExtVals();
@@ -1957,7 +1957,7 @@ abstract class BaseUser extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUserSettingValue(net\keeko\cms\core\entities\UserSettingValue $l)
+	public function addUserSettingValue(\net\keeko\cms\core\entities\UserSettingValue $l)
 	{
 		if ($this->collUserSettingValues === null) {
 			$this->initUserSettingValues();

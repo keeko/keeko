@@ -2,11 +2,17 @@
 <database defaultIdMethod="native" name="keeko">
 <table name="language">
 <column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
+<column name="fallback" type="INTEGER" size="10" required="true"/>
 <column name="name" type="VARCHAR" size="64"/>
 <column name="country" type="VARCHAR" size="2"/>
 <column name="language" type="VARCHAR" size="2"/>
 <column name="variant" type="VARCHAR" size="2"/>
 <column name="is_default" type="BOOLEAN"/>
+<column name="is_active" type="BOOLEAN"/>
+<column name="interface_language" type="VARCHAR" size="10"/>
+<foreign-key foreignTable="language" name="fallback" onDelete="restrict">
+<reference local="fallback" foreign="id"/>
+</foreign-key>
 </table>
 <table name="language_text">
 <column name="id" type="INTEGER" size="10" primaryKey="true" required="true" autoIncrement="true"/>
@@ -302,12 +308,15 @@
 <table name="language_uri">
 <column name="language_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
 <column name="app_id" type="INTEGER" size="10" primaryKey="true" required="true"/>
-<column name="uri" type="VARCHAR" size="255"/>
+<column name="uri" type="VARCHAR" size="255" primaryKey="true" required="true"/>
 <foreign-key foreignTable="language" name="Rel_53" onDelete="restrict">
 <reference local="language_id" foreign="id"/>
 </foreign-key>
 <foreign-key foreignTable="app" name="Rel_54" onDelete="restrict">
 <reference local="app_id" foreign="id"/>
 </foreign-key>
+<unique name="language_uri_index2041">
+<unique-column name="uri"/>
+</unique>
 </table>
 </database>

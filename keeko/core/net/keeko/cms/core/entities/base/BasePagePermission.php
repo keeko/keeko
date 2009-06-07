@@ -730,7 +730,7 @@ abstract class BasePagePermission extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\PagePermission The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setRole(net\keeko\cms\core\entities\Role $v = null)
+	public function setRole(\net\keeko\cms\core\entities\Role $v = null)
 	{
 		if ($v === null) {
 			$this->setRoleId(NULL);
@@ -779,7 +779,7 @@ abstract class BasePagePermission extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\PagePermission The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setPage(net\keeko\cms\core\entities\Page $v = null)
+	public function setPage(\net\keeko\cms\core\entities\Page $v = null)
 	{
 		if ($v === null) {
 			$this->setPageId(NULL);

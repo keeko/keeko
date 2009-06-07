@@ -910,7 +910,7 @@ abstract class BaseSetting extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Setting The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setModule(net\keeko\cms\core\entities\Module $v = null)
+	public function setModule(\net\keeko\cms\core\entities\Module $v = null)
 	{
 		if ($v === null) {
 			$this->setModuleId(NULL);
@@ -959,7 +959,7 @@ abstract class BaseSetting extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Setting The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setSettingSection(net\keeko\cms\core\entities\SettingSection $v = null)
+	public function setSettingSection(\net\keeko\cms\core\entities\SettingSection $v = null)
 	{
 		if ($v === null) {
 			$this->setSectionId(NULL);

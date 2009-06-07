@@ -1,5 +1,5 @@
 <?php
-namespace net::keeko::utils::webform;
+namespace net\keeko\utils\webform;
 
 class FloatValidator extends Validator {
 
@@ -8,9 +8,18 @@ class FloatValidator extends Validator {
 			throw new WebformException(sprintf($this->webform->getI18n('error/invalid'), $this->control->getLabel()));
 		}
 	}
-	
+
 	public function parse(DOMNode $node) {
-		
+
+	}
+
+	public function toXml() {
+		$xml = new \DOMDocument('1.0');
+		$root = $xml->createElement('validator');
+		$root->setAttribute('type', 'Float');
+		$xml->appendChild($root);
+
+		return $xml;
 	}
 }
 ?>

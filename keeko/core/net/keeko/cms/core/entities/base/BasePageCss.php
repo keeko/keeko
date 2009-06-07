@@ -745,7 +745,7 @@ abstract class BasePageCss extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\PageCss The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setPage(net\keeko\cms\core\entities\Page $v = null)
+	public function setPage(\net\keeko\cms\core\entities\Page $v = null)
 	{
 		if ($v === null) {
 			$this->setPageId(NULL);

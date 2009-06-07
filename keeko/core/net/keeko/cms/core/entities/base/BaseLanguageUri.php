@@ -674,6 +674,7 @@ abstract class BaseLanguageUri extends \BaseObject  implements \Persistent {
 
 		$criteria->add(\net\keeko\cms\core\entities\peer\LanguageUriPeer::LANGUAGE_ID, $this->language_id);
 		$criteria->add(\net\keeko\cms\core\entities\peer\LanguageUriPeer::APP_ID, $this->app_id);
+		$criteria->add(\net\keeko\cms\core\entities\peer\LanguageUriPeer::URI, $this->uri);
 
 		return $criteria;
 	}
@@ -691,6 +692,8 @@ abstract class BaseLanguageUri extends \BaseObject  implements \Persistent {
 
 		$pks[1] = $this->getAppId();
 
+		$pks[2] = $this->getUri();
+
 		return $pks;
 	}
 
@@ -706,6 +709,8 @@ abstract class BaseLanguageUri extends \BaseObject  implements \Persistent {
 		$this->setLanguageId($keys[0]);
 
 		$this->setAppId($keys[1]);
+
+		$this->setUri($keys[2]);
 
 	}
 
@@ -778,7 +783,7 @@ abstract class BaseLanguageUri extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\LanguageUri The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setLanguage(net\keeko\cms\core\entities\Language $v = null)
+	public function setLanguage(\net\keeko\cms\core\entities\Language $v = null)
 	{
 		if ($v === null) {
 			$this->setLanguageId(NULL);
@@ -827,7 +832,7 @@ abstract class BaseLanguageUri extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\LanguageUri The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setApp(net\keeko\cms\core\entities\App $v = null)
+	public function setApp(\net\keeko\cms\core\entities\App $v = null)
 	{
 		if ($v === null) {
 			$this->setAppId(NULL);

@@ -27,6 +27,12 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 	protected $id;
 
 	/**
+	 * The value for the fallback field.
+	 * @var        int
+	 */
+	protected $fallback;
+
+	/**
 	 * The value for the name field.
 	 * @var        string
 	 */
@@ -55,6 +61,33 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 	 * @var        boolean
 	 */
 	protected $is_default;
+
+	/**
+	 * The value for the is_active field.
+	 * @var        boolean
+	 */
+	protected $is_active;
+
+	/**
+	 * The value for the interface_language field.
+	 * @var        string
+	 */
+	protected $interface_language;
+
+	/**
+	 * @var        Language
+	 */
+	protected $aLanguageRelatedByFallback;
+
+	/**
+	 * @var        array net\keeko\cms\core\entities\Language[] Collection to store aggregation of net\keeko\cms\core\entities\Language objects.
+	 */
+	protected $collLanguagesRelatedByFallback;
+
+	/**
+	 * @var        Criteria The criteria used to select the current contents of collLanguagesRelatedByFallback.
+	 */
+	private $lastLanguageRelatedByFallbackCriteria = null;
 
 	/**
 	 * @var        array net\keeko\cms\core\entities\LanguageText[] Collection to store aggregation of net\keeko\cms\core\entities\LanguageText objects.
@@ -121,6 +154,16 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 	}
 
 	/**
+	 * Get the [fallback] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getFallback()
+	{
+		return $this->fallback;
+	}
+
+	/**
 	 * Get the [name] column value.
 	 * 
 	 * @return     string
@@ -171,6 +214,26 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 	}
 
 	/**
+	 * Get the [is_active] column value.
+	 * 
+	 * @return     boolean
+	 */
+	public function getIsActive()
+	{
+		return $this->is_active;
+	}
+
+	/**
+	 * Get the [interface_language] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getInterfaceLanguage()
+	{
+		return $this->interface_language;
+	}
+
+	/**
 	 * Set the value of [id] column.
 	 * 
 	 * @param      int $v new value
@@ -189,6 +252,30 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 
 		return $this;
 	} // setId()
+
+	/**
+	 * Set the value of [fallback] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     net\keeko\cms\core\entities\Language The current object (for fluent API support)
+	 */
+	public function setFallback($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->fallback !== $v) {
+			$this->fallback = $v;
+			$this->modifiedColumns[] = \net\keeko\cms\core\entities\peer\LanguagePeer::FALLBACK;
+		}
+
+		if ($this->aLanguageRelatedByFallback !== null && $this->aLanguageRelatedByFallback->getId() !== $v) {
+			$this->aLanguageRelatedByFallback = null;
+		}
+
+		return $this;
+	} // setFallback()
 
 	/**
 	 * Set the value of [name] column.
@@ -291,6 +378,46 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 	} // setIsDefault()
 
 	/**
+	 * Set the value of [is_active] column.
+	 * 
+	 * @param      boolean $v new value
+	 * @return     net\keeko\cms\core\entities\Language The current object (for fluent API support)
+	 */
+	public function setIsActive($v)
+	{
+		if ($v !== null) {
+			$v = (boolean) $v;
+		}
+
+		if ($this->is_active !== $v) {
+			$this->is_active = $v;
+			$this->modifiedColumns[] = \net\keeko\cms\core\entities\peer\LanguagePeer::IS_ACTIVE;
+		}
+
+		return $this;
+	} // setIsActive()
+
+	/**
+	 * Set the value of [interface_language] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     net\keeko\cms\core\entities\Language The current object (for fluent API support)
+	 */
+	public function setInterfaceLanguage($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->interface_language !== $v) {
+			$this->interface_language = $v;
+			$this->modifiedColumns[] = \net\keeko\cms\core\entities\peer\LanguagePeer::INTERFACE_LANGUAGE;
+		}
+
+		return $this;
+	} // setInterfaceLanguage()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -328,11 +455,14 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 		try {
 
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-			$this->country = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-			$this->language = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->variant = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->is_default = ($row[$startcol + 5] !== null) ? (boolean) $row[$startcol + 5] : null;
+			$this->fallback = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+			$this->name = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->country = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->language = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->variant = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->is_default = ($row[$startcol + 6] !== null) ? (boolean) $row[$startcol + 6] : null;
+			$this->is_active = ($row[$startcol + 7] !== null) ? (boolean) $row[$startcol + 7] : null;
+			$this->interface_language = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -342,7 +472,7 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 			}
 
 			// FIXME - using NUM_COLUMNS may be clearer.
-			return $startcol + 6; // 6 = \net\keeko\cms\core\entities\peer\LanguagePeer::NUM_COLUMNS - \net\keeko\cms\core\entities\peer\LanguagePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 9; // 9 = \net\keeko\cms\core\entities\peer\LanguagePeer::NUM_COLUMNS - \net\keeko\cms\core\entities\peer\LanguagePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new \PropelException("Error populating Language object", $e);
@@ -365,6 +495,9 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 	public function ensureConsistency()
 	{
 
+		if ($this->aLanguageRelatedByFallback !== null && $this->fallback !== $this->aLanguageRelatedByFallback->getId()) {
+			$this->aLanguageRelatedByFallback = null;
+		}
 	} // ensureConsistency
 
 	/**
@@ -403,6 +536,10 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
+			$this->aLanguageRelatedByFallback = null;
+			$this->collLanguagesRelatedByFallback = null;
+			$this->lastLanguageRelatedByFallbackCriteria = null;
 
 			$this->collLanguageTexts = null;
 			$this->lastLanguageTextCriteria = null;
@@ -495,6 +632,18 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
+			// We call the save method on the following object(s) if they
+			// were passed to this object by their coresponding set
+			// method.  This object relates to these object(s) by a
+			// foreign key reference.
+
+			if ($this->aLanguageRelatedByFallback !== null) {
+				if ($this->aLanguageRelatedByFallback->isModified() || $this->aLanguageRelatedByFallback->isNew()) {
+					$affectedRows += $this->aLanguageRelatedByFallback->save($con);
+				}
+				$this->setLanguageRelatedByFallback($this->aLanguageRelatedByFallback);
+			}
+
 			if ($this->isNew() ) {
 				$this->modifiedColumns[] = \net\keeko\cms\core\entities\peer\LanguagePeer::ID;
 			}
@@ -515,6 +664,14 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+			}
+
+			if ($this->collLanguagesRelatedByFallback !== null) {
+				foreach ($this->collLanguagesRelatedByFallback as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
 			}
 
 			if ($this->collLanguageTexts !== null) {
@@ -599,10 +756,30 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 			$failureMap = array();
 
 
+			// We call the validate method on the following object(s) if they
+			// were passed to this object by their coresponding set
+			// method.  This object relates to these object(s) by a
+			// foreign key reference.
+
+			if ($this->aLanguageRelatedByFallback !== null) {
+				if (!$this->aLanguageRelatedByFallback->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aLanguageRelatedByFallback->getValidationFailures());
+				}
+			}
+
+
 			if (($retval = \net\keeko\cms\core\entities\peer\LanguagePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
+
+				if ($this->collLanguagesRelatedByFallback !== null) {
+					foreach ($this->collLanguagesRelatedByFallback as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
 
 				if ($this->collLanguageTexts !== null) {
 					foreach ($this->collLanguageTexts as $referrerFK) {
@@ -657,19 +834,28 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 				return $this->getId();
 				break;
 			case 1:
-				return $this->getName();
+				return $this->getFallback();
 				break;
 			case 2:
-				return $this->getCountry();
+				return $this->getName();
 				break;
 			case 3:
-				return $this->getLanguage();
+				return $this->getCountry();
 				break;
 			case 4:
-				return $this->getVariant();
+				return $this->getLanguage();
 				break;
 			case 5:
+				return $this->getVariant();
+				break;
+			case 6:
 				return $this->getIsDefault();
+				break;
+			case 7:
+				return $this->getIsActive();
+				break;
+			case 8:
+				return $this->getInterfaceLanguage();
 				break;
 			default:
 				return null;
@@ -693,11 +879,14 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 		$keys = \net\keeko\cms\core\entities\peer\LanguagePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
-			$keys[1] => $this->getName(),
-			$keys[2] => $this->getCountry(),
-			$keys[3] => $this->getLanguage(),
-			$keys[4] => $this->getVariant(),
-			$keys[5] => $this->getIsDefault(),
+			$keys[1] => $this->getFallback(),
+			$keys[2] => $this->getName(),
+			$keys[3] => $this->getCountry(),
+			$keys[4] => $this->getLanguage(),
+			$keys[5] => $this->getVariant(),
+			$keys[6] => $this->getIsDefault(),
+			$keys[7] => $this->getIsActive(),
+			$keys[8] => $this->getInterfaceLanguage(),
 		);
 		return $result;
 	}
@@ -733,19 +922,28 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 				$this->setId($value);
 				break;
 			case 1:
-				$this->setName($value);
+				$this->setFallback($value);
 				break;
 			case 2:
-				$this->setCountry($value);
+				$this->setName($value);
 				break;
 			case 3:
-				$this->setLanguage($value);
+				$this->setCountry($value);
 				break;
 			case 4:
-				$this->setVariant($value);
+				$this->setLanguage($value);
 				break;
 			case 5:
+				$this->setVariant($value);
+				break;
+			case 6:
 				$this->setIsDefault($value);
+				break;
+			case 7:
+				$this->setIsActive($value);
+				break;
+			case 8:
+				$this->setInterfaceLanguage($value);
 				break;
 		} // switch()
 	}
@@ -772,11 +970,14 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 		$keys = \net\keeko\cms\core\entities\peer\LanguagePeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setCountry($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setLanguage($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setVariant($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setIsDefault($arr[$keys[5]]);
+		if (array_key_exists($keys[1], $arr)) $this->setFallback($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setName($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setCountry($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setLanguage($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setVariant($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setIsDefault($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setIsActive($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setInterfaceLanguage($arr[$keys[8]]);
 	}
 
 	/**
@@ -789,11 +990,14 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 		$criteria = new \Criteria(\net\keeko\cms\core\entities\peer\LanguagePeer::DATABASE_NAME);
 
 		if ($this->isColumnModified(\net\keeko\cms\core\entities\peer\LanguagePeer::ID)) $criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::ID, $this->id);
+		if ($this->isColumnModified(\net\keeko\cms\core\entities\peer\LanguagePeer::FALLBACK)) $criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::FALLBACK, $this->fallback);
 		if ($this->isColumnModified(\net\keeko\cms\core\entities\peer\LanguagePeer::NAME)) $criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::NAME, $this->name);
 		if ($this->isColumnModified(\net\keeko\cms\core\entities\peer\LanguagePeer::COUNTRY)) $criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::COUNTRY, $this->country);
 		if ($this->isColumnModified(\net\keeko\cms\core\entities\peer\LanguagePeer::LANGUAGE)) $criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::LANGUAGE, $this->language);
 		if ($this->isColumnModified(\net\keeko\cms\core\entities\peer\LanguagePeer::VARIANT)) $criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::VARIANT, $this->variant);
 		if ($this->isColumnModified(\net\keeko\cms\core\entities\peer\LanguagePeer::IS_DEFAULT)) $criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::IS_DEFAULT, $this->is_default);
+		if ($this->isColumnModified(\net\keeko\cms\core\entities\peer\LanguagePeer::IS_ACTIVE)) $criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::IS_ACTIVE, $this->is_active);
+		if ($this->isColumnModified(\net\keeko\cms\core\entities\peer\LanguagePeer::INTERFACE_LANGUAGE)) $criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::INTERFACE_LANGUAGE, $this->interface_language);
 
 		return $criteria;
 	}
@@ -848,6 +1052,8 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 	public function copyInto($copyObj, $deepCopy = false)
 	{
 
+		$copyObj->setFallback($this->fallback);
+
 		$copyObj->setName($this->name);
 
 		$copyObj->setCountry($this->country);
@@ -858,11 +1064,21 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 
 		$copyObj->setIsDefault($this->is_default);
 
+		$copyObj->setIsActive($this->is_active);
+
+		$copyObj->setInterfaceLanguage($this->interface_language);
+
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+
+			foreach ($this->getLanguagesRelatedByFallback() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addLanguageRelatedByFallback($relObj->copy($deepCopy));
+				}
+			}
 
 			foreach ($this->getLanguageTexts() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -921,6 +1137,211 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 			self::$peer = new \net\keeko\cms\core\entities\peer\LanguagePeer();
 		}
 		return self::$peer;
+	}
+
+	/**
+	 * Declares an association between this object and a net\keeko\cms\core\entities\Language object.
+	 *
+	 * @param      net\keeko\cms\core\entities\Language $v
+	 * @return     net\keeko\cms\core\entities\Language The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setLanguageRelatedByFallback(\net\keeko\cms\core\entities\Language $v = null)
+	{
+		if ($v === null) {
+			$this->setFallback(NULL);
+		} else {
+			$this->setFallback($v->getId());
+		}
+
+		$this->aLanguageRelatedByFallback = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the net\keeko\cms\core\entities\Language object, it will not be re-added.
+		if ($v !== null) {
+			$v->addLanguageRelatedByFallback($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated net\keeko\cms\core\entities\Language object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     net\keeko\cms\core\entities\Language The associated net\keeko\cms\core\entities\Language object.
+	 * @throws     PropelException
+	 */
+	public function getLanguageRelatedByFallback(\PropelPDO $con = null)
+	{
+		if ($this->aLanguageRelatedByFallback === null && ($this->fallback !== null)) {
+			$this->aLanguageRelatedByFallback = \net\keeko\cms\core\entities\peer\LanguagePeer::retrieveByPK($this->fallback, $con);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aLanguageRelatedByFallback->addLanguagesRelatedByFallback($this);
+			 */
+		}
+		return $this->aLanguageRelatedByFallback;
+	}
+
+	/**
+	 * Clears out the collLanguagesRelatedByFallback collection (array).
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLanguagesRelatedByFallback()
+	 */
+	public function clearLanguagesRelatedByFallback()
+	{
+		$this->collLanguagesRelatedByFallback = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLanguagesRelatedByFallback collection (array).
+	 *
+	 * By default this just sets the collLanguagesRelatedByFallback collection to an empty array (like clearcollLanguagesRelatedByFallback());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initLanguagesRelatedByFallback()
+	{
+		$this->collLanguagesRelatedByFallback = array();
+	}
+
+	/**
+	 * Gets an array of net\keeko\cms\core\entities\Language objects which contain a foreign key that references this object.
+	 *
+	 * If this collection has already been initialized with an identical Criteria, it returns the collection.
+	 * Otherwise if this net\keeko\cms\core\entities\Language has previously been saved, it will retrieve
+	 * related LanguagesRelatedByFallback from storage. If this net\keeko\cms\core\entities\Language is new, it will return
+	 * an empty collection or the current collection, the criteria is ignored on a new object.
+	 *
+	 * @param      PropelPDO $con
+	 * @param      Criteria $criteria
+	 * @return     array net\keeko\cms\core\entities\Language[]
+	 * @throws     PropelException
+	 */
+	public function getLanguagesRelatedByFallback($criteria = null, \PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new \Criteria(\net\keeko\cms\core\entities\peer\LanguagePeer::DATABASE_NAME);
+		}
+		elseif ($criteria instanceof \Criteria)
+		{
+			$criteria = clone $criteria;
+		}
+
+		if ($this->collLanguagesRelatedByFallback === null) {
+			if ($this->isNew()) {
+			   $this->collLanguagesRelatedByFallback = array();
+			} else {
+
+				$criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::FALLBACK, $this->id);
+
+				\net\keeko\cms\core\entities\peer\LanguagePeer::addSelectColumns($criteria);
+				$this->collLanguagesRelatedByFallback = \net\keeko\cms\core\entities\peer\LanguagePeer::doSelect($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return the collection.
+
+
+				$criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::FALLBACK, $this->id);
+
+				\net\keeko\cms\core\entities\peer\LanguagePeer::addSelectColumns($criteria);
+				if (!isset($this->lastLanguageRelatedByFallbackCriteria) || !$this->lastLanguageRelatedByFallbackCriteria->equals($criteria)) {
+					$this->collLanguagesRelatedByFallback = \net\keeko\cms\core\entities\peer\LanguagePeer::doSelect($criteria, $con);
+				}
+			}
+		}
+		$this->lastLanguageRelatedByFallbackCriteria = $criteria;
+		return $this->collLanguagesRelatedByFallback;
+	}
+
+	/**
+	 * Returns the number of related net\keeko\cms\core\entities\Language objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related net\keeko\cms\core\entities\Language objects.
+	 * @throws     PropelException
+	 */
+	public function countLanguagesRelatedByFallback(\Criteria $criteria = null, $distinct = false, \PropelPDO $con = null)
+	{
+		if ($criteria === null) {
+			$criteria = new \Criteria(\net\keeko\cms\core\entities\peer\LanguagePeer::DATABASE_NAME);
+		} else {
+			$criteria = clone $criteria;
+		}
+
+		if ($distinct) {
+			$criteria->setDistinct();
+		}
+
+		$count = null;
+
+		if ($this->collLanguagesRelatedByFallback === null) {
+			if ($this->isNew()) {
+				$count = 0;
+			} else {
+
+				$criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::FALLBACK, $this->id);
+
+				$count = \net\keeko\cms\core\entities\peer\LanguagePeer::doCount($criteria, $con);
+			}
+		} else {
+			// criteria has no effect for a new object
+			if (!$this->isNew()) {
+				// the following code is to determine if a new query is
+				// called for.  If the criteria is the same as the last
+				// one, just return count of the collection.
+
+
+				$criteria->add(\net\keeko\cms\core\entities\peer\LanguagePeer::FALLBACK, $this->id);
+
+				if (!isset($this->lastLanguageRelatedByFallbackCriteria) || !$this->lastLanguageRelatedByFallbackCriteria->equals($criteria)) {
+					$count = \net\keeko\cms\core\entities\peer\LanguagePeer::doCount($criteria, $con);
+				} else {
+					$count = count($this->collLanguagesRelatedByFallback);
+				}
+			} else {
+				$count = count($this->collLanguagesRelatedByFallback);
+			}
+		}
+		$this->lastLanguageRelatedByFallbackCriteria = $criteria;
+		return $count;
+	}
+
+	/**
+	 * Method called to associate a net\keeko\cms\core\entities\Language object to this object
+	 * through the net\keeko\cms\core\entities\Language foreign key attribute.
+	 *
+	 * @param      net\keeko\cms\core\entities\Language $l net\keeko\cms\core\entities\Language
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addLanguageRelatedByFallback(\net\keeko\cms\core\entities\Language $l)
+	{
+		if ($this->collLanguagesRelatedByFallback === null) {
+			$this->initLanguagesRelatedByFallback();
+		}
+	
+		if (!in_array($l, $this->collLanguagesRelatedByFallback, true)) { // only add it if the **same** object is not already associated
+			array_push($this->collLanguagesRelatedByFallback, $l);
+			$l->setLanguageRelatedByFallback($this);
+		}
 	}
 
 	/**
@@ -1067,7 +1488,7 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addLanguageText(net\keeko\cms\core\entities\LanguageText $l)
+	public function addLanguageText(\net\keeko\cms\core\entities\LanguageText $l)
 	{
 		if ($this->collLanguageTexts === null) {
 			$this->initLanguageTexts();
@@ -1223,7 +1644,7 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addLanguageUri(net\keeko\cms\core\entities\LanguageUri $l)
+	public function addLanguageUri(\net\keeko\cms\core\entities\LanguageUri $l)
 	{
 		if ($this->collLanguageUris === null) {
 			$this->initLanguageUris();
@@ -1294,6 +1715,11 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
+			if ($this->collLanguagesRelatedByFallback) {
+				foreach ((array) $this->collLanguagesRelatedByFallback as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collLanguageTexts) {
 				foreach ((array) $this->collLanguageTexts as $o) {
 					$o->clearAllReferences($deep);
@@ -1306,8 +1732,10 @@ abstract class BaseLanguage extends \BaseObject  implements \Persistent {
 			}
 		} // if ($deep)
 
+		$this->collLanguagesRelatedByFallback = null;
 		$this->collLanguageTexts = null;
 		$this->collLanguageUris = null;
+			$this->aLanguageRelatedByFallback = null;
 	}
 
 } // net\keeko\cms\core\entities\base\BaseLanguage

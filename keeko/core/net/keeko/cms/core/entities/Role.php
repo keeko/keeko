@@ -40,6 +40,14 @@ class Role extends \net\keeko\cms\core\entities\base\BaseRole {
 		$root->setAttribute('name', $this->getName());
 		$root->setAttribute('userId', $this->getUserId());
 
+		if (count($this->getRoleActions())) {
+			$actions = $xml->createElement('actions');
+			$root->appendChild($actions);
+			foreach ($this->getRoleActions() as $action) {
+				$actionNode = $xml->importNode($action->toXML()->documentElement, true);
+				$actions->appendChild($actionNode);
+			}
+		}
 
 		return $xml;
 	}

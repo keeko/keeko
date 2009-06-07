@@ -27,4 +27,16 @@ class Action extends \net\keeko\cms\core\entities\base\BaseAction {
 		parent::__construct();
 	}
 
+	public function toXML() {
+		$xml = new \DOMDocument();
+		$root = $xml->createElement('action');
+		$xml->appendChild($root);
+
+		$root->setAttribute('id', $this->getId());
+		$root->setAttribute('name', $this->getName());
+		$root->setAttribute('moduleId', $this->getModuleId());
+
+		return $xml;
+	}
+
 } // net\keeko\cms\core\entities\Action

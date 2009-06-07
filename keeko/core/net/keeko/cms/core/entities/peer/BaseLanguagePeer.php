@@ -21,13 +21,16 @@ abstract class BaseLanguagePeer {
 	const CLASS_DEFAULT = 'net.keeko.cms.core.entities.\net\keeko\cms\core\entities\Language';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 6;
+	const NUM_COLUMNS = 9;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** the column name for the ID field */
 	const ID = 'language.ID';
+
+	/** the column name for the FALLBACK field */
+	const FALLBACK = 'language.FALLBACK';
 
 	/** the column name for the NAME field */
 	const NAME = 'language.NAME';
@@ -43,6 +46,12 @@ abstract class BaseLanguagePeer {
 
 	/** the column name for the IS_DEFAULT field */
 	const IS_DEFAULT = 'language.IS_DEFAULT';
+
+	/** the column name for the IS_ACTIVE field */
+	const IS_ACTIVE = 'language.IS_ACTIVE';
+
+	/** the column name for the INTERFACE_LANGUAGE field */
+	const INTERFACE_LANGUAGE = 'language.INTERFACE_LANGUAGE';
 
 	/**
 	 * An identiy map to hold any loaded instances of \net\keeko\cms\core\entities\Language objects.
@@ -65,11 +74,11 @@ abstract class BaseLanguagePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		\BasePeer::TYPE_PHPNAME => array ('Id', 'Name', 'Country', 'Language', 'Variant', 'IsDefault', ),
-		\BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'name', 'country', 'language', 'variant', 'isDefault', ),
-		\BasePeer::TYPE_COLNAME => array (self::ID, self::NAME, self::COUNTRY, self::LANGUAGE, self::VARIANT, self::IS_DEFAULT, ),
-		\BasePeer::TYPE_FIELDNAME => array ('id', 'name', 'country', 'language', 'variant', 'is_default', ),
-		\BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+		\BasePeer::TYPE_PHPNAME => array ('Id', 'Fallback', 'Name', 'Country', 'Language', 'Variant', 'IsDefault', 'IsActive', 'InterfaceLanguage', ),
+		\BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'fallback', 'name', 'country', 'language', 'variant', 'isDefault', 'isActive', 'interfaceLanguage', ),
+		\BasePeer::TYPE_COLNAME => array (self::ID, self::FALLBACK, self::NAME, self::COUNTRY, self::LANGUAGE, self::VARIANT, self::IS_DEFAULT, self::IS_ACTIVE, self::INTERFACE_LANGUAGE, ),
+		\BasePeer::TYPE_FIELDNAME => array ('id', 'fallback', 'name', 'country', 'language', 'variant', 'is_default', 'is_active', 'interface_language', ),
+		\BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, )
 	);
 
 	/**
@@ -79,11 +88,11 @@ abstract class BaseLanguagePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		\BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Name' => 1, 'Country' => 2, 'Language' => 3, 'Variant' => 4, 'IsDefault' => 5, ),
-		\BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'name' => 1, 'country' => 2, 'language' => 3, 'variant' => 4, 'isDefault' => 5, ),
-		\BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NAME => 1, self::COUNTRY => 2, self::LANGUAGE => 3, self::VARIANT => 4, self::IS_DEFAULT => 5, ),
-		\BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'name' => 1, 'country' => 2, 'language' => 3, 'variant' => 4, 'is_default' => 5, ),
-		\BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
+		\BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Fallback' => 1, 'Name' => 2, 'Country' => 3, 'Language' => 4, 'Variant' => 5, 'IsDefault' => 6, 'IsActive' => 7, 'InterfaceLanguage' => 8, ),
+		\BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'fallback' => 1, 'name' => 2, 'country' => 3, 'language' => 4, 'variant' => 5, 'isDefault' => 6, 'isActive' => 7, 'interfaceLanguage' => 8, ),
+		\BasePeer::TYPE_COLNAME => array (self::ID => 0, self::FALLBACK => 1, self::NAME => 2, self::COUNTRY => 3, self::LANGUAGE => 4, self::VARIANT => 5, self::IS_DEFAULT => 6, self::IS_ACTIVE => 7, self::INTERFACE_LANGUAGE => 8, ),
+		\BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'fallback' => 1, 'name' => 2, 'country' => 3, 'language' => 4, 'variant' => 5, 'is_default' => 6, 'is_active' => 7, 'interface_language' => 8, ),
+		\BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, )
 	);
 
 	/**
@@ -167,6 +176,8 @@ abstract class BaseLanguagePeer {
 
 		$criteria->addSelectColumn(LanguagePeer::ID);
 
+		$criteria->addSelectColumn(LanguagePeer::FALLBACK);
+
 		$criteria->addSelectColumn(LanguagePeer::NAME);
 
 		$criteria->addSelectColumn(LanguagePeer::COUNTRY);
@@ -176,6 +187,10 @@ abstract class BaseLanguagePeer {
 		$criteria->addSelectColumn(LanguagePeer::VARIANT);
 
 		$criteria->addSelectColumn(LanguagePeer::IS_DEFAULT);
+
+		$criteria->addSelectColumn(LanguagePeer::IS_ACTIVE);
+
+		$criteria->addSelectColumn(LanguagePeer::INTERFACE_LANGUAGE);
 
 	}
 
@@ -416,6 +431,100 @@ abstract class BaseLanguagePeer {
 		$stmt->closeCursor();
 		return $results;
 	}
+
+	/**
+	 * Returns the number of rows matching criteria, joining all related tables
+	 *
+	 * @param      Criteria $c
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to \Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAll(\Criteria $criteria, $distinct = false, \PropelPDO $con = null, $join_behavior = \Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(LanguagePeer::TABLE_NAME);
+
+		if ($distinct && !in_array(\Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			LanguagePeer::addSelectColumns($criteria);
+		}
+		
+		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+		
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = \Propel::getConnection(LanguagePeer::DATABASE_NAME, \Propel::CONNECTION_READ);
+		}
+
+		$stmt = \BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+	/**
+	 * Selects a collection of \net\keeko\cms\core\entities\Language objects pre-filled with all related objects.
+	 *
+	 * @param      Criteria  $c
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to \Criteria::LEFT_JOIN
+	 * @return     array Array of \net\keeko\cms\core\entities\Language objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAll(\Criteria $c, $con = null, $join_behavior = \Criteria::LEFT_JOIN)
+	{
+		$c = clone $c;
+
+		// Set the correct dbName if it has not been overridden
+		if ($c->getDbName() == \Propel::getDefaultDB()) {
+			$c->setDbName(self::DATABASE_NAME);
+		}
+
+		LanguagePeer::addSelectColumns($c);
+		$startcol2 = (LanguagePeer::NUM_COLUMNS - LanguagePeer::NUM_LAZY_LOAD_COLUMNS);
+
+		$stmt = \BasePeer::doSelect($c, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+			$key1 = LanguagePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = LanguagePeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://propel.phpdb.org/trac/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$omClass = LanguagePeer::getOMClass();
+
+				$cls = substr('.'.$omClass, strrpos('.'.$omClass, '.') + 1);
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				LanguagePeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
+	}
+
 	/**
 	 * Returns the TableMap related to this peer.
 	 * This method is not needed for general use but a specific application could have a need.

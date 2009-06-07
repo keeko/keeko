@@ -778,7 +778,7 @@ abstract class BaseUserExtVal extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\UserExtVal The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setUser(net\keeko\cms\core\entities\User $v = null)
+	public function setUser(\net\keeko\cms\core\entities\User $v = null)
 	{
 		if ($v === null) {
 			$this->setUserId(NULL);
@@ -827,7 +827,7 @@ abstract class BaseUserExtVal extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\UserExtVal The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setUserExt(net\keeko\cms\core\entities\UserExt $v = null)
+	public function setUserExt(\net\keeko\cms\core\entities\UserExt $v = null)
 	{
 		if ($v === null) {
 			$this->setKeyname(NULL);

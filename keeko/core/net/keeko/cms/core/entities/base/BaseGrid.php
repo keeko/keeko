@@ -971,7 +971,7 @@ abstract class BaseGrid extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Grid The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setGridRelatedByGridId(net\keeko\cms\core\entities\Grid $v = null)
+	public function setGridRelatedByGridId(\net\keeko\cms\core\entities\Grid $v = null)
 	{
 		if ($v === null) {
 			$this->setGridId(NULL);
@@ -1020,7 +1020,7 @@ abstract class BaseGrid extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Grid The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setPage(net\keeko\cms\core\entities\Page $v = null)
+	public function setPage(\net\keeko\cms\core\entities\Page $v = null)
 	{
 		if ($v === null) {
 			$this->setPageId(NULL);
@@ -1069,7 +1069,7 @@ abstract class BaseGrid extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Grid The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setBlock(net\keeko\cms\core\entities\Block $v = null)
+	public function setBlock(\net\keeko\cms\core\entities\Block $v = null)
 	{
 		if ($v === null) {
 			$this->setBlockId(NULL);
@@ -1255,7 +1255,7 @@ abstract class BaseGrid extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addGridRelatedByGridId(net\keeko\cms\core\entities\Grid $l)
+	public function addGridRelatedByGridId(\net\keeko\cms\core\entities\Grid $l)
 	{
 		if ($this->collGridsRelatedByGridId === null) {
 			$this->initGridsRelatedByGridId();
@@ -1505,7 +1505,7 @@ abstract class BaseGrid extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUnit(net\keeko\cms\core\entities\Unit $l)
+	public function addUnit(\net\keeko\cms\core\entities\Unit $l)
 	{
 		if ($this->collUnits === null) {
 			$this->initUnits();

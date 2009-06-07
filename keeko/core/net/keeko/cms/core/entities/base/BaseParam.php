@@ -888,7 +888,7 @@ abstract class BaseParam extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUnitActionParam(net\keeko\cms\core\entities\UnitActionParam $l)
+	public function addUnitActionParam(\net\keeko\cms\core\entities\UnitActionParam $l)
 	{
 		if ($this->collUnitActionParams === null) {
 			$this->initUnitActionParams();

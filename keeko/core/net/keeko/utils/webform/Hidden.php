@@ -1,5 +1,5 @@
 <?php
-namespace net::keeko::utils::webform;
+namespace net\keeko\utils\webform;
 
 class Hidden extends Control {
 
@@ -8,7 +8,7 @@ class Hidden extends Control {
 	}
 
 	public function toXml() {
-		$xml = new DOMDocument();
+		$xml = new \DOMDocument();
 		$root = $xml->createElement('control');
 		$root->setAttribute('id', $this->id);
 		$root->setAttribute('value', $this->default);

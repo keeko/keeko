@@ -1062,7 +1062,7 @@ abstract class BaseRole extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Role The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setUser(net\keeko\cms\core\entities\User $v = null)
+	public function setUser(\net\keeko\cms\core\entities\User $v = null)
 	{
 		if ($v === null) {
 			$this->setUserId(NULL);
@@ -1248,7 +1248,7 @@ abstract class BaseRole extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addRoleAction(net\keeko\cms\core\entities\RoleAction $l)
+	public function addRoleAction(\net\keeko\cms\core\entities\RoleAction $l)
 	{
 		if ($this->collRoleActions === null) {
 			$this->initRoleActions();
@@ -1451,7 +1451,7 @@ abstract class BaseRole extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addRoleUser(net\keeko\cms\core\entities\RoleUser $l)
+	public function addRoleUser(\net\keeko\cms\core\entities\RoleUser $l)
 	{
 		if ($this->collRoleUsers === null) {
 			$this->initRoleUsers();
@@ -1654,7 +1654,7 @@ abstract class BaseRole extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addPagePermission(net\keeko\cms\core\entities\PagePermission $l)
+	public function addPagePermission(\net\keeko\cms\core\entities\PagePermission $l)
 	{
 		if ($this->collPagePermissions === null) {
 			$this->initPagePermissions();

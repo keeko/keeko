@@ -1,5 +1,5 @@
 <?php
-namespace net::keeko::utils::webform;
+namespace net\keeko\utils\webform;
 
 class CheckBox extends Control {
 
@@ -45,15 +45,16 @@ class CheckBox extends Control {
 			}
 		}
 
-		$xml = new DOMDocument();
+		$xml = new \DOMDocument();
 		$root = $xml->createElement('control');
 		$root->setAttribute('id', $this->id);
 		$root->setAttribute('label', $this->label);
-		$root->setAttribute('name', $this->name);
+		$root->setAttribute('name', $this->getName());
 		$root->setAttribute('description', $this->description);
 		$root->setAttribute('title', $this->title);
 		$root->setAttribute('value', $value);
 		$root->setAttribute('type', 'CheckBox');
+		$root->setAttribute('error', $this->error ? 'yes' : 'no');
 		$root->setAttribute('required', $this->required ? 'yes' : 'no');
 		$root->setAttribute('disabled', $this->disabled ? 'yes' : 'no');
 		$root->setAttribute('checked', $this->checked ? 'yes' : 'no');

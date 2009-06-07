@@ -1,12 +1,12 @@
 <?php
-namespace net::keeko::utils::webform;
+namespace net\keeko\utils\webform;
 
 class Parser {
 
-	private $root;
-	private $webform = null;
+	protected $root;
+	protected $webform = null;
 
-	public function __construct(DOMNode $node) {
+	public function __construct(\DOMNode $node) {
 		$this->root = $node;
 	}
 
@@ -22,7 +22,7 @@ class Parser {
 		if ($webform !== null) {
 			$this->webform = $webform;
 		} else {
-			$this->webform = new Webform();
+			$this->webform = $this->getWebform();
 		}
 
 		$this->webform->setMethod($attribs->getNamedItem('method')->value);
@@ -33,17 +33,17 @@ class Parser {
 		return $this->webform;
 	}
 
-	public function parseNode(DOMNode $node, $parent = null) {
+	public function parseNode(\DOMNode $node, $parent = null) {
 		if ($this->webform === null) {
 			return;
 		}
-		
+
 		$name = $node->nodeName;
 		$attribs = $node->attributes;
 
 		switch ($name) {
 			case 'area':
-				$label = $attribs->getNamedItem('label')->value;
+				$label = $this->getText($attribs->getNamedItem('label')->value);
 				$area = new Area($this->webform, $label);
 
 				if ($attribs->getNamedItem('id')->value != null) {
@@ -62,33 +62,33 @@ class Parser {
 			case 'control':
 				$type = $attribs->getNamedItem('type')->value;
 				$control = ControlFactory::createControl($type, $this->webform);
-				$control->setLabel(($attrib = $attribs->getNamedItem('label')) !== null ? $attrib->value : '');
+				$control->setLabel(($attrib = $attribs->getNamedItem('label')) !== null ? $this->getText($attrib->value) : '');
 				$control->setName(($attrib = $attribs->getNamedItem('name')) !== null ? $attrib->value : '');
-				$control->setDescription(($attrib = $attribs->getNamedItem('description')) !== null ? $attrib->value : '');
-				$control->setDefault(($attrib = $attribs->getNamedItem('default')) !== null ? $attrib->value : '');
-				$control->setTitle(($attrib = $attribs->getNamedItem('title')) !== null ? $attrib->value : '');
+				$control->setDescription(($attrib = $attribs->getNamedItem('description')) !== null ? $this->getText($attrib->value) : '');
+				$control->setDefault(($attrib = $attribs->getNamedItem('default')) !== null ? $this->getText($attrib->value) : '');
+				$control->setTitle(($attrib = $attribs->getNamedItem('title')) !== null ? $this->getText($attrib->value) : '');
 				$control->setRequired(($attrib = $attribs->getNamedItem('required')) !== null ? ($attrib->value == 'yes' ? true : false) : '');
-				
+
 				if ($attribs->getNamedItem('id')->value != null) {
 					$control->setId($attribs->getNamedItem('id')->value);
 				}
-				
+
 				/* Special cases */
 				switch ($type) {
 					case 'MultiLine':
 						$control->setRows($attribs->getNamedItem('rows')->value);
 						break;
-					
+
 					case 'Group':
 						$control->setDirection($attribs->getNamedItem('direction')->value);
 						$this->parseChilds($node, $control);
 						break;
-					
+
 					case 'Radio':
 					case 'CheckBox':
 						$control->setChecked($attribs->getNamedItem('checked')->value == 'yes');
 						break;
-					
+
 					case 'ComboBox':
 						$options = $node->childNodes;
 						for ($i = 0; $i < $options->length; $i++) {
@@ -96,7 +96,7 @@ class Parser {
 							if ($option->nodeType == XML_ELEMENT_NODE) {
 								$optionAttribs = $option->attributes;
 
-								$label = $optionAttribs->getNamedItem('label')->value;
+								$label = $this->getText($optionAttribs->getNamedItem('label')->value);
 								$value = $optionAttribs->getNamedItem('value')->value;
 								$checked = $optionAttribs->getNamedItem('checked')->value == 'yes';
 
@@ -112,7 +112,7 @@ class Parser {
 		}
 	}
 
-	private function parseChilds(DOMNode $parentNode, $parent = null) {
+	private function parseChilds(\DOMNode $parentNode, $parent = null) {
 		$childs = $parentNode->childNodes;
 		if ($childs->length) {
 			for ($i = 0; $i < $childs->length; $i++) {
@@ -120,16 +120,25 @@ class Parser {
 			}
 		}
 	}
-	
-	private function parseValidator(DOMNode $parentNode, Control $control) {
+
+	private function parseValidator(\DOMNode $parentNode, Control $control) {
 		$validators = $parentNode->getElementsByTagName('validator');
 		for ($i = 0; $i < $validators->length; $i++) {
 			$node = $validators->item($i);
 			$type = $node->attributes->getNamedItem('type')->value;
 			$validator = ValidatorFactory::createValidator($type);
 			$validator->parse($node);
-			$control->addValidator($validator); 
+			$control->addValidator($validator);
 		}
 	}
+
+	protected function getWebform() {
+		return new Webform();
+	}
+
+	protected function getText($value) {
+		return $value;
+	}
+
 }
 ?>

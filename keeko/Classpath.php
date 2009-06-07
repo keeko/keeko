@@ -12,13 +12,21 @@ class Classpath {
 	}
 
 	public function load($className) {
-		$fileName = str_replace('\\', '/', $className) . '.php';
+		$dirName = str_replace('\\', '/', $className);
+		$fileName = $dirName . '.php';
+
 
 		foreach ($this->paths as $path) {
-			$pathName = $path . '/' . $fileName;
-			if (file_exists($pathName)) {
-				return require_once($pathName);
+			$pathFileName = $path . '/' . $fileName;
+			if (file_exists($pathFileName)) {
+				return require_once($pathFileName);
 			}
+
+//			$pathDirName = $path . '/' . $dirName;
+//			if (is_dir($pathDirName)) {
+//				echo 'added: ' . $pathDirName;
+//				return $this->addPath($pathDirName);
+//			}
 		}
 	}
 }

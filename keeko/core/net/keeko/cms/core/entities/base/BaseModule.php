@@ -993,7 +993,7 @@ abstract class BaseModule extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addSetting(net\keeko\cms\core\entities\Setting $l)
+	public function addSetting(\net\keeko\cms\core\entities\Setting $l)
 	{
 		if ($this->collSettings === null) {
 			$this->initSettings();
@@ -1196,7 +1196,7 @@ abstract class BaseModule extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addAction(net\keeko\cms\core\entities\Action $l)
+	public function addAction(\net\keeko\cms\core\entities\Action $l)
 	{
 		if ($this->collActions === null) {
 			$this->initActions();
@@ -1352,7 +1352,7 @@ abstract class BaseModule extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addMenuItem(net\keeko\cms\core\entities\MenuItem $l)
+	public function addMenuItem(\net\keeko\cms\core\entities\MenuItem $l)
 	{
 		if ($this->collMenuItems === null) {
 			$this->initMenuItems();
@@ -1743,7 +1743,7 @@ abstract class BaseModule extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUserSetting(net\keeko\cms\core\entities\UserSetting $l)
+	public function addUserSetting(\net\keeko\cms\core\entities\UserSetting $l)
 	{
 		if ($this->collUserSettings === null) {
 			$this->initUserSettings();

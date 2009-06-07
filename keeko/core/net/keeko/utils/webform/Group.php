@@ -1,5 +1,5 @@
 <?php
-namespace net::keeko::utils::webform;
+namespace net\keeko\utils\webform;
 
 class Group extends Control {
 
@@ -15,7 +15,7 @@ class Group extends Control {
 
 	public function addControl(Control $control) {
 		if (!in_array($control, $this->controls)) {
-			$this->controls[] = $control;			
+			$this->controls[] = $control;
 		}
 	}
 
@@ -24,11 +24,11 @@ class Group extends Control {
 	}
 
 	public function toXml() {
-		$xml = new DOMDocument();
+		$xml = new \DOMDocument();
 		$root = $xml->createElement('control');
 		$root->setAttribute('id', $this->id);
 		$root->setAttribute('label', $this->label);
-		$root->setAttribute('name', $this->name);
+		$root->setAttribute('name', $this->getName());
 		$root->setAttribute('description', $this->description);
 		$root->setAttribute('title', $this->title);
 		$root->setAttribute('type', 'Group');

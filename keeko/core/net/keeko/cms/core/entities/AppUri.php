@@ -27,4 +27,22 @@ class AppUri extends \net\keeko\cms\core\entities\base\BaseAppUri {
 		parent::__construct();
 	}
 
+	public function getUri() {
+		return str_replace('%', '', parent::getUri());
+	}
+
+	public function setUri($uri) {
+		parent::setUri('%'.$uri.'%');
+	}
+
+	public function toXML() {
+		$xml = new \DOMDocument('1.0');
+		$root = $xml->createElement('appUri');
+		$root->setAttribute('appId', $this->getAppId());
+		$root->setAttribute('uri', $this->getUri());
+
+		$xml->appendChild($root);
+		return $xml;
+	}
+
 } // net\keeko\cms\core\entities\AppUri

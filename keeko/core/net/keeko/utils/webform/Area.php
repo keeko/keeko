@@ -1,6 +1,6 @@
 <?php
 
-namespace net::keeko::utils::webform;
+namespace net\keeko\utils\webform;
 
 class Area {
 
@@ -9,7 +9,7 @@ class Area {
 
 	private $areas = array();
 	private $controls = array();
-	
+
 	private $webform;
 
 	public function __construct(Webform $webform, $label = '') {
@@ -20,7 +20,7 @@ class Area {
 
 	public function addControl(Control $control) {
 		if (!in_array($control, $this->controls)) {
-			$this->controls[] = $control;			
+			$this->controls[] = $control;
 		}
 	}
 
@@ -29,7 +29,7 @@ class Area {
 			$this->areas[$area->getId()] = $area;
 		}
 	}
-	
+
 	public function getControls() {
 		return $this->controls;
 	}
@@ -54,17 +54,17 @@ class Area {
 			unset($this->controls[$offset]);
 		}
 	}
-	
+
 	public function setWebform(Webform $webform) {
 		$this->webform = $webform;
 	}
-	
+
 	public function setId($id) {
 		$this->id = $id;
 	}
 
 	public function toXml() {
-		$xml = new DOMDocument();
+		$xml = new \DOMDocument();
 		$root = $xml->createElement('area');
 		$root->setAttribute('id', $this->id);
 		$root->setAttribute('label', $this->label);
@@ -85,7 +85,7 @@ class Area {
 	}
 
 	/**
-	 * 
+	 *
 	 * @throws WebformException
 	 */
 	public function validate() {

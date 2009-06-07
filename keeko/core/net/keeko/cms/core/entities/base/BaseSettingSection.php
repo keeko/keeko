@@ -740,7 +740,7 @@ abstract class BaseSettingSection extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\SettingSection The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setLanguageText(net\keeko\cms\core\entities\LanguageText $v = null)
+	public function setLanguageText(\net\keeko\cms\core\entities\LanguageText $v = null)
 	{
 		if ($v === null) {
 			$this->setNameId(NULL);
@@ -926,7 +926,7 @@ abstract class BaseSettingSection extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addSetting(net\keeko\cms\core\entities\Setting $l)
+	public function addSetting(\net\keeko\cms\core\entities\Setting $l)
 	{
 		if ($this->collSettings === null) {
 			$this->initSettings();

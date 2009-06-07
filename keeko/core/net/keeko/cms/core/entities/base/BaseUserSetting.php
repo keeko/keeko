@@ -783,7 +783,7 @@ abstract class BaseUserSetting extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\UserSetting The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setModule(net\keeko\cms\core\entities\Module $v = null)
+	public function setModule(\net\keeko\cms\core\entities\Module $v = null)
 	{
 		if ($v === null) {
 			$this->setModuleId(NULL);
@@ -969,7 +969,7 @@ abstract class BaseUserSetting extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUserSettingValue(net\keeko\cms\core\entities\UserSettingValue $l)
+	public function addUserSettingValue(\net\keeko\cms\core\entities\UserSettingValue $l)
 	{
 		if ($this->collUserSettingValues === null) {
 			$this->initUserSettingValues();

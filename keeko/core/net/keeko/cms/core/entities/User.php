@@ -185,7 +185,12 @@ class User extends \net\keeko\cms\core\entities\base\BaseUser {
 		$user = $doc->createElement('user');
 		$user->setAttribute('id', $this->getId());
 		$user->setAttribute('name', $this->getName());
-		$user->setAttribute('isguest', $this->guest ? 'true' : 'false');
+		$user->setAttribute('isGuest', (int)$this->guest);
+		$user->setAttribute('firstName', $this->getFirstName());
+		$user->setAttribute('lastName', $this->getLastName());
+		$user->setAttribute('email', $this->getEmail());
+		$user->setAttribute('created', $this->getCreated());
+		$user->setAttribute('birth', $this->getBirth());
 		$doc->appendChild($user);
 
 		return $doc;

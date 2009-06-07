@@ -888,7 +888,7 @@ abstract class BaseBlock extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addGrid(net\keeko\cms\core\entities\Grid $l)
+	public function addGrid(\net\keeko\cms\core\entities\Grid $l)
 	{
 		if ($this->collGrids === null) {
 			$this->initGrids();

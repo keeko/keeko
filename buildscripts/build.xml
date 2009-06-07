@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <project name="keeko-build" basedir="." default="doc">
 
 	<property name="path.lib.phpdoc" value="${basedir}/libs/phpdoc/phpdoc"/>
@@ -139,6 +139,9 @@
 			<replacefilter
 				token="new net\keeko\cms\core\entities\map"
 				value="new \net\keeko\cms\core\entities\map"/>
+			<replacefilter
+				token="(net\keeko\cms\core\entities"
+				value="(\net\keeko\cms\core\entities"/>
 			<!--<replacefilter
 				token="net\keeko\cms\core\entities\peer\Base"
 				value="Base"/>-->

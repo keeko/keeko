@@ -1,5 +1,5 @@
 <?php
-namespace net::keeko::utils::webform;
+namespace net\keeko\utils\webform;
 
 abstract class Control {
 
@@ -11,6 +11,7 @@ abstract class Control {
 	protected $description;
 	protected $default;
 	protected $validators = array();
+	protected $error = false;
 
 	// options
 	protected $required = false;
@@ -21,39 +22,44 @@ abstract class Control {
 	public function __construct(Webform $webform) {
 		$this->webform = $webform;
 		$this->id = uniqid('wc');
+		$webform->registerControl($this->id, $this);
 	}
-	
+
 	public function getLabel() {
 		return $this->label;
 	}
 
 	public function getRequestValue() {
 		$method = $this->webform->getMethod();
-		
+
 		switch($method) {
 			case Webform::GET:
 				return isset($_GET[$this->name]) ? trim($_GET[$this->name]) : null;
-			
+
 			case Webform::POST:
 				return isset($_POST[$this->name]) ? trim($_POST[$this->name]) : null;
 		}
 	}
-	
+
+	public function getValue() {
+		return $this->getRequestValue() != null ? $this->getRequestValue() : $this->default;
+	}
+
 	/**
-	 * 
+	 *
 	 * @return Webform
 	 */
 	public function getWebform() {
 		return $this->webform;
 	}
-	
+
 	public function getName() {
 		return $this->name;
 	}
 
 	/**
 	 * Sets the name attribute of a controls &lt;input&gt; tag
-	 * 
+	 *
 	 * @param String $name the value for name
 	 */
 	public function setName($name) {
@@ -62,7 +68,7 @@ abstract class Control {
 
 	/**
 	 * Sets the label text for the control
-	 * 
+	 *
 	 * @param String $label the label text
 	 */
 	public function setLabel($label) {
@@ -71,7 +77,7 @@ abstract class Control {
 
 	/**
 	 * Sets a title for the &lt;label&gt; tag
-	 * 
+	 *
 	 * @param String $title the title text
 	 */
 	public function setTitle($title) {
@@ -80,7 +86,7 @@ abstract class Control {
 
 	/**
 	 * Sets a description text
-	 * 
+	 *
 	 * @param String $description the description text
 	 */
 	public function setDescription($description) {
@@ -89,13 +95,13 @@ abstract class Control {
 
 	/**
 	 * Sets a default value for the &lt;input&gt;
-	 * 
+	 *
 	 * @param String $default the default value
 	 */
 	public function setDefault($default) {
 		$this->default = $default;
 	}
-	
+
 	/**
 	 * Sets en- or disabled state for this &lt;input&gt;
 	 */
@@ -104,9 +110,14 @@ abstract class Control {
 	}
 
 	public function setId($id) {
+		$oldId = $this->id;
+		if (!$this->name) {
+			$this->name = $id;
+		}
 		$this->id = $id;
+		$this->webform->updateControlRegistration($oldId, $this->id, $this);
 	}
-	
+
 	public function setReadonly($readonly) {
 		$this->readonly = $readonly;
 	}
@@ -117,30 +128,42 @@ abstract class Control {
 
 	public function addValidator(Validator $validator) {
 		if (!in_array($validator, $this->validators)) {
-			$validator->setControl($this);
+			if ($validator->getControl() != $this) {
+				$validator = clone $validator;
+				$validator->setControl($this);
+			}
 			$this->validators[] = $validator;
 		}
 	}
 
 	public function removeValidator(Validator $validator) {
-		if ($offset = array_search($validator, $this->validators)) { 
+		if ($offset = array_search($validator, $this->validators)) {
 			unset($this->validators[$offset]);
 		}
 	}
 
 	public abstract function toXml();
 
+	public function appendValidators(\DOMDocument $xml) {
+		$root = $xml->documentElement;
+		foreach ($this->validators as $validator) {
+			$root->appendChild($xml->importNode($validator->toXml()->documentElement, true));
+		}
+	}
+
 	public function validate() {
 		$val = $this->getRequestValue();
 
 		if ($this->required && empty($val)) {
-			throw new WebformException(sprintf($this->webform->getI18n('error/empty'), $this->label));
+			$this->error = true;
+			throw new WebformException(sprintf($this->webform->getI18n('error/required'), $this->label));
 		}
 
 		foreach ($this->validators as $validator) {
 			try {
 				$validator->validate($val);
 			} catch (WebformException $e) {
+				$this->error = true;
 				throw $e;
 			}
 		}

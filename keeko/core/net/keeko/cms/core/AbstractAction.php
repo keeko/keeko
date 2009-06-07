@@ -26,6 +26,18 @@ namespace net\keeko\cms\core;/*************************************************
 		return $this->descriptor->getXSL();
 	}
 
+	public function getModule() {
+		return $this->module;
+	}
+
+	protected function getFile($path) {
+		return sprintf('%s/%s/%s', KEEKO_PATH_MODULES, $this->getModule()->getUnixname(), $path);
+	}
+
+	protected function getI18nFile($path) {
+		return sprintf('%s/%s/i18n/%s/%s', KEEKO_PATH_MODULES, $this->getModule()->getUnixname(), KeekoRuntime::getInterfaceLanguage(), $path);
+	}
+
 	public function setName($name) {
 		$this->name = $name;
 		$this->xml->documentElement->setAttribute('name', $name);

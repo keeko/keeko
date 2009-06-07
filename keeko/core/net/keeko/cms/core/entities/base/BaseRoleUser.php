@@ -730,7 +730,7 @@ abstract class BaseRoleUser extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\RoleUser The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setRole(net\keeko\cms\core\entities\Role $v = null)
+	public function setRole(\net\keeko\cms\core\entities\Role $v = null)
 	{
 		if ($v === null) {
 			$this->setRoleId(NULL);
@@ -779,7 +779,7 @@ abstract class BaseRoleUser extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\RoleUser The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setUser(net\keeko\cms\core\entities\User $v = null)
+	public function setUser(\net\keeko\cms\core\entities\User $v = null)
 	{
 		if ($v === null) {
 			$this->setUserId(NULL);

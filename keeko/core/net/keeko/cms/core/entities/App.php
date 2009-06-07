@@ -36,4 +36,21 @@ class App extends \net\keeko\cms\core\entities\base\BaseApp {
 		return $this->currentUri;
 	}
 
+	public function toXML() {
+		$xml = new \DOMDocument('1.0');
+		$root = $xml->createElement('app');
+		$root->setAttribute('id', $this->getId());
+		$root->setAttribute('name', $this->getName());
+		$root->setAttribute('unixname', $this->getUnixname());
+		$root->setAttribute('classname', $this->getClassname());
+
+		foreach ($this->getAppUris() as $uri) {
+			$uriNode = $xml->importNode($uri->toXML()->documentElement, true);
+			$root->appendChild($uriNode);
+		}
+
+		$xml->appendChild($root);
+		return $xml;
+	}
+
 } // net\keeko\cms\core\entities\App

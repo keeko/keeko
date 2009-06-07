@@ -1,5 +1,5 @@
 <?php
-namespace net::keeko::utils::webform;
+namespace net\keeko\utils\webform;
 
 class SingleLine extends Control {
 
@@ -8,11 +8,12 @@ class SingleLine extends Control {
 	}
 
 	public function toXml() {
-		$xml = new DOMDocument();
+		$xml = new \DOMDocument();
 		$root = $xml->createElement('control');
 		$root->setAttribute('id', $this->id);
 		$root->setAttribute('label', $this->label);
-		$root->setAttribute('name', $this->name);
+		$root->setAttribute('name', $this->getName());
+		$root->setAttribute('error', $this->error ? 'yes' : 'no');
 		$root->setAttribute('description', $this->description);
 		$root->setAttribute('title', $this->title);
 		$root->setAttribute('type', 'SingleLine');
@@ -22,6 +23,7 @@ class SingleLine extends Control {
 		$root->setAttribute('readonly', $this->readonly ? 'yes' : 'no');
 
 		$xml->appendChild($root);
+		$this->appendValidators($xml);
 
 		return $xml;
 	}

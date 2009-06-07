@@ -1,7 +1,9 @@
 <?php
 namespace net\keeko\cms\core;/************************************************************************  			core/KeekoRuntime.php - Copyright thomasyou can use variables in your heading files which are replaced at generationtime. possible variables are : author, date, time, filename and filepath.just write %variable_name%This file was generated on So Feb 10 2008 at 19:38:19The original location of this file is /home/thomas/htdocs/keeko/src/core/KeekoRuntime.php**************************************************************************/
 use net\keeko\cms\core\entities\Page;
-use net\keeko\cms\core\output\Renderer;/** * class KeekoRuntime * The KeekoRuntime class is the main organizer and handles connections to all the * important objects. (blabla)
+use net\keeko\cms\core\output\Renderer;
+use net\keeko\cms\core\entities\Language;
+use net\keeko\cms\core\entities\peer\LanguagePeer;/** * class KeekoRuntime * The KeekoRuntime class is the main organizer and handles connections to all the * important objects. (blabla)
  *
  * @package net.keeko.core */class KeekoRuntime {	/**	 * Handles the only instance of the module manager	 * @access public	 */	private $moduleManager;
 
@@ -25,7 +27,7 @@ use net\keeko\cms\core\output\Renderer;/** * class KeekoRuntime * The Keeko
 	 * Renderer for everybody
 	 * @access private
 	 */
-	private $renderer;	/**	 * Keeps a list of all available languages	 * @access private	 */	private $languages;	/**	 * Current interface language	 * @access private	 */	private $interfaceLanguage = 'en';	/**	 * Current content language	 * @access private	 */	private $contentLanguage = 'en';
+	private $renderer;	/**	 * Keeps a list of all available languages	 * @access private	 */	private $languages;	/**	 * Current interface language	 * @access private	 */	private $interfaceLanguage = 'en';	/**	 * Current content language	 * @access private	 */	private $contentLanguage = 1;
 
 	/**
 	 * Array with i18n files
@@ -38,6 +40,13 @@ use net\keeko\cms\core\output\Renderer;/** * class KeekoRuntime * The Keeko
 		$this->user = $auth->getUser();
 		$this->moduleManager = new ModuleManager();
 		$this->renderer = new Renderer();
+		$this->languages = LanguagePeer::doSelect(new \Criteria());
+		foreach ($this->languages as $language) {
+			if ($language->getIsDefault()) {
+				$this->contentLanguage = $language;
+				break;
+			}
+		}
 	}
 
 	/**
@@ -81,9 +90,14 @@ use net\keeko\cms\core\output\Renderer;/** * class KeekoRuntime * The Keeko
 		$runtime = self::getInstance();
 		return $runtime->i18n;
 	}
-	/**	 * Returns the current content language	 *	 * @return int	 * @access public	 */	public static function getContentLanguage() {
-		$runtime = self::getInstance();		return $runtime->contentLanguage;	}	/**	 * Sets new content language	 *	 * @param int lang The id for the new content language	 * @return int	 * @access public	 */	public function setContentLanguage($lang) {
-		$runtime = self::getInstance();		$runtime->contentLanguage = $lang;	}	/**	 * Returns the interface language	 *	 * @return int	 * @access public	 */	public function getInterfaceLanguage() {
+	/**	 * Returns the current content language	 *	 * @return net\keeko\core\cms\entities\Language	 */	public static function getContentLanguage() {
+		$runtime = self::getInstance();		return $runtime->contentLanguage;	}	/**	 * Sets new content language	 *	 * @param net\keeko\core\cms\entities\Language lang The new content language	 * @return void	 * @access public	 */	public static function setContentLanguage($lang) {
+		$runtime = self::getInstance();		$runtime->contentLanguage = $lang;	}
+
+	public static function getLanguages() {
+		$runtime = self::getInstance();
+		return $runtime->languages;
+	}	/**	 * Returns the interface language	 *	 * @access public	 */	public static function getInterfaceLanguage() {
 		$runtime = self::getInstance();		return $runtime->interfaceLanguage;	}	/**	 *	 * @param int lang The id for the new interface language	 * @return int	 * @access public	 */	public static function setInterfaceLanguage($lang) {
 		$runtime = self::getInstance();		$runtime->interfaceLanguage = $lang;	}
 
@@ -100,22 +114,22 @@ use net\keeko\cms\core\output\Renderer;/** * class KeekoRuntime * The Keeko
 		$runtime = self::getInstance();
 		$runtime->classpath = $cp;
 	}
-	public function getModuleManager() {
+	public static function getModuleManager() {
 		$runtime = self::getInstance();
 		return $runtime->moduleManager;
 	}
 
-	public function setPage(Page $page) {
+	public static function setPage(Page $page) {
 		$runtime = self::getInstance();
 		$runtime->page = $page;
 	}
 
-	public function getPage() {
+	public static function getPage() {
 		$runtime = self::getInstance();
 		return $runtime->page;
 	}
 
-	public function removeI18n($file) {
+	public static function removeI18n($file) {
 		$runtime = self::getInstance();
 		$offset = array_search($file, $runtime->i18n);
 		if ($offset) {
@@ -123,7 +137,7 @@ use net\keeko\cms\core\output\Renderer;/** * class KeekoRuntime * The Keeko
 		}
 	}
 
-	public function setCookie($key, $value) {
+	public static function setCookie($key, $value) {
 		// TODO: set cookie domain AND path
 		setcookie($key, $value, time() + 365 * 24 * 3600, '/keeko');
 	}}?>

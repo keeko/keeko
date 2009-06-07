@@ -1041,7 +1041,7 @@ abstract class BaseApp extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addPage(net\keeko\cms\core\entities\Page $l)
+	public function addPage(\net\keeko\cms\core\entities\Page $l)
 	{
 		if ($this->collPages === null) {
 			$this->initPages();
@@ -1385,7 +1385,7 @@ abstract class BaseApp extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addMenu(net\keeko\cms\core\entities\Menu $l)
+	public function addMenu(\net\keeko\cms\core\entities\Menu $l)
 	{
 		if ($this->collMenus === null) {
 			$this->initMenus();
@@ -1541,7 +1541,7 @@ abstract class BaseApp extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addAppUri(net\keeko\cms\core\entities\AppUri $l)
+	public function addAppUri(\net\keeko\cms\core\entities\AppUri $l)
 	{
 		if ($this->collAppUris === null) {
 			$this->initAppUris();
@@ -1697,7 +1697,7 @@ abstract class BaseApp extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addLanguageUri(net\keeko\cms\core\entities\LanguageUri $l)
+	public function addLanguageUri(\net\keeko\cms\core\entities\LanguageUri $l)
 	{
 		if ($this->collLanguageUris === null) {
 			$this->initLanguageUris();

@@ -1,11 +1,11 @@
 <?php
-namespace net::keeko::utils::wizard;
+namespace net\keeko\utils\wizard;
 
-use net::keeko::utils::webform::Webform;
-use net::keeko::utils::webform::Area;
-use net::keeko::utils::webform::Submit;
-use net::keeko::utils::webform::Hidden;
-use net::keeko::utils::webform::WebformException;
+use net\keeko\utils\webform\Webform;
+use net\keeko\utils\webform\Area;
+use net\keeko\utils\webform\Submit;
+use net\keeko\utils\webform\Hidden;
+use net\keeko\utils\webform\WebformException;
 
 class Wizard {
 
@@ -13,6 +13,7 @@ class Wizard {
 	private $title;
 	private $description;
 	private $steps = array();
+	private $stepsMap = array();
 
 	// evalutaion & controlling
 	private $currentStep;
@@ -27,7 +28,8 @@ class Wizard {
 	private $finishButton;
 	private $cancelButton;
 
-	// i18n
+	// settings
+	private $template = null;
 	private $lang;
 	private $i18n = null;
 
@@ -38,7 +40,7 @@ class Wizard {
 		}
 		$this->lang = $lang;
 		$this->loadLanguage();
-		
+
 		$this->webform = new Webform($lang);
 
 		$this->buttonBar = new Area($this->webform);
@@ -63,10 +65,10 @@ class Wizard {
 		$this->buttonBar->addControl($this->finishButton);
 		$this->buttonBar->addControl($this->cancelButton);
 	}
-	
+
 	public function getI18n($path) {
 		if (!is_null($this->i18n)) {
-			$xpath = new DOMXPath($this->i18n);
+			$xpath = new \DOMXPath($this->i18n);
 			$entries = $xpath->query($path, $this->i18n->documentElement);
 			if ($entries->length) {
 				return $entries->item(0)->nodeValue;
@@ -77,14 +79,23 @@ class Wizard {
 	private function loadLanguage() {
 		$langFile = sprintf('%s/i18n/%s.xml', dirname(__FILE__), $this->lang);
 		if (file_exists($langFile)) {
-			$this->i18n = new DOMDocument();
+			$this->i18n = new \DOMDocument();
 			$this->i18n->load($langFile);
 		}
 	}
 
+	public function getTemplate() {
+		// get default template
+		if ($this->template === null) {
+			return dirname(__FILE__).'/templates/wizard.xsl';
+		} else {
+			return $this->template;
+		}
+	}
+
 	/**
-	 * 
-	 * @return net::keeko::utils::webform::Webform
+	 *
+	 * @return net\keeko\utils\webform\Webform
 	 */
 	public function getWebform() {
 		return $this->webform;
@@ -105,7 +116,15 @@ class Wizard {
 	public function addStep(Step $step) {
 		if (!in_array($step, $this->steps)) {
 			$this->steps[] = $step;
+			$this->stepsMap[$step->getId()] = count($this->steps) - 1;
 		}
+	}
+
+	public function getStep($id) {
+		if (array_key_exists($id, $this->stepsMap)) {
+			return $this->steps[$this->stepsMap[$id]];
+		}
+		return null;
 	}
 
 	public function run() {
@@ -114,15 +133,15 @@ class Wizard {
 		} else {
 			$this->currentStepOffset = 0;
 		}
-		
+
 		// special steps
 		switch($this->currentStepOffset) {
 			case 'finish':
-				echo 'finish';
+				$this->performFinish();
 				return;
-				
+
 			case 'cancel':
-				echo 'cancel';
+				$this->performCancel();
 				return;
 		}
 
@@ -203,27 +222,27 @@ class Wizard {
 			$error->setName('wizard_error');
 			$error->setDefault('yes');
 			$this->buttonBar->addControl($error);
-			
+
 			$this->backButton->setDisabled(false);
 			$this->nextButton->setDisabled(true);
 			$this->finishButton->setDisabled(true);
 			$this->cancelButton->setDisabled(false);
-			
+
 			$this->error = $e;
 		}
 	}
-	
+
 	private function storeData() {
 		$controls = $this->currentStep->getArea()->getControls();
 
 		if (!isset($_SESSION['wizard']['step'][$this->currentStepOffset])) {
-			$_SESSION['wizard']['step'][$this->currentStepOffset] = array(); 
+			$_SESSION['wizard']['step'][$this->currentStepOffset] = array();
 		}
 		foreach ($controls as $control) {
 			$_SESSION['wizard']['step'][$this->currentStepOffset][$control->getName()] = $control->getRequestValue();
 		}
 	}
-	
+
 	private function goToStep($step) {
 		$location = $this->webform->getTarget();
 		if (strstr($location, '?')) {
@@ -236,13 +255,13 @@ class Wizard {
 			$uri .= dirname($_SERVER['PHP_SELF']);
 		}
 		$uri = str_replace('//', '/', $uri . '/' . $location);
-	
+
 		header('location: http://' . $uri);
 		exit;
 	}
 
 	public function toXml() {
-		$xml = new DOMDocument();
+		$xml = new \DOMDocument();
 		$root = $xml->createElement('wizard');
 		$root->setAttribute('title', $this->title);
 		$root->setAttribute('description', $this->description);
@@ -253,7 +272,7 @@ class Wizard {
 			$imported = $xml->importNode($step->toXml()->documentElement, true);
 			$webform->appendChild($imported);
 		}
-		
+
 		if ($this->error !== null) {
 			$e = $xml->importNode($this->error->toXml()->documentElement, true);
 			$webform->appendChild($e);
@@ -263,6 +282,21 @@ class Wizard {
 		$xml->appendChild($root);
 
 		return $xml;
+	}
+
+	/**
+	 * For extending the wizard
+	 */
+	protected function canFinish() {
+		return $this->currentStep->canFinish();
+	}
+
+	protected function performFinish() {
+
+	}
+
+	protected function performCancel() {
+
 	}
 }
 ?>

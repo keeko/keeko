@@ -740,7 +740,7 @@ abstract class BaseUnit extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Unit The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setGrid(net\keeko\cms\core\entities\Grid $v = null)
+	public function setGrid(\net\keeko\cms\core\entities\Grid $v = null)
 	{
 		if ($v === null) {
 			$this->setGridId(NULL);
@@ -926,7 +926,7 @@ abstract class BaseUnit extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUnitAction(net\keeko\cms\core\entities\UnitAction $l)
+	public function addUnitAction(\net\keeko\cms\core\entities\UnitAction $l)
 	{
 		if ($this->collUnitActions === null) {
 			$this->initUnitActions();

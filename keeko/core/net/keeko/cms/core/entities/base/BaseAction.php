@@ -858,7 +858,7 @@ abstract class BaseAction extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Action The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setModule(net\keeko\cms\core\entities\Module $v = null)
+	public function setModule(\net\keeko\cms\core\entities\Module $v = null)
 	{
 		if ($v === null) {
 			$this->setModuleId(NULL);
@@ -1044,7 +1044,7 @@ abstract class BaseAction extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addMenuItem(net\keeko\cms\core\entities\MenuItem $l)
+	public function addMenuItem(\net\keeko\cms\core\entities\MenuItem $l)
 	{
 		if ($this->collMenuItems === null) {
 			$this->initMenuItems();
@@ -1435,7 +1435,7 @@ abstract class BaseAction extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addRoleAction(net\keeko\cms\core\entities\RoleAction $l)
+	public function addRoleAction(\net\keeko\cms\core\entities\RoleAction $l)
 	{
 		if ($this->collRoleActions === null) {
 			$this->initRoleActions();
@@ -1638,7 +1638,7 @@ abstract class BaseAction extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUnitAction(net\keeko\cms\core\entities\UnitAction $l)
+	public function addUnitAction(\net\keeko\cms\core\entities\UnitAction $l)
 	{
 		if ($this->collUnitActions === null) {
 			$this->initUnitActions();

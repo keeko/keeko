@@ -66,6 +66,8 @@ class LanguageMapBuilder implements \MapBuilder {
 
 		$tMap->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10);
 
+		$tMap->addForeignKey('FALLBACK', 'Fallback', 'INTEGER', 'language', 'ID', true, 10);
+
 		$tMap->addColumn('NAME', 'Name', 'VARCHAR', false, 64);
 
 		$tMap->addColumn('COUNTRY', 'Country', 'VARCHAR', false, 2);
@@ -75,6 +77,10 @@ class LanguageMapBuilder implements \MapBuilder {
 		$tMap->addColumn('VARIANT', 'Variant', 'VARCHAR', false, 2);
 
 		$tMap->addColumn('IS_DEFAULT', 'IsDefault', 'BOOLEAN', false, null);
+
+		$tMap->addColumn('IS_ACTIVE', 'IsActive', 'BOOLEAN', false, null);
+
+		$tMap->addColumn('INTERFACE_LANGUAGE', 'InterfaceLanguage', 'VARCHAR', false, 10);
 
 	} // doBuild()
 

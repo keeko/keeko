@@ -286,7 +286,7 @@ abstract class BaseLanguageUriPeer {
 	{
 		if (\Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = serialize(array((string) $obj->getLanguageId(), (string) $obj->getAppId()));
+				$key = serialize(array((string) $obj->getLanguageId(), (string) $obj->getAppId(), (string) $obj->getUri()));
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -306,10 +306,10 @@ abstract class BaseLanguageUriPeer {
 	{
 		if (\Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof \net\keeko\cms\core\entities\LanguageUri) {
-				$key = serialize(array((string) $value->getLanguageId(), (string) $value->getAppId()));
-			} elseif (is_array($value) && count($value) === 2) {
+				$key = serialize(array((string) $value->getLanguageId(), (string) $value->getAppId(), (string) $value->getUri()));
+			} elseif (is_array($value) && count($value) === 3) {
 				// assume we've been passed a primary key
-				$key = serialize(array((string) $value[0], (string) $value[1]));
+				$key = serialize(array((string) $value[0], (string) $value[1], (string) $value[2]));
 			} else {
 				$e = new \PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \net\keeko\cms\core\entities\LanguageUri object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
@@ -362,10 +362,10 @@ abstract class BaseLanguageUriPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol + 0] === null && $row[$startcol + 1] === null) {
+		if ($row[$startcol + 0] === null && $row[$startcol + 1] === null && $row[$startcol + 2] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol + 0], (string) $row[$startcol + 1]));
+		return serialize(array((string) $row[$startcol + 0], (string) $row[$startcol + 1], (string) $row[$startcol + 2]));
 	}
 
 	/**
@@ -1116,6 +1116,9 @@ abstract class BaseLanguageUriPeer {
 			$comparison = $criteria->getComparison(LanguageUriPeer::APP_ID);
 			$selectCriteria->add(LanguageUriPeer::APP_ID, $criteria->remove(LanguageUriPeer::APP_ID), $comparison);
 
+			$comparison = $criteria->getComparison(LanguageUriPeer::URI);
+			$selectCriteria->add(LanguageUriPeer::URI, $criteria->remove(LanguageUriPeer::URI), $comparison);
+
 		} else { // $values is \net\keeko\cms\core\entities\LanguageUri object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
@@ -1199,6 +1202,7 @@ abstract class BaseLanguageUriPeer {
 
 				$criterion = $criteria->getNewCriterion(LanguageUriPeer::LANGUAGE_ID, $value[0]);
 				$criterion->addAnd($criteria->getNewCriterion(LanguageUriPeer::APP_ID, $value[1]));
+				$criterion->addAnd($criteria->getNewCriterion(LanguageUriPeer::URI, $value[2]));
 				$criteria->addOr($criterion);
 
 				// we can invalidate the cache for this single PK
@@ -1267,12 +1271,13 @@ abstract class BaseLanguageUriPeer {
 	 * Retrieve object using using composite pkey values.
 	 * @param      int $language_id
 	   @param      int $app_id
+	   @param      string $uri
 	   
 	 * @param      PropelPDO $con
 	 * @return     \net\keeko\cms\core\entities\LanguageUri
 	 */
-	public static function retrieveByPK($language_id, $app_id, \PropelPDO $con = null) {
-		$key = serialize(array((string) $language_id, (string) $app_id));
+	public static function retrieveByPK($language_id, $app_id, $uri, \PropelPDO $con = null) {
+		$key = serialize(array((string) $language_id, (string) $app_id, (string) $uri));
  		if (null !== ($obj = LanguageUriPeer::getInstanceFromPool($key))) {
  			return $obj;
 		}
@@ -1283,6 +1288,7 @@ abstract class BaseLanguageUriPeer {
 		$criteria = new \Criteria(LanguageUriPeer::DATABASE_NAME);
 		$criteria->add(LanguageUriPeer::LANGUAGE_ID, $language_id);
 		$criteria->add(LanguageUriPeer::APP_ID, $app_id);
+		$criteria->add(LanguageUriPeer::URI, $uri);
 		$v = LanguageUriPeer::doSelect($criteria, $con);
 
 		return !empty($v) ? $v[0] : null;

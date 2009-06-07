@@ -19,7 +19,7 @@
 			throw new Exception('no source data');
 		}
 
-		$processor = new \XSLTProcessor();
+		$processor = new \XSLTProcessor();		$processor->registerPHPFunctions();
 		$processor->importStyleSheet($this->getStyleSheet());
 		return $processor->transformToXML($this->source);	}	/**	 * Sets the source XML-Document that is rendered against all stylesheet(s)	 *	 * @param DOMDocument source XML-Document the renderer should render	 * @return	 * @access public	 */	public function setSource(\DOMDocument $source) {		$this->source = $source;	}	/**	 * Internal creation of a dummy style sheet, containing imports with all style	 * sheets in the style sheet list	 *	 * @return DOMDocument	 * @access private	 */	private function generateStyleSheet() {		$xsl = new \DOMDocument('1.0', 'utf-8');
 		$stylesheet = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform', 'xsl:stylesheet');

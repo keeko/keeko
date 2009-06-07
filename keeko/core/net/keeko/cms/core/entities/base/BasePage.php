@@ -1211,7 +1211,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Page The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setLanguageTextRelatedByTitleId(net\keeko\cms\core\entities\LanguageText $v = null)
+	public function setLanguageTextRelatedByTitleId(\net\keeko\cms\core\entities\LanguageText $v = null)
 	{
 		if ($v === null) {
 			$this->setTitleId(NULL);
@@ -1260,7 +1260,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Page The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setLanguageTextRelatedByDescriptionId(net\keeko\cms\core\entities\LanguageText $v = null)
+	public function setLanguageTextRelatedByDescriptionId(\net\keeko\cms\core\entities\LanguageText $v = null)
 	{
 		if ($v === null) {
 			$this->setDescriptionId(NULL);
@@ -1309,7 +1309,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Page The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setLanguageTextRelatedByKeywordsId(net\keeko\cms\core\entities\LanguageText $v = null)
+	public function setLanguageTextRelatedByKeywordsId(\net\keeko\cms\core\entities\LanguageText $v = null)
 	{
 		if ($v === null) {
 			$this->setKeywordsId(NULL);
@@ -1358,7 +1358,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Page The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setPageRelatedByParentId(net\keeko\cms\core\entities\Page $v = null)
+	public function setPageRelatedByParentId(\net\keeko\cms\core\entities\Page $v = null)
 	{
 		if ($v === null) {
 			$this->setParentId(NULL);
@@ -1407,7 +1407,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Page The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setApp(net\keeko\cms\core\entities\App $v = null)
+	public function setApp(\net\keeko\cms\core\entities\App $v = null)
 	{
 		if ($v === null) {
 			$this->setAppId(NULL);
@@ -1593,7 +1593,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addPageRelatedByParentId(net\keeko\cms\core\entities\Page $l)
+	public function addPageRelatedByParentId(\net\keeko\cms\core\entities\Page $l)
 	{
 		if ($this->collPagesRelatedByParentId === null) {
 			$this->initPagesRelatedByParentId();
@@ -1937,7 +1937,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addGrid(net\keeko\cms\core\entities\Grid $l)
+	public function addGrid(\net\keeko\cms\core\entities\Grid $l)
 	{
 		if ($this->collGrids === null) {
 			$this->initGrids();
@@ -2187,7 +2187,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addMenuItem(net\keeko\cms\core\entities\MenuItem $l)
+	public function addMenuItem(\net\keeko\cms\core\entities\MenuItem $l)
 	{
 		if ($this->collMenuItems === null) {
 			$this->initMenuItems();
@@ -2578,7 +2578,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addPagePermission(net\keeko\cms\core\entities\PagePermission $l)
+	public function addPagePermission(\net\keeko\cms\core\entities\PagePermission $l)
 	{
 		if ($this->collPagePermissions === null) {
 			$this->initPagePermissions();
@@ -2781,7 +2781,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addPageCss(net\keeko\cms\core\entities\PageCss $l)
+	public function addPageCss(\net\keeko\cms\core\entities\PageCss $l)
 	{
 		if ($this->collPageCsss === null) {
 			$this->initPageCsss();
@@ -2937,7 +2937,7 @@ abstract class BasePage extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addPageJs(net\keeko\cms\core\entities\PageJs $l)
+	public function addPageJs(\net\keeko\cms\core\entities\PageJs $l)
 	{
 		if ($this->collPageJss === null) {
 			$this->initPageJss();

@@ -773,7 +773,7 @@ abstract class BaseUnitAction extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\UnitAction The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setUnit(net\keeko\cms\core\entities\Unit $v = null)
+	public function setUnit(\net\keeko\cms\core\entities\Unit $v = null)
 	{
 		if ($v === null) {
 			$this->setUnitId(NULL);
@@ -822,7 +822,7 @@ abstract class BaseUnitAction extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\UnitAction The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setAction(net\keeko\cms\core\entities\Action $v = null)
+	public function setAction(\net\keeko\cms\core\entities\Action $v = null)
 	{
 		if ($v === null) {
 			$this->setActionId(NULL);
@@ -1018,7 +1018,7 @@ abstract class BaseUnitAction extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addUnitActionParam(net\keeko\cms\core\entities\UnitActionParam $l)
+	public function addUnitActionParam(\net\keeko\cms\core\entities\UnitActionParam $l)
 	{
 		if ($this->collUnitActionParams === null) {
 			$this->initUnitActionParams();

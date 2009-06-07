@@ -68,7 +68,7 @@ class LanguageUriMapBuilder implements \MapBuilder {
 
 		$tMap->addForeignPrimaryKey('APP_ID', 'AppId', 'INTEGER' , 'app', 'ID', true, 10);
 
-		$tMap->addColumn('URI', 'Uri', 'VARCHAR', false, 255);
+		$tMap->addPrimaryKey('URI', 'Uri', 'VARCHAR', true, 255);
 
 	} // doBuild()
 

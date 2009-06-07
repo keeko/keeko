@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <webform>
 	<error>
-		<empty>%s is empty</empty>
+		<required>%s is required</required>
 		<invalid>%s is invalid</invalid>
 		<tooshort>%s is too short</tooshort>
 		<toolong>%s is too long</toolong>

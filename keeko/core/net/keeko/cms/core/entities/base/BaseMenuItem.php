@@ -1326,7 +1326,7 @@ abstract class BaseMenuItem extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\MenuItem The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setPage(net\keeko\cms\core\entities\Page $v = null)
+	public function setPage(\net\keeko\cms\core\entities\Page $v = null)
 	{
 		if ($v === null) {
 			$this->setPageId(0);
@@ -1375,7 +1375,7 @@ abstract class BaseMenuItem extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\MenuItem The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setLanguageText(net\keeko\cms\core\entities\LanguageText $v = null)
+	public function setLanguageText(\net\keeko\cms\core\entities\LanguageText $v = null)
 	{
 		if ($v === null) {
 			$this->setTextId(NULL);
@@ -1424,7 +1424,7 @@ abstract class BaseMenuItem extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\MenuItem The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setMenu(net\keeko\cms\core\entities\Menu $v = null)
+	public function setMenu(\net\keeko\cms\core\entities\Menu $v = null)
 	{
 		if ($v === null) {
 			$this->setMenuId(NULL);
@@ -1473,7 +1473,7 @@ abstract class BaseMenuItem extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\MenuItem The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setMenuItemRelatedByParentId(net\keeko\cms\core\entities\MenuItem $v = null)
+	public function setMenuItemRelatedByParentId(\net\keeko\cms\core\entities\MenuItem $v = null)
 	{
 		if ($v === null) {
 			$this->setParentId(0);
@@ -1522,7 +1522,7 @@ abstract class BaseMenuItem extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\MenuItem The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setModule(net\keeko\cms\core\entities\Module $v = null)
+	public function setModule(\net\keeko\cms\core\entities\Module $v = null)
 	{
 		if ($v === null) {
 			$this->setModuleId(0);
@@ -1571,7 +1571,7 @@ abstract class BaseMenuItem extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\MenuItem The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setAction(net\keeko\cms\core\entities\Action $v = null)
+	public function setAction(\net\keeko\cms\core\entities\Action $v = null)
 	{
 		if ($v === null) {
 			$this->setActionId(0);
@@ -1757,7 +1757,7 @@ abstract class BaseMenuItem extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addMenuItemRelatedByParentId(net\keeko\cms\core\entities\MenuItem $l)
+	public function addMenuItemRelatedByParentId(\net\keeko\cms\core\entities\MenuItem $l)
 	{
 		if ($this->collMenuItemsRelatedByParentId === null) {
 			$this->initMenuItemsRelatedByParentId();

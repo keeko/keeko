@@ -788,7 +788,7 @@ abstract class BaseMenu extends \BaseObject  implements \Persistent {
 	 * @return     net\keeko\cms\core\entities\Menu The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setApp(net\keeko\cms\core\entities\App $v = null)
+	public function setApp(\net\keeko\cms\core\entities\App $v = null)
 	{
 		if ($v === null) {
 			$this->setAppId(NULL);
@@ -974,7 +974,7 @@ abstract class BaseMenu extends \BaseObject  implements \Persistent {
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addMenuItem(net\keeko\cms\core\entities\MenuItem $l)
+	public function addMenuItem(\net\keeko\cms\core\entities\MenuItem $l)
 	{
 		if ($this->collMenuItems === null) {
 			$this->initMenuItems();
