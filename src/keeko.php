@@ -36,7 +36,7 @@ try {
 
 	// init app
 	$keekoApp = $manager->init($app);
-	$keekoApp->run();
+	$keekoApp->run($request);
 } catch (AppException $e) {
 
 }

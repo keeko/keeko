@@ -1,6 +1,8 @@
 <?php
 namespace keeko;
 
+use Symfony\Component\HttpFoundation\Request;
+
 use keeko\entities\App;
 
 use Composer\Autoload\ClassLoader;
@@ -24,7 +26,7 @@ abstract class AbstractApp {
 		$this->root = KEEKO_PATH_APPS . DIRECTORY_SEPARATOR . $app->getUnixname();
 	}
 
-	public abstract function run();
+	public abstract function run(Request $req);
 
 	/**
 	 *
