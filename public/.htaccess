@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /panda/public
+
+RewriteRule ^(.*)$ index.php

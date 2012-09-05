@@ -1,0 +1,22 @@
+{
+    "name": "gossi/panda",
+    "description": "Keeko Test",
+    "minimum-stability": "RC", 
+    "authors": [
+        {
+            "name": "gossi",
+            "homepage": "gos.si"
+        }
+    ],
+    "require": {
+		"propel/propel1": "dev-master",
+		"symfony/http-foundation": "2.1.*",
+		"symfony/finder": "2.1.*",
+		"symfony/filesystem": "2.1.*",
+		"symfony/routing": "2.1.*",
+		"symfony/config": "2.1.*",
+		"symfony/yaml": "2.1.*",
+		"twig/twig": "1.*",
+		"hautelook/phpass": "dev-master"
+    }
+}
