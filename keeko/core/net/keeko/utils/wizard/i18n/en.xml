@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<wizard>
-	<labels>
-		<back>&lt; Back</back>
-		<next>Next &gt;</next>
-		<finish>Finish</finish>
-		<cancel>Cancel</cancel>
-	</labels>
-</wizard>

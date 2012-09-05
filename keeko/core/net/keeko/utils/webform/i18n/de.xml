@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<webform>
-	<error>
-		<required>%s wird benötigt</required>
-		<invalid>%s ist ungültig</invalid>
-		<tooshort>%s ist zu kurz</tooshort>
-		<toolong>%s ist zu lang</toolong>
-	</error>
-</webform>
