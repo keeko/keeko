@@ -1,4 +1,4 @@
 RewriteEngine On
-RewriteBase /panda/public
+RewriteBase /keeko/public
 
 RewriteRule ^(.*)$ index.php

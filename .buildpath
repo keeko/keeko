@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <buildpath>
 	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
-	<buildpathentry kind="src" path="vendor/symfony"/>
-	<buildpathentry kind="src" path="vendor/propel/propel1/runtime/lib"/>
-	<buildpathentry kind="src" path="vendor/composer"/>
-	<buildpathentry kind="src" path="vendor/twig/twig/lib/Twig"/>
-	<buildpathentry kind="src" path="vendor/hautelook/phpass/src/Hautelook/Phpass"/>
 	<buildpathentry kind="src" path="src"/>
 </buildpath>
