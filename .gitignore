@@ -1,3 +1,6 @@
 .DS_Store
-vendor
 .metadata
+vendor
+apps
+core
+modules

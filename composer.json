@@ -3,8 +3,26 @@
 	"description" : "Keeko Test",
 	"authors" : [{
 			"name" : "gossi",
-			"homepage" : "gos.si"
+			"homepage" : "http://gos.si"
 		}
 	],
-	"keywords" : []
+	"require" : {
+		"keeko/website-app" : "master-dev",
+		"keeko/core" : "master-dev"
+	},
+	"minimum-stability" : "stable",
+	"scripts" : {
+		"post-package-install" : [
+			"\\keeko\\core\\installer\\ComposerInstaller::installPackage"
+		],
+		"post-package-uninstall" : [
+			"\\keeko\\core\\installer\\ComposerInstaller::uninstallPackage"
+		],
+		"post-package-update" : [
+			"\\keeko\\core\\installer\\ComposerInstaller::updatePackage"
+		]
+	},
+	"extra" : {
+		"local" : "../keeko-dev"
+	}
 }
