@@ -5,6 +5,7 @@ use keeko\core\routing\ApplicationRouter;
 use keeko\core\routing\RouteMatcherInterface;
 use keeko\core\entities\Gateway;
 use keeko\core\entities\Application;
+use keeko\core\entities\ApplicationQuery;
 
 require 'bootstrap.php';
 
@@ -33,37 +34,29 @@ try {
 // 			$request->isSecure() ? 'yes' : 'no');
 
 
-// 	$gateway = new ApplicationGateway();
-// 	$dest = $gateway->find($request);
-// 	$gateway->run($dest, $request);
-
 	$router = new ApplicationRouter();
 
 	$uri = $router->match($request);
-	$gateway = $uri->getGateway();
-
-	/* @var $router RouteMatcherInterface */
-	$routing = $gateway->getRouter()->getClassname();
-	$router = new $routing();
+	$application = $uri->getApplication();
 
 	/* @var $application Application */
-	$application = $gateway->getApplication();
-	$name = $application->getName();
+	$type = $application->getApplicationType();
+	$name = $type->getClassname();
 
 	/* @var $app ApplicationInterface */
 	$app = new $name();
+	$app->setApplication($application);
 	$app->setLocalization($uri->getLocalization());
+	$app->run($request, $router);
 
-	// get params
-	$defaults = [];
-	$params = $app::getParams();
+// 	// get params
+// 	$params = $application->getExtraProperties();
 
-	foreach ($params as $param) {
-		if ($gateway->hasProperty($param)) {
-			$defaults[$param] = $gateway->getProperty($param);
-		}
-	}
+// 	/* @var $router RouteMatcherInterface */
+// 	$routing = $application->getRouter()->getClassname();
+// 	$router = new $routing($params);
+// 	$router->match($request);
 
 } catch (\Exception $e) {
-
+	printf('<b>%s</b><pre>%s</pre>', $e->getMessage(), $e->getTraceAsString());
 }

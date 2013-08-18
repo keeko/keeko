@@ -4,3 +4,6 @@ vendor
 apps
 core
 modules
+designs
+
+config/database.yml

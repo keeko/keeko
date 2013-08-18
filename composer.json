@@ -7,19 +7,36 @@
 		}
 	],
 	"require" : {
-		"keeko/website-app" : "master-dev",
-		"keeko/core" : "master-dev"
+		"composer/composer" : "@dev",
+		"symfony/config" : "~2",
+		"keeko/bootstrap-design" : "dev-master",
+		"keeko/website-app" : "dev-master",
+		"keeko/core" : "dev-master"
+	},
+	"autoload" : {
+		"psr-0" : {
+			"keeko\\installer" : "src"
+		}
 	},
 	"minimum-stability" : "stable",
 	"scripts" : {
 		"post-package-install" : [
-			"\\keeko\\core\\installer\\ComposerInstaller::installPackage"
+			"\\keeko\\installer\\InstallerProxy::installPackage"
+		],
+		"pre-install-cmd" : [
+			"\\keeko\\installer\\InstallerProxy::preInstall"
+		],
+		"pre-update-cmd" : [
+			"\\keeko\\installer\\InstallerProxy::preInstall"
 		],
 		"post-package-uninstall" : [
-			"\\keeko\\core\\installer\\ComposerInstaller::uninstallPackage"
+			"\\keeko\\installer\\InstallerProxy::uninstallPackage"
 		],
 		"post-package-update" : [
-			"\\keeko\\core\\installer\\ComposerInstaller::updatePackage"
+			"\\keeko\\installer\\InstallerProxy::updatePackage"
+		],
+		"post-install-cmd" : [
+			"\\keeko\\installer\\InstallerProxy::postInstall"
 		]
 	},
 	"extra" : {
