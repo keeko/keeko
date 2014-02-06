@@ -1,17 +1,21 @@
 {
 	"name" : "keeko/keeko",
 	"description" : "Keeko Test",
+	"type" : "project",
 	"authors" : [{
 			"name" : "gossi",
 			"homepage" : "http://gos.si"
 		}
 	],
+	"license" : "MIT",
 	"require" : {
 		"composer/composer" : "@dev",
+		"keeko/user" : "dev-master",
 		"symfony/config" : "~2",
 		"keeko/bootstrap-design" : "dev-master",
 		"keeko/website-app" : "dev-master",
-		"keeko/core" : "dev-master"
+		"keeko/core" : "dev-master",
+		"propel/propel" : "@dev"
 	},
 	"autoload" : {
 		"psr-0" : {
@@ -20,23 +24,23 @@
 	},
 	"minimum-stability" : "stable",
 	"scripts" : {
-		"post-package-install" : [
-			"\\keeko\\installer\\InstallerProxy::installPackage"
-		],
 		"pre-install-cmd" : [
 			"\\keeko\\installer\\InstallerProxy::preInstall"
+		],
+		"post-install-cmd" : [
+			"\\keeko\\installer\\InstallerProxy::postInstall"
 		],
 		"pre-update-cmd" : [
 			"\\keeko\\installer\\InstallerProxy::preInstall"
 		],
-		"post-package-uninstall" : [
-			"\\keeko\\installer\\InstallerProxy::uninstallPackage"
+		"post-package-install" : [
+			"\\keeko\\installer\\InstallerProxy::installPackage"
 		],
 		"post-package-update" : [
 			"\\keeko\\installer\\InstallerProxy::updatePackage"
 		],
-		"post-install-cmd" : [
-			"\\keeko\\installer\\InstallerProxy::postInstall"
+		"post-package-uninstall" : [
+			"\\keeko\\installer\\InstallerProxy::uninstallPackage"
 		]
 	},
 	"extra" : {

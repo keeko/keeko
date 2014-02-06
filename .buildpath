@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <buildpath>
 	<buildpathentry kind="src" path="vendor/seld/jsonlint/src"/>
-	<buildpathentry kind="src" path="vendor/symfony/routing"/>
 	<buildpathentry kind="src" path="vendor/symfony/filesystem"/>
 	<buildpathentry kind="src" path="core/src"/>
+	<buildpathentry kind="src" path="vendor/phing/phing/classes/phing"/>
+	<buildpathentry kind="src" path="vendor/symfony/validator"/>
+	<buildpathentry kind="src" path="vendor/propel/propel/src"/>
+	<buildpathentry kind="src" path="vendor/CarpeHora/ExtraPropertiesBehavior/src"/>
+	<buildpathentry excluding="composer/" kind="src" path="vendor/composer"/>
+	<buildpathentry kind="src" path="vendor/symfony/finder"/>
+	<buildpathentry kind="src" path="vendor/keeko/user/src"/>
+	<buildpathentry kind="src" path="vendor/justinrainbow/json-schema/src"/>
+	<buildpathentry kind="src" path="vendor/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs"/>
+	<buildpathentry kind="src" path="vendor/symfony/routing"/>
+	<buildpathentry kind="src" path="vendor/symfony/property-access"/>
 	<buildpathentry kind="src" path="vendor/propel/propel1/runtime/lib"/>
 	<buildpathentry kind="src" path="vendor/symfony/config"/>
 	<buildpathentry kind="src" path="vendor/keeko/composer-installer/src"/>
+	<buildpathentry kind="src" path="vendor/psr/log"/>
 	<buildpathentry kind="src" path="vendor/composer/composer/src"/>
 	<buildpathentry excluding="/" kind="src" path="src"/>
 	<buildpathentry kind="src" path="vendor/symfony/yaml"/>
 	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
-	<buildpathentry kind="src" path="vendor/phing/phing/classes/phing"/>
 	<buildpathentry excluding="Symfony/Component/HttpFoundation/Resources/stubs/" kind="src" path="vendor/symfony/http-foundation"/>
-	<buildpathentry kind="src" path="vendor/CarpeHora/ExtraPropertiesBehavior/src"/>
+	<buildpathentry kind="src" path="vendor/symfony/translation"/>
 	<buildpathentry kind="src" path="vendor/propel/propel1/generator/lib"/>
 	<buildpathentry kind="src" path="vendor/symfony/console"/>
-	<buildpathentry excluding="composer/" kind="src" path="vendor/composer"/>
 	<buildpathentry kind="src" path="vendor/symfony/options-resolver"/>
 	<buildpathentry kind="src" path="vendor/symfony/process"/>
 	<buildpathentry kind="src" path="vendor/twig/twig/lib"/>
-	<buildpathentry kind="src" path="vendor/symfony/finder"/>
-	<buildpathentry kind="src" path="vendor/justinrainbow/json-schema/src"/>
-	<buildpathentry kind="src" path="vendor/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs"/>
 </buildpath>

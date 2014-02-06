@@ -25,29 +25,44 @@ $dbConfig = $locator->locate('database.yml', null, true);
 $databaseConfiguration = new DatabaseConfiguration($locator);
 $databaseConfiguration->load($dbConfig);
 
+// propel 1
 // propel database configuration
-$propelConf = array (
-	'datasources' => array (
-		'keeko' => array (
+$propelConf = [
+	'datasources' => [
+		'keeko' => [
 			'adapter' => 'mysql',
-			'connection' => array (
+			'connection' => [
 				'dsn' => 'mysql:host=' . $databaseConfiguration->getHost() . ';dbname=' . $databaseConfiguration->getDatabase(),
 				'user' => $databaseConfiguration->getUser(),
 				'password' => $databaseConfiguration->getPassword(),
-				'settings' => array (
-					'charset' => array (
+				'settings' => [
+					'charset' => [
 						'value' => 'utf8',
-					),
-				),
-			),
-		),
+					],
+				],
+			],
+		],
 		'default' => 'keeko',
-	),
-);
+	],
+];
 
 // propel boot
 Propel::setConfiguration($propelConf);
 Propel::initialize();
+
+// // propel 2
+// $serviceContainer = Propel::getServiceContainer();
+// $serviceContainer->setAdapterClass('keeko', 'mysql');
+// $manager = new ConnectionManagerSingle();
+// $manager->setConfiguration([
+// 	'dsn'      => 'mysql:host=' . $databaseConfiguration->getHost() . ';dbname=' . $databaseConfiguration->getDatabase(),
+// 	'user'     => $databaseConfiguration->getUser(),
+// 	'password' => $databaseConfiguration->getPassword(),
+// 	'settings' => [
+// 		'charset' => 'utf8'
+// 	]
+// ]);
+// $serviceContainer->setConnectionManager('keeko', $manager);
 
 unset($databaseConfiguration);
 unset($propelConf);

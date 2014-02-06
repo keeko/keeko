@@ -1,17 +1,11 @@
 <?php
 use Symfony\Component\HttpFoundation\Request;
-use keeko\core\application\ApplicationInterface;
+use keeko\core\application\Keeko;
 use keeko\core\routing\ApplicationRouter;
-use keeko\core\routing\RouteMatcherInterface;
-use keeko\core\entities\Gateway;
-use keeko\core\entities\Application;
-use keeko\core\entities\ApplicationQuery;
 
 require 'bootstrap.php';
 
 try {
-
-	// Test the request
 	$request = Request::createFromGlobals();
 
 // 	printf('<p>Basepath: %s<br>
@@ -39,23 +33,13 @@ try {
 	$uri = $router->match($request);
 	$application = $uri->getApplication();
 
-	/* @var $application Application */
-	$type = $application->getApplicationType();
-	$name = $type->getClassname();
+	$keeko = new Keeko();
+	$keeko->setEntity($application);
+	$keeko->setLocalization($uri->getLocalization());
 
-	/* @var $app ApplicationInterface */
-	$app = new $name();
-	$app->setApplication($application);
-	$app->setLocalization($uri->getLocalization());
-	$app->run($request, $router);
-
-// 	// get params
-// 	$params = $application->getExtraProperties();
-
-// 	/* @var $router RouteMatcherInterface */
-// 	$routing = $application->getRouter()->getClassname();
-// 	$router = new $routing($params);
-// 	$router->match($request);
+	$response = $keeko->run($request, $router);
+	$response->prepare($request);
+	$response->send();
 
 } catch (\Exception $e) {
 	printf('<b>%s</b><pre>%s</pre>', $e->getMessage(), $e->getTraceAsString());
