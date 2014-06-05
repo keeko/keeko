@@ -1,0 +1,1631 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "00449d84441aa3f9518db87dd09fee01",
+    "packages": [
+        {
+            "name": "composer/composer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/composer.git",
+                "reference": "71397f82e4bdf4722bcbfeb43be0d30831376d3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/composer/zipball/71397f82e4bdf4722bcbfeb43be0d30831376d3d",
+                "reference": "71397f82e4bdf4722bcbfeb43be0d30831376d3d",
+                "shasum": ""
+            },
+            "require": {
+                "justinrainbow/json-schema": "~1.1",
+                "php": ">=5.3.2",
+                "seld/jsonlint": "1.*",
+                "symfony/console": "~2.3",
+                "symfony/finder": "~2.2",
+                "symfony/process": "~2.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7.10"
+            },
+            "suggest": {
+                "ext-openssl": "Enabling the openssl extension allows you to access https URLs for repositories and packages",
+                "ext-zip": "Enabling the zip extension allows you to unzip archives, and allows gzip compression of all internet traffic"
+            },
+            "bin": [
+                "bin/composer"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Composer": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Nils Adermann",
+                    "email": "naderman@naderman.de",
+                    "homepage": "http://www.naderman.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Composer helps you declare, manage and install dependencies of PHP projects, ensuring you have the right stack everywhere.",
+            "homepage": "http://getcomposer.org/",
+            "keywords": [
+                "autoload",
+                "dependency",
+                "package"
+            ],
+            "time": "2014-06-04 12:20:36"
+        },
+        {
+            "name": "justinrainbow/json-schema",
+            "version": "1.3.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/justinrainbow/json-schema.git",
+                "reference": "d97cf3ce890fe80f247fc08594a1c8a1029fc7ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/d97cf3ce890fe80f247fc08594a1c8a1029fc7ed",
+                "reference": "d97cf3ce890fe80f247fc08594a1c8a1029fc7ed",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "json-schema/json-schema-test-suite": "1.1.0",
+                "phpdocumentor/phpdocumentor": "~2",
+                "phpunit/phpunit": "~3.7"
+            },
+            "bin": [
+                "bin/validate-json"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "JsonSchema": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch",
+                    "homepage": "http://wiedler.ch/igor/"
+                },
+                {
+                    "name": "Bruno Prieto Reis",
+                    "email": "bruno.p.reis@gmail.com"
+                },
+                {
+                    "name": "Justin Rainbow",
+                    "email": "justin.rainbow@gmail.com"
+                },
+                {
+                    "name": "Robert Schönthal",
+                    "email": "seroscho@googlemail.com",
+                    "homepage": "http://digitalkaoz.net"
+                }
+            ],
+            "description": "A library to validate a json schema.",
+            "homepage": "https://github.com/justinrainbow/json-schema",
+            "keywords": [
+                "json",
+                "schema"
+            ],
+            "time": "2014-03-05 15:03:52"
+        },
+        {
+            "name": "keeko/api-app",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/keeko/api-app.git",
+                "reference": "13549f11ed81a2cdcebbfe490150e42c024c6b20"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/keeko/api-app/zipball/13549f11ed81a2cdcebbfe490150e42c024c6b20",
+                "reference": "13549f11ed81a2cdcebbfe490150e42c024c6b20",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "composer/composer": "@dev",
+                "keeko/core": "dev-master",
+                "php": ">=5.4",
+                "propel/propel": "@dev"
+            },
+            "type": "keeko-app",
+            "extra": {
+                "keeko": {
+                    "app": {
+                        "title": "API Application",
+                        "class": "\\keeko\\application\\api\\ApiApplication"
+                    }
+                },
+                "local": "../../"
+            },
+            "autoload": {
+                "psr-4": {
+                    "keeko\\application\\api\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Keeko API Application",
+            "keywords": [
+                "api",
+                "keeko"
+            ],
+            "time": "2014-05-25 22:54:16"
+        },
+        {
+            "name": "keeko/bootstrap-design",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/keeko/bootstrap-design.git",
+                "reference": "38660b7ced98994b7cb8f1c4e7e086eda64c46e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/keeko/bootstrap-design/zipball/38660b7ced98994b7cb8f1c4e7e086eda64c46e4",
+                "reference": "38660b7ced98994b7cb8f1c4e7e086eda64c46e4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "keeko-design",
+            "extra": {
+                "keeko": {
+                    "design": {
+                        "title": "Bootstrap Design",
+                        "layouts": {
+                            "main": {
+                                "title": "Default Layout",
+                                "blocks": {
+                                    "menu": "Menu",
+                                    "main": "Main Content"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Keeko": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Keeko design with twitter bootstrap",
+            "keywords": [
+                "bootstrap",
+                "design",
+                "keeko"
+            ],
+            "time": "2013-08-25 00:44:38"
+        },
+        {
+            "name": "keeko/composer-installer",
+            "version": "0.20",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/keeko/composer-installer.git",
+                "reference": "bcc984a0bb3ebe6192a00d53fbd9f3b6620d867e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/keeko/composer-installer/zipball/bcc984a0bb3ebe6192a00d53fbd9f3b6620d867e",
+                "reference": "bcc984a0bb3ebe6192a00d53fbd9f3b6620d867e",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "1.0.0",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "composer/composer": "master-dev"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "\\keeko\\composer\\KeekoComposerPlugin"
+            },
+            "autoload": {
+                "psr-0": {
+                    "keeko\\composer": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "gossi",
+                    "homepage": "http://gos.si"
+                }
+            ],
+            "description": "Keeko component installer",
+            "time": "2013-12-08 23:04:34"
+        },
+        {
+            "name": "keeko/core",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/keeko/core.git",
+                "reference": "ceeaef449ab8371feef483883395b492ee7f9111"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/keeko/core/zipball/ceeaef449ab8371feef483883395b492ee7f9111",
+                "reference": "ceeaef449ab8371feef483883395b492ee7f9111",
+                "shasum": ""
+            },
+            "require": {
+                "composer/composer": "dev-master",
+                "keeko/composer-installer": "*",
+                "propel/propel": "dev-master",
+                "symfony/config": "~2",
+                "symfony/filesystem": "~2",
+                "symfony/finder": "~2",
+                "symfony/http-foundation": "~2",
+                "symfony/options-resolver": "~2",
+                "symfony/routing": "~2",
+                "symfony/yaml": "~2",
+                "twig/twig": "~1"
+            },
+            "type": "keeko-core",
+            "autoload": {
+                "psr-4": {
+                    "keeko\\core\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "gossi",
+                    "homepage": "http://gos.si"
+                }
+            ],
+            "description": "Keeko core",
+            "time": "2014-05-25 22:26:53"
+        },
+        {
+            "name": "keeko/developer-app",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/keeko/developer-app.git",
+                "reference": "2aa251919968ac20160f6238c1c73fa940722a3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/keeko/developer-app/zipball/2aa251919968ac20160f6238c1c73fa940722a3e",
+                "reference": "2aa251919968ac20160f6238c1c73fa940722a3e",
+                "shasum": ""
+            },
+            "require": {
+                "composer/composer": "@dev",
+                "keeko/core": "dev-master",
+                "php": ">=5.4",
+                "propel/propel": "@dev"
+            },
+            "type": "keeko-app",
+            "extra": {
+                "keeko": {
+                    "app": {
+                        "title": "Developer Application",
+                        "class": "\\keeko\\application\\developer\\DeveloperApplication"
+                    }
+                },
+                "local": "../../"
+            },
+            "autoload": {
+                "psr-4": {
+                    "keeko\\application\\developer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "App with developer information and API docs.",
+            "keywords": [
+                "api",
+                "apidoc",
+                "dev",
+                "developer",
+                "keeko"
+            ],
+            "time": "2014-05-25 22:26:12"
+        },
+        {
+            "name": "keeko/group",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/keeko/group.git",
+                "reference": "8376d211b4265a549d8af7cbe45a39f84a65ad06"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/keeko/group/zipball/8376d211b4265a549d8af7cbe45a39f84a65ad06",
+                "reference": "8376d211b4265a549d8af7cbe45a39f84a65ad06",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "composer/composer": "@dev",
+                "keeko/core": "dev-master",
+                "propel/propel": "@dev"
+            },
+            "type": "keeko-module",
+            "extra": {
+                "keeko": {
+                    "module": {
+                        "title": "group",
+                        "class": "keeko\\group\\GroupModule"
+                    }
+                },
+                "local": "../../"
+            },
+            "autoload": {
+                "psr-4": {
+                    "keeko\\group\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "gossi",
+                    "homepage": "http://gos.si"
+                }
+            ],
+            "description": "Keeko group Module",
+            "keywords": [
+                "group",
+                "keeko",
+                "permission"
+            ],
+            "time": "2014-05-31 16:36:14"
+        },
+        {
+            "name": "keeko/user",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/keeko/user.git",
+                "reference": "9711be95eb2cbe3cb11a2fca70f8a9e649902161"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/keeko/user/zipball/9711be95eb2cbe3cb11a2fca70f8a9e649902161",
+                "reference": "9711be95eb2cbe3cb11a2fca70f8a9e649902161",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "composer/composer": "@dev",
+                "keeko/core": "dev-master",
+                "propel/propel": "@dev"
+            },
+            "type": "keeko-module",
+            "extra": {
+                "keeko": {
+                    "module": {
+                        "title": "Keeko User Module",
+                        "default-action": "users",
+                        "class": "\\keeko\\user\\UserModule",
+                        "actions": {
+                            "users": {
+                                "class": "\\keeko\\user\\action\\ListAction",
+                                "title": "List Users",
+                                "description": "Lists all users",
+                                "response": {
+                                    "json": "\\keeko\\user\\response\\ListJsonResponse"
+                                }
+                            },
+                            "user": {
+                                "class": "\\keeko\\user\\action\\ReadAction",
+                                "title": "Reads a user",
+                                "params": {
+                                    "id": {
+                                        "title": "User identificator",
+                                        "required": true
+                                    }
+                                }
+                            },
+                            "user-create": {
+                                "class": "\\keeko\\user\\action\\CreateAction",
+                                "title": "Creates a user",
+                                "params": {
+                                    "mail": {
+                                        "title": "The user's email adress"
+                                    },
+                                    "given-name": {
+                                        "title": "The user's given name"
+                                    },
+                                    "family-name": {
+                                        "title": "The user's family name"
+                                    }
+                                }
+                            },
+                            "user-update": {
+                                "class": "\\keeko\\user\\action\\UpdateAction",
+                                "title": "Updates a user",
+                                "params": {
+                                    "id": {
+                                        "title": "User identificator",
+                                        "required": true
+                                    },
+                                    "mail": {
+                                        "title": "The user's email adress"
+                                    },
+                                    "given-name": {
+                                        "title": "The user's given name"
+                                    },
+                                    "family-name": {
+                                        "title": "The user's family name"
+                                    }
+                                }
+                            },
+                            "user-delete": {
+                                "class": "\\keeko\\user\\action\\DeleteAction",
+                                "title": "Deletes a user",
+                                "params": {
+                                    "id": {
+                                        "title": "User identificator",
+                                        "required": true
+                                    }
+                                }
+                            }
+                        },
+                        "api": {
+                            "swaggerVersion": "1.2",
+                            "resourcePath": "/user",
+                            "apis": [
+                                {
+                                    "path": "/users",
+                                    "operations": [
+                                        {
+                                            "method": "GET",
+                                            "summary": "Retrieves all users",
+                                            "nickname": "users",
+                                            "type": "PagedUsers",
+                                            "responseMessages": [
+                                                {
+                                                    "code": 403,
+                                                    "message": "Permission Denied"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "method": "POST",
+                                            "summary": "Create a User",
+                                            "nickname": "user-create",
+                                            "type": "User",
+                                            "parameters": [
+                                                {
+                                                    "name": "body",
+                                                    "description": "The new user object",
+                                                    "required": true,
+                                                    "type": "User",
+                                                    "paramType": "body"
+                                                }
+                                            ],
+                                            "responseMessages": [
+                                                {
+                                                    "code": 403,
+                                                    "message": "Permission Denied"
+                                                },
+                                                {
+                                                    "code": 500,
+                                                    "message": "Something was wrong"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "path": "/users/{id}",
+                                    "operations": [
+                                        {
+                                            "method": "GET",
+                                            "summary": "Reads a User",
+                                            "nickname": "user",
+                                            "type": "User",
+                                            "parameters": [
+                                                {
+                                                    "name": "id",
+                                                    "description": "The user id",
+                                                    "required": true,
+                                                    "type": "id",
+                                                    "paramType": "path"
+                                                }
+                                            ],
+                                            "responseMessages": [
+                                                {
+                                                    "code": 403,
+                                                    "message": "Permission Denied"
+                                                },
+                                                {
+                                                    "code": 500,
+                                                    "message": "Something was wrong"
+                                                },
+                                                {
+                                                    "code": 400,
+                                                    "message": "Invalid ID supplied"
+                                                },
+                                                {
+                                                    "code": 404,
+                                                    "message": "No user found"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "method": "PATCH",
+                                            "summary": "Updates a user",
+                                            "nickname": "user-update",
+                                            "type": "User",
+                                            "parameters": [
+                                                {
+                                                    "name": "id",
+                                                    "description": "The user id",
+                                                    "required": true,
+                                                    "type": "id",
+                                                    "paramType": "path"
+                                                }
+                                            ],
+                                            "responseMessages": [
+                                                {
+                                                    "code": 403,
+                                                    "message": "Permission Denied"
+                                                },
+                                                {
+                                                    "code": 500,
+                                                    "message": "Something was wrong"
+                                                },
+                                                {
+                                                    "code": 400,
+                                                    "message": "Invalid ID supplied"
+                                                },
+                                                {
+                                                    "code": 404,
+                                                    "message": "No user found"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "method": "DELETE",
+                                            "action": "user-delete",
+                                            "summary": "Deletes a user",
+                                            "nickname": "user-delete",
+                                            "type": "string",
+                                            "parameters": [
+                                                {
+                                                    "name": "id",
+                                                    "description": "The user id",
+                                                    "required": true,
+                                                    "type": "id",
+                                                    "paramType": "path"
+                                                }
+                                            ],
+                                            "responseMessages": [
+                                                {
+                                                    "code": 403,
+                                                    "message": "Permission Denied"
+                                                },
+                                                {
+                                                    "code": 500,
+                                                    "message": "Something was wrong"
+                                                },
+                                                {
+                                                    "code": 400,
+                                                    "message": "Invalid ID supplied"
+                                                },
+                                                {
+                                                    "code": 404,
+                                                    "message": "No user found"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "models": {
+                                "Meta": {
+                                    "id": "Meta",
+                                    "properties": {
+                                        "total": {
+                                            "type": "integer"
+                                        },
+                                        "next": {
+                                            "type": "string"
+                                        },
+                                        "previous": {
+                                            "type": "string"
+                                        },
+                                        "first": {
+                                            "type": "string"
+                                        },
+                                        "last": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "PagedUsers": {
+                                    "id": "PagedUsers",
+                                    "properties": {
+                                        "users": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "User"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "Meta"
+                                        }
+                                    }
+                                },
+                                "User": {
+                                    "id": "User",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "required": true
+                                        },
+                                        "mail": {
+                                            "type": "string",
+                                            "required": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "local": "../../"
+            },
+            "autoload": {
+                "psr-4": {
+                    "keeko\\user\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Keeko user module",
+            "time": "2014-05-25 22:53:33"
+        },
+        {
+            "name": "keeko/website-app",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/keeko/website-app.git",
+                "reference": "7d58e5d1ab13d6c586f486a33aacdf3e8237ea74"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/keeko/website-app/zipball/7d58e5d1ab13d6c586f486a33aacdf3e8237ea74",
+                "reference": "7d58e5d1ab13d6c586f486a33aacdf3e8237ea74",
+                "shasum": ""
+            },
+            "require-dev": {
+                "composer/composer": "@dev",
+                "keeko/core": "dev-master",
+                "propel/propel": "@dev"
+            },
+            "type": "keeko-app",
+            "extra": {
+                "keeko": {
+                    "app": {
+                        "title": "Website Application",
+                        "class": "\\keeko\\application\\website\\WebsiteApplication"
+                    }
+                },
+                "local": "../../"
+            },
+            "autoload": {
+                "psr-4": {
+                    "keeko\\application\\website\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "gossi",
+                    "homepage": "http://gos.si"
+                }
+            ],
+            "description": "Website Frontend App for Keeko",
+            "time": "2014-05-25 22:52:37"
+        },
+        {
+            "name": "propel/propel",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/propelorm/Propel2.git",
+                "reference": "3bfc65ed1c3ab06a1faad1aa41234d455d55c982"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/3bfc65ed1c3ab06a1faad1aa41234d455d55c982",
+                "reference": "3bfc65ed1c3ab06a1faad1aa41234d455d55c982",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "psr/log": "~1.0",
+                "symfony/console": "~2.2",
+                "symfony/filesystem": "~2.2",
+                "symfony/finder": "~2.2",
+                "symfony/validator": "~2.2",
+                "symfony/yaml": "~2.2"
+            },
+            "require-dev": {
+                "behat/behat": "~2.4",
+                "monolog/monolog": "~1.3",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "monolog/monolog": "The recommended logging library to use with Propel."
+            },
+            "bin": [
+                "bin/propel"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Propel": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "William Durand",
+                    "email": "william.durand1@gmail.com",
+                    "homepage": "http://www.willdurand.fr"
+                }
+            ],
+            "description": "Propel2 is an open-source Object-Relational Mapping (ORM) for PHP 5.4",
+            "homepage": "http://www.propelorm.org/",
+            "keywords": [
+                "Active Record",
+                "orm",
+                "persistence"
+            ],
+            "time": "2014-04-28 20:09:15"
+        },
+        {
+            "name": "psr/log",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/fe0936ee26643249e916849d48e3a51d5f5e278b",
+                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Psr\\Log\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "time": "2012-12-21 11:40:51"
+        },
+        {
+            "name": "seld/jsonlint",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/jsonlint.git",
+                "reference": "7cd4c4965e17e6e4c07f26d566619a4c76f8c672"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/7cd4c4965e17e6e4c07f26d566619a4c76f8c672",
+                "reference": "7cd4c4965e17e6e4c07f26d566619a4c76f8c672",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "bin": [
+                "bin/jsonlint"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Seld\\JsonLint": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "JSON Linter",
+            "keywords": [
+                "json",
+                "linter",
+                "parser",
+                "validator"
+            ],
+            "time": "2013-11-04 15:41:11"
+        },
+        {
+            "name": "symfony/config",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/Config",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Config.git",
+                "reference": "9c8caadb38ecc69ac35ab31af4d1996944b5a09f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/9c8caadb38ecc69ac35ab31af4d1996944b5a09f",
+                "reference": "9c8caadb38ecc69ac35ab31af4d1996944b5a09f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/filesystem": "~2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Config\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Config Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-04-22 08:11:23"
+        },
+        {
+            "name": "symfony/console",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/Console",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Console.git",
+                "reference": "ef4ca73b0b3a10cbac653d3ca482d0cdd4502b2c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/ef4ca73b0b3a10cbac653d3ca482d0cdd4502b2c",
+                "reference": "ef4ca73b0b3a10cbac653d3ca482d0cdd4502b2c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "psr/log": "~1.0",
+                "symfony/event-dispatcher": "~2.1"
+            },
+            "suggest": {
+                "psr/log": "For using the console logger",
+                "symfony/event-dispatcher": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Console\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Console Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-05-22 08:54:24"
+        },
+        {
+            "name": "symfony/filesystem",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/Filesystem",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Filesystem.git",
+                "reference": "98e831eac836a0a5911626ce82684155f21d0e4d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/98e831eac836a0a5911626ce82684155f21d0e4d",
+                "reference": "98e831eac836a0a5911626ce82684155f21d0e4d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Filesystem\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Filesystem Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-04-16 10:36:21"
+        },
+        {
+            "name": "symfony/finder",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/Finder",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Finder.git",
+                "reference": "307aad2c541bbdf43183043645e186ef2cd6b973"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/307aad2c541bbdf43183043645e186ef2cd6b973",
+                "reference": "307aad2c541bbdf43183043645e186ef2cd6b973",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Finder\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Finder Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-05-22 13:47:45"
+        },
+        {
+            "name": "symfony/http-foundation",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/HttpFoundation",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/HttpFoundation.git",
+                "reference": "044085422005aa3258fb3f710a7bf0202011f259"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/044085422005aa3258fb3f710a7bf0202011f259",
+                "reference": "044085422005aa3258fb3f710a7bf0202011f259",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/expression-language": "~2.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\HttpFoundation\\": ""
+                },
+                "classmap": [
+                    "Symfony/Component/HttpFoundation/Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony HttpFoundation Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-05-26 19:02:40"
+        },
+        {
+            "name": "symfony/options-resolver",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/OptionsResolver",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/OptionsResolver.git",
+                "reference": "1b4a27c83460b315bb7c81ffa803ecbdccb59960"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/OptionsResolver/zipball/1b4a27c83460b315bb7c81ffa803ecbdccb59960",
+                "reference": "1b4a27c83460b315bb7c81ffa803ecbdccb59960",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\OptionsResolver\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony OptionsResolver Component",
+            "homepage": "http://symfony.com",
+            "keywords": [
+                "config",
+                "configuration",
+                "options"
+            ],
+            "time": "2014-04-16 10:36:21"
+        },
+        {
+            "name": "symfony/process",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/Process",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Process.git",
+                "reference": "5d7d78e23894544740219e006320678cfa4cd45b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/5d7d78e23894544740219e006320678cfa4cd45b",
+                "reference": "5d7d78e23894544740219e006320678cfa4cd45b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Process\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Process Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-05-23 09:02:52"
+        },
+        {
+            "name": "symfony/routing",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/Routing",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Routing.git",
+                "reference": "99b4e8e2978e6a08c086fd771cc0aa66c9e80a56"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Routing/zipball/99b4e8e2978e6a08c086fd771cc0aa66c9e80a56",
+                "reference": "99b4e8e2978e6a08c086fd771cc0aa66c9e80a56",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "doctrine/annotations": "~1.0",
+                "psr/log": "~1.0",
+                "symfony/config": "~2.2",
+                "symfony/expression-language": "~2.4",
+                "symfony/yaml": "~2.0"
+            },
+            "suggest": {
+                "doctrine/annotations": "For using the annotation loader",
+                "symfony/config": "For using the all-in-one router or any loader",
+                "symfony/expression-language": "For using expression matching",
+                "symfony/yaml": "For using the YAML loader"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Routing\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Routing Component",
+            "homepage": "http://symfony.com",
+            "keywords": [
+                "router",
+                "routing",
+                "uri",
+                "url"
+            ],
+            "time": "2014-04-23 14:08:54"
+        },
+        {
+            "name": "symfony/translation",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/Translation",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Translation.git",
+                "reference": "5f23265dcf8927a84be832608069c9edca3cf5f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/5f23265dcf8927a84be832608069c9edca3cf5f4",
+                "reference": "5f23265dcf8927a84be832608069c9edca3cf5f4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/config": "~2.0",
+                "symfony/yaml": "~2.2"
+            },
+            "suggest": {
+                "symfony/config": "",
+                "symfony/yaml": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Translation\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Translation Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-05-22 13:47:45"
+        },
+        {
+            "name": "symfony/validator",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/Validator",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Validator.git",
+                "reference": "62f6f7735fbd3897b9347ae60fda4a40d0122640"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/62f6f7735fbd3897b9347ae60fda4a40d0122640",
+                "reference": "62f6f7735fbd3897b9347ae60fda4a40d0122640",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/translation": "~2.0"
+            },
+            "require-dev": {
+                "doctrine/annotations": "~1.0",
+                "doctrine/cache": "~1.0",
+                "egulias/email-validator": "~1.0",
+                "symfony/config": "~2.2",
+                "symfony/expression-language": "~2.4",
+                "symfony/http-foundation": "~2.1",
+                "symfony/intl": "~2.3",
+                "symfony/property-access": "~2.2",
+                "symfony/yaml": "~2.0"
+            },
+            "suggest": {
+                "doctrine/annotations": "For using the annotation mapping. You will also need doctrine/cache.",
+                "doctrine/cache": "For using the default cached annotation reader and metadata cache.",
+                "egulias/email-validator": "Strict (RFC compliant) email validation",
+                "symfony/config": "",
+                "symfony/expression-language": "For using the 2.4 Expression validator",
+                "symfony/http-foundation": "",
+                "symfony/intl": "",
+                "symfony/property-access": "For using the 2.4 Validator API",
+                "symfony/yaml": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Validator\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Validator Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-05-31 02:02:56"
+        },
+        {
+            "name": "symfony/yaml",
+            "version": "v2.5.0",
+            "target-dir": "Symfony/Component/Yaml",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Yaml.git",
+                "reference": "b4b09c68ec2f2727574544ef0173684281a5033c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/b4b09c68ec2f2727574544ef0173684281a5033c",
+                "reference": "b4b09c68ec2f2727574544ef0173684281a5033c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Yaml\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Yaml Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-05-16 14:25:18"
+        },
+        {
+            "name": "twig/twig",
+            "version": "v1.15.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpot/Twig.git",
+                "reference": "1fb5784662f438d7d96a541e305e28b812e2eeed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/1fb5784662f438d7d96a541e305e28b812e2eeed",
+                "reference": "1fb5784662f438d7d96a541e305e28b812e2eeed",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.15-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Twig_": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Armin Ronacher",
+                    "email": "armin.ronacher@active-4.com",
+                    "role": "Project Founder"
+                },
+                {
+                    "name": "Twig Team",
+                    "homepage": "https://github.com/fabpot/Twig/graphs/contributors",
+                    "role": "Contributors"
+                }
+            ],
+            "description": "Twig, the flexible, fast, and secure template language for PHP",
+            "homepage": "http://twig.sensiolabs.org",
+            "keywords": [
+                "templating"
+            ],
+            "time": "2014-02-13 10:19:29"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "composer/composer": 20,
+        "keeko/bootstrap-design": 20,
+        "keeko/website-app": 20,
+        "propel/propel": 20,
+        "keeko/user": 20,
+        "keeko/core": 20,
+        "keeko/api-app": 20,
+        "keeko/developer-app": 20,
+        "keeko/group": 20
+    },
+    "platform": [],
+    "platform-dev": []
+}
