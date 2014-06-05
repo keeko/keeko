@@ -31,16 +31,21 @@ try {
 	$router = new ApplicationRouter();
 
 	$uri = $router->match($request);
-	$application = $uri->getApplication();
+	$model = $uri->getApplication();
+	$base = str_replace($router->getDestination(), '', $request->getUri());
+	$root = str_replace($router->getPrefix(), '', $base);
 
-	$keeko = new Keeko();
-	$keeko->setEntity($application);
-	$keeko->setLocalization($uri->getLocalization());
+	$class = $model->getClassName();
+	$app = new $class($model);
+	$app->setLocalization($uri->getLocalization());
+	$app->setPrefix($router->getPrefix());
+	$app->setBase($base);
+	$app->setRoot($root);
 
-	$response = $keeko->run($request, $router);
+	$response = $app->run($request, $router->getDestination());
 	$response->prepare($request);
 	$response->send();
 
 } catch (\Exception $e) {
-	printf('<b>%s</b><pre>%s</pre>', $e->getMessage(), $e->getTraceAsString());
+	printf('<b>[%s] %s</b><pre>%s</pre>', get_class($e), $e->getMessage(), $e->getTraceAsString());
 }

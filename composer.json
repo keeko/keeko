@@ -10,12 +10,15 @@
 	"license" : "MIT",
 	"require" : {
 		"composer/composer" : "@dev",
-		"keeko/user" : "dev-master",
 		"symfony/config" : "~2",
 		"keeko/bootstrap-design" : "dev-master",
 		"keeko/website-app" : "dev-master",
+		"propel/propel" : "@dev",
+		"keeko/user" : "dev-master",
 		"keeko/core" : "dev-master",
-		"propel/propel" : "@dev"
+		"keeko/api-app" : "dev-master",
+		"keeko/developer-app" : "dev-master",
+		"keeko/group" : "dev-master"
 	},
 	"autoload" : {
 		"psr-0" : {
