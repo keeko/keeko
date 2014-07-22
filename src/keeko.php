@@ -32,14 +32,14 @@ try {
 
 	$uri = $router->match($request);
 	$model = $uri->getApplication();
-	$base = str_replace($router->getDestination(), '', $request->getUri());
-	$root = str_replace($router->getPrefix(), '', $base);
+	$destination = str_replace($router->getDestination(), '', $request->getUri());
+	$root = str_replace($router->getPrefix(), '', $destination);
 
 	$class = $model->getClassName();
 	$app = new $class($model);
 	$app->setLocalization($uri->getLocalization());
 	$app->setPrefix($router->getPrefix());
-	$app->setBase($base);
+	$app->setDestination($destination);
 	$app->setRoot($root);
 
 	$response = $app->run($request, $router->getDestination());

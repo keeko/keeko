@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <buildpath>
-	<buildpathentry kind="src" path="vendor/seld/jsonlint/src"/>
 	<buildpathentry kind="src" path="vendor/symfony/routing"/>
 	<buildpathentry kind="src" path="vendor/symfony/filesystem"/>
+	<buildpathentry kind="src" path="vendor/seld/jsonlint/src/Seld/JsonLint"/>
 	<buildpathentry kind="src" path="core/src"/>
 	<buildpathentry kind="src" path="vendor/symfony/config"/>
 	<buildpathentry kind="src" path="vendor/keeko/composer-installer/src"/>
@@ -15,12 +15,13 @@
 	<buildpathentry kind="src" path="vendor/symfony/validator"/>
 	<buildpathentry kind="src" path="vendor/propel/propel/src"/>
 	<buildpathentry kind="src" path="vendor/symfony/translation"/>
-	<buildpathentry excluding="composer/" kind="src" path="vendor/composer"/>
 	<buildpathentry kind="src" path="vendor/symfony/console"/>
+	<buildpathentry excluding="composer/" kind="src" path="vendor/composer"/>
 	<buildpathentry kind="src" path="vendor/symfony/process"/>
 	<buildpathentry kind="src" path="vendor/symfony/options-resolver"/>
 	<buildpathentry kind="src" path="vendor/twig/twig/lib"/>
 	<buildpathentry kind="src" path="vendor/symfony/finder"/>
 	<buildpathentry kind="src" path="vendor/justinrainbow/json-schema/src"/>
 	<buildpathentry kind="src" path="vendor/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs"/>
+	<buildpathentry kind="src" path="vendor/ircmaxell/password-compat/lib"/>
 </buildpath>

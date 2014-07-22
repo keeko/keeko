@@ -6,12 +6,6 @@ use Composer\Script\PackageEvent;
 
 class InstallerProxy {
 
-	public static function preInstall(CommandEvent $event) {
-		if (self::hasInstaller()) {
-			\keeko\core\installer\DelegateInstaller::preInstall($event);
-		}
-	}
-
 	public static function installPackage(PackageEvent $event) {
 		if (self::hasInstaller()) {
 			\keeko\core\installer\DelegateInstaller::installPackage($event);
@@ -30,15 +24,7 @@ class InstallerProxy {
 		}
 	}
 
-	public static function postInstall(CommandEvent $event) {
-		if (self::hasInstaller() && $event->getComposer()->getPackage()->getName() == 'keeko/keeko') {
-			$event->getIO()->write('Install Keeko', true);
-			$installer = new \keeko\core\installer\KeekoInstaller();
-			$installer->installKeeko($event->getIO(), $event->getComposer());
-		}
-	}
-
 	private static function hasInstaller() {
-		return class_exists('\\keeko\\core\\installer\\KeekoInstaller');
+		return class_exists('\\keeko\\core\\installer\\DelegateInstaller');
 	}
 }

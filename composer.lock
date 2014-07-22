@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "00449d84441aa3f9518db87dd09fee01",
+    "hash": "401962d7c08061089813f1611803dff1",
     "packages": [
         {
             "name": "composer/composer",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "71397f82e4bdf4722bcbfeb43be0d30831376d3d"
+                "reference": "4dfa3c469e04e5db02e4840ea23a1aa6264f0f9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/71397f82e4bdf4722bcbfeb43be0d30831376d3d",
-                "reference": "71397f82e4bdf4722bcbfeb43be0d30831376d3d",
+                "url": "https://api.github.com/repos/composer/composer/zipball/4dfa3c469e04e5db02e4840ea23a1aa6264f0f9c",
+                "reference": "4dfa3c469e04e5db02e4840ea23a1aa6264f0f9c",
                 "shasum": ""
             },
             "require": {
@@ -55,16 +55,14 @@
             ],
             "authors": [
                 {
-                    "name": "Jordi Boggiano",
-                    "email": "j.boggiano@seld.be",
-                    "homepage": "http://seld.be",
-                    "role": "Developer"
-                },
-                {
                     "name": "Nils Adermann",
                     "email": "naderman@naderman.de",
-                    "homepage": "http://www.naderman.de",
-                    "role": "Developer"
+                    "homepage": "http://www.naderman.de"
+                },
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
                 }
             ],
             "description": "Composer helps you declare, manage and install dependencies of PHP projects, ensuring you have the right stack everywhere.",
@@ -74,7 +72,46 @@
                 "dependency",
                 "package"
             ],
-            "time": "2014-06-04 12:20:36"
+            "time": "2014-07-20 17:07:31"
+        },
+        {
+            "name": "ircmaxell/password-compat",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ircmaxell/password_compat.git",
+                "reference": "1fc1521b5e9794ea77e4eca30717be9635f1d4f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/1fc1521b5e9794ea77e4eca30717be9635f1d4f4",
+                "reference": "1fc1521b5e9794ea77e4eca30717be9635f1d4f4",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/password.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@php.net",
+                    "homepage": "http://blog.ircmaxell.com"
+                }
+            ],
+            "description": "A compatibility library for the proposed simplified password hashing algorithm: https://wiki.php.net/rfc/password_hash",
+            "homepage": "https://github.com/ircmaxell/password_compat",
+            "keywords": [
+                "hashing",
+                "password"
+            ],
+            "time": "2013-04-30 19:58:08"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -150,21 +187,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/api-app.git",
-                "reference": "13549f11ed81a2cdcebbfe490150e42c024c6b20"
+                "reference": "fb9252db3a0cef8ae387b03d1140ac746b4f67fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/api-app/zipball/13549f11ed81a2cdcebbfe490150e42c024c6b20",
-                "reference": "13549f11ed81a2cdcebbfe490150e42c024c6b20",
+                "url": "https://api.github.com/repos/keeko/api-app/zipball/fb9252db3a0cef8ae387b03d1140ac746b4f67fb",
+                "reference": "fb9252db3a0cef8ae387b03d1140ac746b4f67fb",
                 "shasum": ""
             },
             "require": {
+                "keeko/composer-installer": "*",
                 "php": ">=5.4"
             },
             "require-dev": {
                 "composer/composer": "@dev",
                 "keeko/core": "dev-master",
-                "php": ">=5.4",
                 "propel/propel": "@dev"
             },
             "type": "keeko-app",
@@ -191,7 +228,159 @@
                 "api",
                 "keeko"
             ],
-            "time": "2014-05-25 22:54:16"
+            "time": "2014-06-06 18:04:12"
+        },
+        {
+            "name": "keeko/auth",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/keeko/auth.git",
+                "reference": "72255f1c2a92b1fb977d687deeb9e2da86b598a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/keeko/auth/zipball/72255f1c2a92b1fb977d687deeb9e2da86b598a0",
+                "reference": "72255f1c2a92b1fb977d687deeb9e2da86b598a0",
+                "shasum": ""
+            },
+            "require": {
+                "keeko/composer-installer": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "composer/composer": "@dev",
+                "keeko/core": "dev-master",
+                "propel/propel": "@dev"
+            },
+            "type": "keeko-module",
+            "extra": {
+                "local": "../../",
+                "keeko": {
+                    "module": {
+                        "title": "Auth",
+                        "class": "keeko\\auth\\AuthModule",
+                        "slug": "auth",
+                        "default-action": "auth-list",
+                        "actions": {
+                            "login": {
+                                "class": "keeko\\auth\\action\\LoginAction",
+                                "title": "Login",
+                                "response": {
+                                    "json": "keeko\\auth\\response\\LoginJsonResponse"
+                                }
+                            },
+                            "logout": {
+                                "class": "keeko\\auth\\action\\LogoutAction",
+                                "title": "Logout",
+                                "response": {
+                                    "json": "keeko\\auth\\response\\LogoutJsonResponse"
+                                }
+                            },
+                            "auth-list": {
+                                "class": "keeko\\auth\\action\\AuthListAction",
+                                "title": "List all auths",
+                                "response": {
+                                    "json": "keeko\\auth\\response\\AuthListJsonResponse"
+                                }
+                            },
+                            "auth-create": {
+                                "class": "keeko\\auth\\action\\AuthCreateAction",
+                                "title": "Creates an auth",
+                                "response": {
+                                    "json": "keeko\\auth\\response\\AuthCreateJsonResponse"
+                                }
+                            },
+                            "auth-read": {
+                                "class": "keeko\\auth\\action\\AuthReadAction",
+                                "title": "Reads an auth",
+                                "response": {
+                                    "json": "keeko\\auth\\response\\AuthReadJsonResponse"
+                                }
+                            },
+                            "auth-update": {
+                                "class": "keeko\\auth\\action\\AuthUpdateAction",
+                                "title": "Updates an auth",
+                                "response": {
+                                    "json": "keeko\\auth\\response\\AuthUpdateJsonResponse"
+                                }
+                            },
+                            "auth-delete": {
+                                "class": "keeko\\auth\\action\\AuthDeleteAction",
+                                "title": "Deletes an auth",
+                                "response": {
+                                    "json": "keeko\\auth\\response\\AuthDeleteJsonResponse"
+                                }
+                            }
+                        },
+                        "api": {
+                            "swaggerVersion": "1.2",
+                            "resourcePath": "/auth",
+                            "apis": [
+                                {
+                                    "path": "/login",
+                                    "operations": [
+                                        {
+                                            "method": "GET",
+                                            "summary": "Login",
+                                            "nickname": "login",
+                                            "type": "LoginResponse",
+                                            "parameters": [
+                                                {
+                                                    "name": "user",
+                                                    "description": "The authenticating user",
+                                                    "required": true,
+                                                    "type": "string"
+                                                },
+                                                {
+                                                    "name": "password",
+                                                    "description": "The password for the user",
+                                                    "required": true,
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "path": "/logout",
+                                    "operations": [
+                                        {
+                                            "method": "GET",
+                                            "summary": "Logout",
+                                            "nickname": "logout"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "models": {
+                                "LoginResponse": {
+                                    "id": "LoginResponse",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "keeko\\auth\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Keeko auth module",
+            "keywords": [
+                "auth"
+            ],
+            "time": "2014-07-10 12:17:40"
         },
         {
             "name": "keeko/bootstrap-design",
@@ -293,16 +482,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/core.git",
-                "reference": "ceeaef449ab8371feef483883395b492ee7f9111"
+                "reference": "ec204711b2c40ece52938c21c0b6dd221be5b69d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/core/zipball/ceeaef449ab8371feef483883395b492ee7f9111",
-                "reference": "ceeaef449ab8371feef483883395b492ee7f9111",
+                "url": "https://api.github.com/repos/keeko/core/zipball/ec204711b2c40ece52938c21c0b6dd221be5b69d",
+                "reference": "ec204711b2c40ece52938c21c0b6dd221be5b69d",
                 "shasum": ""
             },
             "require": {
                 "composer/composer": "dev-master",
+                "ircmaxell/password-compat": "~1",
                 "keeko/composer-installer": "*",
                 "propel/propel": "dev-master",
                 "symfony/config": "~2",
@@ -331,7 +521,7 @@
                 }
             ],
             "description": "Keeko core",
-            "time": "2014-05-25 22:26:53"
+            "time": "2014-07-10 12:17:14"
         },
         {
             "name": "keeko/developer-app",
@@ -339,18 +529,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/developer-app.git",
-                "reference": "2aa251919968ac20160f6238c1c73fa940722a3e"
+                "reference": "8b12047a9c5c878f0d3104ffa2cbe9fa4051970a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/developer-app/zipball/2aa251919968ac20160f6238c1c73fa940722a3e",
-                "reference": "2aa251919968ac20160f6238c1c73fa940722a3e",
+                "url": "https://api.github.com/repos/keeko/developer-app/zipball/8b12047a9c5c878f0d3104ffa2cbe9fa4051970a",
+                "reference": "8b12047a9c5c878f0d3104ffa2cbe9fa4051970a",
                 "shasum": ""
             },
             "require": {
+                "keeko/composer-installer": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
                 "composer/composer": "@dev",
                 "keeko/core": "dev-master",
-                "php": ">=5.4",
                 "propel/propel": "@dev"
             },
             "type": "keeko-app",
@@ -380,7 +573,7 @@
                 "developer",
                 "keeko"
             ],
-            "time": "2014-05-25 22:26:12"
+            "time": "2014-06-08 10:08:24"
         },
         {
             "name": "keeko/group",
@@ -388,15 +581,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/group.git",
-                "reference": "8376d211b4265a549d8af7cbe45a39f84a65ad06"
+                "reference": "d4a26474119061612ea792d867eb7cb1e3da1151"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/group/zipball/8376d211b4265a549d8af7cbe45a39f84a65ad06",
-                "reference": "8376d211b4265a549d8af7cbe45a39f84a65ad06",
+                "url": "https://api.github.com/repos/keeko/group/zipball/d4a26474119061612ea792d867eb7cb1e3da1151",
+                "reference": "d4a26474119061612ea792d867eb7cb1e3da1151",
                 "shasum": ""
             },
             "require": {
+                "keeko/composer-installer": "*",
                 "php": ">=5.4"
             },
             "require-dev": {
@@ -408,8 +602,253 @@
             "extra": {
                 "keeko": {
                     "module": {
-                        "title": "group",
-                        "class": "keeko\\group\\GroupModule"
+                        "title": "Groups",
+                        "class": "keeko\\group\\GroupModule",
+                        "slug": "group",
+                        "actions": {
+                            "group-list": {
+                                "class": "keeko\\group\\action\\GroupListAction",
+                                "title": "List all groups",
+                                "response": {
+                                    "json": "keeko\\group\\response\\GroupListJsonResponse"
+                                }
+                            },
+                            "group-create": {
+                                "class": "keeko\\group\\action\\GroupCreateAction",
+                                "title": "Creates a group",
+                                "response": {
+                                    "json": "keeko\\group\\response\\GroupCreateJsonResponse"
+                                }
+                            },
+                            "group-read": {
+                                "class": "keeko\\group\\action\\GroupReadAction",
+                                "title": "Reads a group",
+                                "response": {
+                                    "json": "keeko\\group\\response\\GroupReadJsonResponse"
+                                }
+                            },
+                            "group-update": {
+                                "class": "keeko\\group\\action\\GroupUpdateAction",
+                                "title": "Updates a group",
+                                "response": {
+                                    "json": "keeko\\group\\response\\GroupUpdateJsonResponse"
+                                }
+                            },
+                            "group-delete": {
+                                "class": "keeko\\group\\action\\GroupDeleteAction",
+                                "title": "Deletes a group",
+                                "response": {
+                                    "json": "keeko\\group\\response\\GroupDeleteJsonResponse"
+                                }
+                            }
+                        },
+                        "api": {
+                            "swaggerVersion": "1.2",
+                            "resourcePath": "/group",
+                            "apis": [
+                                {
+                                    "path": "/groups",
+                                    "operations": [
+                                        {
+                                            "method": "GET",
+                                            "summary": "List all groups",
+                                            "nickname": "group-list",
+                                            "type": "PagedGroups"
+                                        },
+                                        {
+                                            "method": "POST",
+                                            "summary": "Creates a group",
+                                            "nickname": "group-create",
+                                            "type": "Group",
+                                            "parameters": [
+                                                {
+                                                    "name": "body",
+                                                    "description": "The new group",
+                                                    "required": true,
+                                                    "type": "WritableGroup",
+                                                    "paramType": "body"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "path": "/groups/{id}",
+                                    "operations": [
+                                        {
+                                            "method": "GET",
+                                            "summary": "Reads a group",
+                                            "nickname": "group-read",
+                                            "type": "Group",
+                                            "parameters": [
+                                                {
+                                                    "name": "id",
+                                                    "description": "The group id",
+                                                    "required": true,
+                                                    "type": "id",
+                                                    "paramType": "path"
+                                                }
+                                            ],
+                                            "responseMessages": [
+                                                {
+                                                    "code": "400",
+                                                    "message": "Invalid ID supplied"
+                                                },
+                                                {
+                                                    "code": "404",
+                                                    "message": "No group found"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "method": "PATCH",
+                                            "summary": "Updates a group",
+                                            "nickname": "group-update",
+                                            "type": "Group",
+                                            "parameters": [
+                                                {
+                                                    "name": "id",
+                                                    "description": "The group id",
+                                                    "required": true,
+                                                    "type": "id",
+                                                    "paramType": "path"
+                                                }
+                                            ],
+                                            "responseMessages": [
+                                                {
+                                                    "code": "400",
+                                                    "message": "Invalid ID supplied"
+                                                },
+                                                {
+                                                    "code": "404",
+                                                    "message": "No group found"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "method": "DELETE",
+                                            "summary": "Deletes a group",
+                                            "nickname": "group-delete",
+                                            "type": "Group",
+                                            "parameters": [
+                                                {
+                                                    "name": "id",
+                                                    "description": "The group id",
+                                                    "required": true,
+                                                    "type": "id",
+                                                    "paramType": "path"
+                                                }
+                                            ],
+                                            "responseMessages": [
+                                                {
+                                                    "code": "400",
+                                                    "message": "Invalid ID supplied"
+                                                },
+                                                {
+                                                    "code": "404",
+                                                    "message": "No group found"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "models": {
+                                "Meta": {
+                                    "id": "Meta",
+                                    "properties": {
+                                        "total": {
+                                            "type": "integer"
+                                        },
+                                        "first": {
+                                            "type": "string"
+                                        },
+                                        "next": {
+                                            "type": "string"
+                                        },
+                                        "previous": {
+                                            "type": "string"
+                                        },
+                                        "last": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "PagedGroups": {
+                                    "id": "PagedGroups",
+                                    "properties": {
+                                        "groups": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "Group"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "Meta"
+                                        }
+                                    }
+                                },
+                                "WritableGroup": {
+                                    "id": "WritableGroup",
+                                    "properties": {
+                                        "id": {
+                                            "type": "int"
+                                        },
+                                        "user_id": {
+                                            "type": "int"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "is_guest": {
+                                            "type": "boolean"
+                                        },
+                                        "is_default": {
+                                            "type": "boolean"
+                                        },
+                                        "is_active": {
+                                            "type": "boolean"
+                                        },
+                                        "is_system": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "Group": {
+                                    "id": "Group",
+                                    "properties": {
+                                        "id": {
+                                            "type": "int"
+                                        },
+                                        "user_id": {
+                                            "type": "int"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "is_guest": {
+                                            "type": "boolean"
+                                        },
+                                        "is_default": {
+                                            "type": "boolean"
+                                        },
+                                        "is_active": {
+                                            "type": "boolean"
+                                        },
+                                        "is_system": {
+                                            "type": "boolean"
+                                        },
+                                        "created_at": {
+                                            "type": "string"
+                                        },
+                                        "updated_at": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "default-action": "group-list"
                     }
                 },
                 "local": "../../"
@@ -435,7 +874,7 @@
                 "keeko",
                 "permission"
             ],
-            "time": "2014-05-31 16:36:14"
+            "time": "2014-06-06 18:03:37"
         },
         {
             "name": "keeko/user",
@@ -443,12 +882,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/user.git",
-                "reference": "9711be95eb2cbe3cb11a2fca70f8a9e649902161"
+                "reference": "323db5bce23e151e6868d715bbd3599b1cda3d90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/user/zipball/9711be95eb2cbe3cb11a2fca70f8a9e649902161",
-                "reference": "9711be95eb2cbe3cb11a2fca70f8a9e649902161",
+                "url": "https://api.github.com/repos/keeko/user/zipball/323db5bce23e151e6868d715bbd3599b1cda3d90",
+                "reference": "323db5bce23e151e6868d715bbd3599b1cda3d90",
                 "shasum": ""
             },
             "require": {
@@ -463,70 +902,64 @@
             "extra": {
                 "keeko": {
                     "module": {
-                        "title": "Keeko User Module",
-                        "default-action": "users",
-                        "class": "\\keeko\\user\\UserModule",
+                        "title": "Users",
+                        "class": "keeko\\user\\UserModule",
+                        "slug": "user",
+                        "default-action": "user-list",
                         "actions": {
-                            "users": {
-                                "class": "\\keeko\\user\\action\\ListAction",
-                                "title": "List Users",
-                                "description": "Lists all users",
+                            "user-list": {
+                                "class": "keeko\\user\\action\\UserListAction",
+                                "title": "List all users",
                                 "response": {
-                                    "json": "\\keeko\\user\\response\\ListJsonResponse"
-                                }
-                            },
-                            "user": {
-                                "class": "\\keeko\\user\\action\\ReadAction",
-                                "title": "Reads a user",
-                                "params": {
-                                    "id": {
-                                        "title": "User identificator",
-                                        "required": true
-                                    }
+                                    "json": "keeko\\user\\response\\UserListJsonResponse"
                                 }
                             },
                             "user-create": {
-                                "class": "\\keeko\\user\\action\\CreateAction",
-                                "title": "Creates a user",
-                                "params": {
-                                    "mail": {
-                                        "title": "The user's email adress"
-                                    },
-                                    "given-name": {
-                                        "title": "The user's given name"
-                                    },
-                                    "family-name": {
-                                        "title": "The user's family name"
-                                    }
+                                "class": "keeko\\user\\action\\UserCreateAction",
+                                "title": "Creates an user",
+                                "response": {
+                                    "json": "keeko\\user\\response\\UserCreateJsonResponse"
+                                }
+                            },
+                            "user-read": {
+                                "class": "keeko\\user\\action\\UserReadAction",
+                                "title": "Reads an user",
+                                "response": {
+                                    "json": "keeko\\user\\response\\UserReadJsonResponse"
                                 }
                             },
                             "user-update": {
-                                "class": "\\keeko\\user\\action\\UpdateAction",
-                                "title": "Updates a user",
-                                "params": {
-                                    "id": {
-                                        "title": "User identificator",
-                                        "required": true
-                                    },
-                                    "mail": {
-                                        "title": "The user's email adress"
-                                    },
-                                    "given-name": {
-                                        "title": "The user's given name"
-                                    },
-                                    "family-name": {
-                                        "title": "The user's family name"
-                                    }
+                                "class": "keeko\\user\\action\\UserUpdateAction",
+                                "title": "Updates an user",
+                                "response": {
+                                    "json": "keeko\\user\\response\\UserUpdateJsonResponse"
                                 }
                             },
                             "user-delete": {
-                                "class": "\\keeko\\user\\action\\DeleteAction",
-                                "title": "Deletes a user",
-                                "params": {
-                                    "id": {
-                                        "title": "User identificator",
-                                        "required": true
-                                    }
+                                "class": "keeko\\user\\action\\UserDeleteAction",
+                                "title": "Deletes an user",
+                                "response": {
+                                    "json": "keeko\\user\\response\\UserDeleteJsonResponse"
+                                }
+                            }
+                        },
+                        "codegen": {
+                            "user": {
+                                "write": {
+                                    "conversion": {
+                                        "password": "password_hash($v, PASSWORD_BCRYPT)"
+                                    },
+                                    "filter": [
+                                        "password_recover_code",
+                                        "password_recover_time"
+                                    ]
+                                },
+                                "read": {
+                                    "filter": [
+                                        "password",
+                                        "password_recover_code",
+                                        "password_recover_time"
+                                    ]
                                 }
                             }
                         },
@@ -539,38 +972,22 @@
                                     "operations": [
                                         {
                                             "method": "GET",
-                                            "summary": "Retrieves all users",
-                                            "nickname": "users",
-                                            "type": "PagedUsers",
-                                            "responseMessages": [
-                                                {
-                                                    "code": 403,
-                                                    "message": "Permission Denied"
-                                                }
-                                            ]
+                                            "summary": "List all users",
+                                            "nickname": "user-list",
+                                            "type": "PagedUsers"
                                         },
                                         {
                                             "method": "POST",
-                                            "summary": "Create a User",
+                                            "summary": "Creates an user",
                                             "nickname": "user-create",
                                             "type": "User",
                                             "parameters": [
                                                 {
                                                     "name": "body",
-                                                    "description": "The new user object",
+                                                    "description": "The new user",
                                                     "required": true,
-                                                    "type": "User",
+                                                    "type": "WritableUser",
                                                     "paramType": "body"
-                                                }
-                                            ],
-                                            "responseMessages": [
-                                                {
-                                                    "code": 403,
-                                                    "message": "Permission Denied"
-                                                },
-                                                {
-                                                    "code": 500,
-                                                    "message": "Something was wrong"
                                                 }
                                             ]
                                         }
@@ -581,8 +998,8 @@
                                     "operations": [
                                         {
                                             "method": "GET",
-                                            "summary": "Reads a User",
-                                            "nickname": "user",
+                                            "summary": "Reads an user",
+                                            "nickname": "user-read",
                                             "type": "User",
                                             "parameters": [
                                                 {
@@ -595,26 +1012,18 @@
                                             ],
                                             "responseMessages": [
                                                 {
-                                                    "code": 403,
-                                                    "message": "Permission Denied"
-                                                },
-                                                {
-                                                    "code": 500,
-                                                    "message": "Something was wrong"
-                                                },
-                                                {
-                                                    "code": 400,
+                                                    "code": "400",
                                                     "message": "Invalid ID supplied"
                                                 },
                                                 {
-                                                    "code": 404,
+                                                    "code": "404",
                                                     "message": "No user found"
                                                 }
                                             ]
                                         },
                                         {
                                             "method": "PATCH",
-                                            "summary": "Updates a user",
+                                            "summary": "Updates an user",
                                             "nickname": "user-update",
                                             "type": "User",
                                             "parameters": [
@@ -628,29 +1037,20 @@
                                             ],
                                             "responseMessages": [
                                                 {
-                                                    "code": 403,
-                                                    "message": "Permission Denied"
-                                                },
-                                                {
-                                                    "code": 500,
-                                                    "message": "Something was wrong"
-                                                },
-                                                {
-                                                    "code": 400,
+                                                    "code": "400",
                                                     "message": "Invalid ID supplied"
                                                 },
                                                 {
-                                                    "code": 404,
+                                                    "code": "404",
                                                     "message": "No user found"
                                                 }
                                             ]
                                         },
                                         {
                                             "method": "DELETE",
-                                            "action": "user-delete",
-                                            "summary": "Deletes a user",
+                                            "summary": "Deletes an user",
                                             "nickname": "user-delete",
-                                            "type": "string",
+                                            "type": "User",
                                             "parameters": [
                                                 {
                                                     "name": "id",
@@ -662,19 +1062,11 @@
                                             ],
                                             "responseMessages": [
                                                 {
-                                                    "code": 403,
-                                                    "message": "Permission Denied"
-                                                },
-                                                {
-                                                    "code": 500,
-                                                    "message": "Something was wrong"
-                                                },
-                                                {
-                                                    "code": 400,
+                                                    "code": "400",
                                                     "message": "Invalid ID supplied"
                                                 },
                                                 {
-                                                    "code": 404,
+                                                    "code": "404",
                                                     "message": "No user found"
                                                 }
                                             ]
@@ -689,13 +1081,13 @@
                                         "total": {
                                             "type": "integer"
                                         },
+                                        "first": {
+                                            "type": "string"
+                                        },
                                         "next": {
                                             "type": "string"
                                         },
                                         "previous": {
-                                            "type": "string"
-                                        },
-                                        "first": {
                                             "type": "string"
                                         },
                                         "last": {
@@ -717,16 +1109,130 @@
                                         }
                                     }
                                 },
+                                "WritableUser": {
+                                    "id": "WritableUser",
+                                    "properties": {
+                                        "id": {
+                                            "type": "int"
+                                        },
+                                        "login_name": {
+                                            "type": "string"
+                                        },
+                                        "password": {
+                                            "type": "string"
+                                        },
+                                        "given_name": {
+                                            "type": "string"
+                                        },
+                                        "family_name": {
+                                            "type": "string"
+                                        },
+                                        "display_name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "country_iso_nr": {
+                                            "type": "int"
+                                        },
+                                        "subdivision_id": {
+                                            "type": "int"
+                                        },
+                                        "address": {
+                                            "type": "string"
+                                        },
+                                        "address2": {
+                                            "type": "string"
+                                        },
+                                        "birthday": {
+                                            "type": "string"
+                                        },
+                                        "sex": {
+                                            "type": "int"
+                                        },
+                                        "city": {
+                                            "type": "string"
+                                        },
+                                        "postal_code": {
+                                            "type": "string"
+                                        },
+                                        "password_recover_code": {
+                                            "type": "string"
+                                        },
+                                        "password_recover_time": {
+                                            "type": "string"
+                                        },
+                                        "location_status": {
+                                            "type": "int"
+                                        },
+                                        "latitude": {
+                                            "type": "double"
+                                        },
+                                        "longitude": {
+                                            "type": "double"
+                                        }
+                                    }
+                                },
                                 "User": {
                                     "id": "User",
                                     "properties": {
                                         "id": {
-                                            "type": "integer",
-                                            "required": true
+                                            "type": "int"
                                         },
-                                        "mail": {
-                                            "type": "string",
-                                            "required": true
+                                        "login_name": {
+                                            "type": "string"
+                                        },
+                                        "given_name": {
+                                            "type": "string"
+                                        },
+                                        "family_name": {
+                                            "type": "string"
+                                        },
+                                        "display_name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "country_iso_nr": {
+                                            "type": "int"
+                                        },
+                                        "subdivision_id": {
+                                            "type": "int"
+                                        },
+                                        "address": {
+                                            "type": "string"
+                                        },
+                                        "address2": {
+                                            "type": "string"
+                                        },
+                                        "birthday": {
+                                            "type": "string"
+                                        },
+                                        "sex": {
+                                            "type": "int"
+                                        },
+                                        "city": {
+                                            "type": "string"
+                                        },
+                                        "postal_code": {
+                                            "type": "string"
+                                        },
+                                        "location_status": {
+                                            "type": "int"
+                                        },
+                                        "latitude": {
+                                            "type": "double"
+                                        },
+                                        "longitude": {
+                                            "type": "double"
+                                        },
+                                        "created_at": {
+                                            "type": "string"
+                                        },
+                                        "updated_at": {
+                                            "type": "string"
                                         }
                                     }
                                 }
@@ -745,8 +1251,14 @@
             "license": [
                 "MIT"
             ],
+            "authors": [
+                {
+                    "name": "gossi",
+                    "homepage": "http://gos.si"
+                }
+            ],
             "description": "Keeko user module",
-            "time": "2014-05-25 22:53:33"
+            "time": "2014-06-05 00:22:26"
         },
         {
             "name": "keeko/website-app",
@@ -801,17 +1313,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/propelorm/Propel2.git",
-                "reference": "3bfc65ed1c3ab06a1faad1aa41234d455d55c982"
+                "reference": "fb7aa33479797a5e2fe794eeb3762691cb6416b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/3bfc65ed1c3ab06a1faad1aa41234d455d55c982",
-                "reference": "3bfc65ed1c3ab06a1faad1aa41234d455d55c982",
+                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/fb7aa33479797a5e2fe794eeb3762691cb6416b2",
+                "reference": "fb7aa33479797a5e2fe794eeb3762691cb6416b2",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4",
                 "psr/log": "~1.0",
+                "symfony/config": "~2.2",
                 "symfony/console": "~2.2",
                 "symfony/filesystem": "~2.2",
                 "symfony/finder": "~2.2",
@@ -858,7 +1371,7 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2014-04-28 20:09:15"
+            "time": "2014-07-15 20:18:33"
         },
         {
             "name": "psr/log",
@@ -900,16 +1413,16 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.1.2",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "7cd4c4965e17e6e4c07f26d566619a4c76f8c672"
+                "reference": "9cae56dbe34f4392e7d0f559474df33749a39f8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/7cd4c4965e17e6e4c07f26d566619a4c76f8c672",
-                "reference": "7cd4c4965e17e6e4c07f26d566619a4c76f8c672",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/9cae56dbe34f4392e7d0f559474df33749a39f8d",
+                "reference": "9cae56dbe34f4392e7d0f559474df33749a39f8d",
                 "shasum": ""
             },
             "require": {
@@ -920,8 +1433,8 @@
             ],
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Seld\\JsonLint": "src/"
+                "psr-4": {
+                    "Seld\\JsonLint\\": "src/Seld/JsonLint/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -932,8 +1445,7 @@
                 {
                     "name": "Jordi Boggiano",
                     "email": "j.boggiano@seld.be",
-                    "homepage": "http://seld.be",
-                    "role": "Developer"
+                    "homepage": "http://seld.be"
                 }
             ],
             "description": "JSON Linter",
@@ -943,21 +1455,21 @@
                 "parser",
                 "validator"
             ],
-            "time": "2013-11-04 15:41:11"
+            "time": "2014-07-20 17:36:11"
         },
         {
             "name": "symfony/config",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Config",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
-                "reference": "9c8caadb38ecc69ac35ab31af4d1996944b5a09f"
+                "reference": "a31aa8029bcc0b5b85578328050aa70d052e177b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/9c8caadb38ecc69ac35ab31af4d1996944b5a09f",
-                "reference": "9c8caadb38ecc69ac35ab31af4d1996944b5a09f",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/a31aa8029bcc0b5b85578328050aa70d052e177b",
+                "reference": "a31aa8029bcc0b5b85578328050aa70d052e177b",
                 "shasum": ""
             },
             "require": {
@@ -993,21 +1505,21 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-22 08:11:23"
+            "time": "2014-07-09 09:05:48"
         },
         {
             "name": "symfony/console",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "ef4ca73b0b3a10cbac653d3ca482d0cdd4502b2c"
+                "reference": "386fa63407805959bd2c5fe540294721ad4224c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/ef4ca73b0b3a10cbac653d3ca482d0cdd4502b2c",
-                "reference": "ef4ca73b0b3a10cbac653d3ca482d0cdd4502b2c",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/386fa63407805959bd2c5fe540294721ad4224c8",
+                "reference": "386fa63407805959bd2c5fe540294721ad4224c8",
                 "shasum": ""
             },
             "require": {
@@ -1050,21 +1562,21 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-22 08:54:24"
+            "time": "2014-07-15 14:15:12"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "98e831eac836a0a5911626ce82684155f21d0e4d"
+                "reference": "c1309b0ee195ad264a4314435bdaecdfacb8ae9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/98e831eac836a0a5911626ce82684155f21d0e4d",
-                "reference": "98e831eac836a0a5911626ce82684155f21d0e4d",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/c1309b0ee195ad264a4314435bdaecdfacb8ae9c",
+                "reference": "c1309b0ee195ad264a4314435bdaecdfacb8ae9c",
                 "shasum": ""
             },
             "require": {
@@ -1099,21 +1611,21 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-16 10:36:21"
+            "time": "2014-07-09 09:05:48"
         },
         {
             "name": "symfony/finder",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "307aad2c541bbdf43183043645e186ef2cd6b973"
+                "reference": "576d8f69feec477067e91b6bd0367c113e76a1a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/307aad2c541bbdf43183043645e186ef2cd6b973",
-                "reference": "307aad2c541bbdf43183043645e186ef2cd6b973",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/576d8f69feec477067e91b6bd0367c113e76a1a0",
+                "reference": "576d8f69feec477067e91b6bd0367c113e76a1a0",
                 "shasum": ""
             },
             "require": {
@@ -1148,21 +1660,21 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-22 13:47:45"
+            "time": "2014-07-15 14:15:12"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/HttpFoundation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "044085422005aa3258fb3f710a7bf0202011f259"
+                "reference": "32ca1659e64bff5df61668e137bb3c3f64b7ce55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/044085422005aa3258fb3f710a7bf0202011f259",
-                "reference": "044085422005aa3258fb3f710a7bf0202011f259",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/32ca1659e64bff5df61668e137bb3c3f64b7ce55",
+                "reference": "32ca1659e64bff5df61668e137bb3c3f64b7ce55",
                 "shasum": ""
             },
             "require": {
@@ -1203,21 +1715,21 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-26 19:02:40"
+            "time": "2014-07-15 14:15:12"
         },
         {
             "name": "symfony/options-resolver",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/OptionsResolver",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/OptionsResolver.git",
-                "reference": "1b4a27c83460b315bb7c81ffa803ecbdccb59960"
+                "reference": "e6a0a0e89221736c5a30b5c48dedd984f7c5188c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/OptionsResolver/zipball/1b4a27c83460b315bb7c81ffa803ecbdccb59960",
-                "reference": "1b4a27c83460b315bb7c81ffa803ecbdccb59960",
+                "url": "https://api.github.com/repos/symfony/OptionsResolver/zipball/e6a0a0e89221736c5a30b5c48dedd984f7c5188c",
+                "reference": "e6a0a0e89221736c5a30b5c48dedd984f7c5188c",
                 "shasum": ""
             },
             "require": {
@@ -1257,21 +1769,21 @@
                 "configuration",
                 "options"
             ],
-            "time": "2014-04-16 10:36:21"
+            "time": "2014-07-09 09:05:48"
         },
         {
             "name": "symfony/process",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "5d7d78e23894544740219e006320678cfa4cd45b"
+                "reference": "5e53efbf61a7fbf73c79e3e08feea50f64c20bfa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/5d7d78e23894544740219e006320678cfa4cd45b",
-                "reference": "5d7d78e23894544740219e006320678cfa4cd45b",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/5e53efbf61a7fbf73c79e3e08feea50f64c20bfa",
+                "reference": "5e53efbf61a7fbf73c79e3e08feea50f64c20bfa",
                 "shasum": ""
             },
             "require": {
@@ -1306,21 +1818,21 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-23 09:02:52"
+            "time": "2014-07-09 09:05:48"
         },
         {
             "name": "symfony/routing",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Routing",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Routing.git",
-                "reference": "99b4e8e2978e6a08c086fd771cc0aa66c9e80a56"
+                "reference": "24d5f003a794894513d67c888181ba8c3b8e0693"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Routing/zipball/99b4e8e2978e6a08c086fd771cc0aa66c9e80a56",
-                "reference": "99b4e8e2978e6a08c086fd771cc0aa66c9e80a56",
+                "url": "https://api.github.com/repos/symfony/Routing/zipball/24d5f003a794894513d67c888181ba8c3b8e0693",
+                "reference": "24d5f003a794894513d67c888181ba8c3b8e0693",
                 "shasum": ""
             },
             "require": {
@@ -1374,21 +1886,21 @@
                 "uri",
                 "url"
             ],
-            "time": "2014-04-23 14:08:54"
+            "time": "2014-07-09 09:05:48"
         },
         {
             "name": "symfony/translation",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Translation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "5f23265dcf8927a84be832608069c9edca3cf5f4"
+                "reference": "059d57c361043f5a06eb348b9b7554213f9ab8d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/5f23265dcf8927a84be832608069c9edca3cf5f4",
-                "reference": "5f23265dcf8927a84be832608069c9edca3cf5f4",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/059d57c361043f5a06eb348b9b7554213f9ab8d1",
+                "reference": "059d57c361043f5a06eb348b9b7554213f9ab8d1",
                 "shasum": ""
             },
             "require": {
@@ -1431,21 +1943,21 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-22 13:47:45"
+            "time": "2014-07-15 14:22:44"
         },
         {
             "name": "symfony/validator",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Validator",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "62f6f7735fbd3897b9347ae60fda4a40d0122640"
+                "reference": "8205456fe5cae985094a2e2a7b4352d1cef06a25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/62f6f7735fbd3897b9347ae60fda4a40d0122640",
-                "reference": "62f6f7735fbd3897b9347ae60fda4a40d0122640",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/8205456fe5cae985094a2e2a7b4352d1cef06a25",
+                "reference": "8205456fe5cae985094a2e2a7b4352d1cef06a25",
                 "shasum": ""
             },
             "require": {
@@ -1503,21 +2015,21 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-31 02:02:56"
+            "time": "2014-07-15 14:15:12"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.5.0",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "b4b09c68ec2f2727574544ef0173684281a5033c"
+                "reference": "f868ecdbcc0276b6158dfbf08b9e98ce07f014e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/b4b09c68ec2f2727574544ef0173684281a5033c",
-                "reference": "b4b09c68ec2f2727574544ef0173684281a5033c",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/f868ecdbcc0276b6158dfbf08b9e98ce07f014e1",
+                "reference": "f868ecdbcc0276b6158dfbf08b9e98ce07f014e1",
                 "shasum": ""
             },
             "require": {
@@ -1552,20 +2064,20 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-16 14:25:18"
+            "time": "2014-07-09 09:05:48"
         },
         {
             "name": "twig/twig",
-            "version": "v1.15.1",
+            "version": "v1.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "1fb5784662f438d7d96a541e305e28b812e2eeed"
+                "reference": "8ce37115802e257a984a82d38254884085060024"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/1fb5784662f438d7d96a541e305e28b812e2eeed",
-                "reference": "1fb5784662f438d7d96a541e305e28b812e2eeed",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
+                "reference": "8ce37115802e257a984a82d38254884085060024",
                 "shasum": ""
             },
             "require": {
@@ -1574,7 +2086,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.15-dev"
+                    "dev-master": "1.16-dev"
                 }
             },
             "autoload": {
@@ -1609,7 +2121,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-02-13 10:19:29"
+            "time": "2014-07-05 12:19:05"
         }
     ],
     "packages-dev": [],
@@ -1621,11 +2133,13 @@
         "keeko/website-app": 20,
         "propel/propel": 20,
         "keeko/user": 20,
-        "keeko/core": 20,
         "keeko/api-app": 20,
         "keeko/developer-app": 20,
-        "keeko/group": 20
+        "keeko/group": 20,
+        "keeko/core": 20,
+        "keeko/auth": 20
     },
+    "prefer-stable": false,
     "platform": [],
     "platform-dev": []
 }
