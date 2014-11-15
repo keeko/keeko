@@ -27,20 +27,19 @@ try {
 // 			$request->getPort(),
 // 			$request->isSecure() ? 'yes' : 'no');
 
-
 	$router = new ApplicationRouter();
 
 	$uri = $router->match($request);
 	$model = $uri->getApplication();
 	$destination = str_replace($router->getDestination(), '', $request->getUri());
 	$root = str_replace($router->getPrefix(), '', $destination);
-
+	
 	$class = $model->getClassName();
 	$app = new $class($model);
 	$app->setLocalization($uri->getLocalization());
-	$app->setPrefix($router->getPrefix());
-	$app->setDestination($destination);
-	$app->setRoot($root);
+	$app->setRootUrl($root);
+	$app->setAppPath($router->getPrefix());
+	$app->setDestinationPath($router->getDestination());
 
 	$response = $app->run($request, $router->getDestination());
 	$response->prepare($request);

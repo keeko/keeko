@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "401962d7c08061089813f1611803dff1",
+    "hash": "784488ede1e0d65f3fee4b451d218ff1",
     "packages": [
         {
             "name": "composer/composer",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "4dfa3c469e04e5db02e4840ea23a1aa6264f0f9c"
+                "reference": "ffffab37a294f3383c812d0329623f0a4ba45387"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/4dfa3c469e04e5db02e4840ea23a1aa6264f0f9c",
-                "reference": "4dfa3c469e04e5db02e4840ea23a1aa6264f0f9c",
+                "url": "https://api.github.com/repos/composer/composer/zipball/ffffab37a294f3383c812d0329623f0a4ba45387",
+                "reference": "ffffab37a294f3383c812d0329623f0a4ba45387",
                 "shasum": ""
             },
             "require": {
@@ -29,7 +29,7 @@
                 "symfony/process": "~2.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "~3.7.10"
+                "phpunit/phpunit": "~3.7"
             },
             "suggest": {
                 "ext-openssl": "Enabling the openssl extension allows you to access https URLs for repositories and packages",
@@ -72,7 +72,253 @@
                 "dependency",
                 "package"
             ],
-            "time": "2014-07-20 17:07:31"
+            "time": "2014-11-05 06:04:18"
+        },
+        {
+            "name": "gossi/trixionary",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gossi/trixionary.git",
+                "reference": "adb7e5f9710b1749eb4adfe2a59519d37a8e6549"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gossi/trixionary/zipball/adb7e5f9710b1749eb4adfe2a59519d37a8e6549",
+                "reference": "adb7e5f9710b1749eb4adfe2a59519d37a8e6549",
+                "shasum": ""
+            },
+            "require": {
+                "keeko/composer-installer": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "composer/composer": "@dev",
+                "keeko/core": "dev-master",
+                "propel/propel": "@dev"
+            },
+            "type": "keeko-module",
+            "extra": {
+                "keeko": {
+                    "module": {
+                        "title": "Trixionary API",
+                        "class": "gossi\\trixionary\\TrixionaryModule",
+                        "slug": "gossi.trixionary",
+                        "default-action": "sports-list"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "gossi\\trixionary\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "gossi"
+                }
+            ],
+            "description": "Trixionary API",
+            "time": "2014-11-12 21:02:47"
+        },
+        {
+            "name": "gossi/trixionary-app",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gossi/trixionary-app.git",
+                "reference": "c157abf04ce2ac7d6ad64dddf1e6165f225bac40"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gossi/trixionary-app/zipball/c157abf04ce2ac7d6ad64dddf1e6165f225bac40",
+                "reference": "c157abf04ce2ac7d6ad64dddf1e6165f225bac40",
+                "shasum": ""
+            },
+            "require": {
+                "keeko/composer-installer": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "composer/composer": "@dev",
+                "keeko/core": "dev-master",
+                "propel/propel": "@dev"
+            },
+            "type": "keeko-app",
+            "extra": {
+                "keeko": {
+                    "app": {
+                        "title": "Trixionary App",
+                        "class": "gossi\\trixionary\\app\\TrixionaryApplication"
+                    }
+                },
+                "local": "../../"
+            },
+            "autoload": {
+                "psr-4": {
+                    "gossi\\trixionary\\app\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "gossi"
+                }
+            ],
+            "description": "Trixionary Application",
+            "time": "2014-11-13 21:12:31"
+        },
+        {
+            "name": "gossi/trixionary-client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gossi/trixionary-client.git",
+                "reference": "6f4c62eb5b4e1cc51beacf37d79c1b492764695b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gossi/trixionary-client/zipball/6f4c62eb5b4e1cc51beacf37d79c1b492764695b",
+                "reference": "6f4c62eb5b4e1cc51beacf37d79c1b492764695b",
+                "shasum": ""
+            },
+            "require": {
+                "guzzle/guzzle": "~3",
+                "keeko/composer-installer": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "composer/composer": "@dev",
+                "keeko/core": "dev-master",
+                "propel/propel": "@dev"
+            },
+            "type": "keeko-module",
+            "extra": {
+                "keeko": {
+                    "module": {
+                        "title": "Trixionary Client",
+                        "class": "gossi\\trixionary\\client\\TrixionaryClientModule",
+                        "slug": "gossi.trixionary-client",
+                        "default-action": "none"
+                    }
+                },
+                "local": "../../"
+            },
+            "autoload": {
+                "psr-4": {
+                    "gossi\\trixionary\\client\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "gossi"
+                }
+            ],
+            "description": "Trixionary Client",
+            "time": "2014-11-13 21:12:43"
+        },
+        {
+            "name": "guzzle/guzzle",
+            "version": "v3.9.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/guzzle3.git",
+                "reference": "54991459675c1a2924122afbb0e5609ade581155"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/guzzle3/zipball/54991459675c1a2924122afbb0e5609ade581155",
+                "reference": "54991459675c1a2924122afbb0e5609ade581155",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.3",
+                "symfony/event-dispatcher": "~2.1"
+            },
+            "replace": {
+                "guzzle/batch": "self.version",
+                "guzzle/cache": "self.version",
+                "guzzle/common": "self.version",
+                "guzzle/http": "self.version",
+                "guzzle/inflection": "self.version",
+                "guzzle/iterator": "self.version",
+                "guzzle/log": "self.version",
+                "guzzle/parser": "self.version",
+                "guzzle/plugin": "self.version",
+                "guzzle/plugin-async": "self.version",
+                "guzzle/plugin-backoff": "self.version",
+                "guzzle/plugin-cache": "self.version",
+                "guzzle/plugin-cookie": "self.version",
+                "guzzle/plugin-curlauth": "self.version",
+                "guzzle/plugin-error-response": "self.version",
+                "guzzle/plugin-history": "self.version",
+                "guzzle/plugin-log": "self.version",
+                "guzzle/plugin-md5": "self.version",
+                "guzzle/plugin-mock": "self.version",
+                "guzzle/plugin-oauth": "self.version",
+                "guzzle/service": "self.version",
+                "guzzle/stream": "self.version"
+            },
+            "require-dev": {
+                "doctrine/cache": "~1.3",
+                "monolog/monolog": "~1.0",
+                "phpunit/phpunit": "3.7.*",
+                "psr/log": "~1.0",
+                "symfony/class-loader": "~2.1",
+                "zendframework/zend-cache": "2.*,<2.3",
+                "zendframework/zend-log": "2.*,<2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.9-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Guzzle": "src/",
+                    "Guzzle\\Tests": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Guzzle Community",
+                    "homepage": "https://github.com/guzzle/guzzle/contributors"
+                }
+            ],
+            "description": "Guzzle is a PHP HTTP client library and framework for building RESTful web service clients",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "client",
+                "curl",
+                "framework",
+                "http",
+                "http client",
+                "rest",
+                "web service"
+            ],
+            "time": "2014-08-11 04:32:36"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -115,16 +361,16 @@
         },
         {
             "name": "justinrainbow/json-schema",
-            "version": "1.3.6",
+            "version": "1.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/justinrainbow/json-schema.git",
-                "reference": "d97cf3ce890fe80f247fc08594a1c8a1029fc7ed"
+                "reference": "87b54b460febed69726c781ab67462084e97a105"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/d97cf3ce890fe80f247fc08594a1c8a1029fc7ed",
-                "reference": "d97cf3ce890fe80f247fc08594a1c8a1029fc7ed",
+                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/87b54b460febed69726c781ab67462084e97a105",
+                "reference": "87b54b460febed69726c781ab67462084e97a105",
                 "shasum": ""
             },
             "require": {
@@ -155,11 +401,6 @@
             ],
             "authors": [
                 {
-                    "name": "Igor Wiedler",
-                    "email": "igor@wiedler.ch",
-                    "homepage": "http://wiedler.ch/igor/"
-                },
-                {
                     "name": "Bruno Prieto Reis",
                     "email": "bruno.p.reis@gmail.com"
                 },
@@ -168,9 +409,12 @@
                     "email": "justin.rainbow@gmail.com"
                 },
                 {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch"
+                },
+                {
                     "name": "Robert Schönthal",
-                    "email": "seroscho@googlemail.com",
-                    "homepage": "http://digitalkaoz.net"
+                    "email": "seroscho@googlemail.com"
                 }
             ],
             "description": "A library to validate a json schema.",
@@ -179,7 +423,7 @@
                 "json",
                 "schema"
             ],
-            "time": "2014-03-05 15:03:52"
+            "time": "2014-08-25 02:48:14"
         },
         {
             "name": "keeko/api-app",
@@ -187,12 +431,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/api-app.git",
-                "reference": "fb9252db3a0cef8ae387b03d1140ac746b4f67fb"
+                "reference": "898330e8d3a02917207c9389478809890dba36a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/api-app/zipball/fb9252db3a0cef8ae387b03d1140ac746b4f67fb",
-                "reference": "fb9252db3a0cef8ae387b03d1140ac746b4f67fb",
+                "url": "https://api.github.com/repos/keeko/api-app/zipball/898330e8d3a02917207c9389478809890dba36a1",
+                "reference": "898330e8d3a02917207c9389478809890dba36a1",
                 "shasum": ""
             },
             "require": {
@@ -228,7 +472,7 @@
                 "api",
                 "keeko"
             ],
-            "time": "2014-06-06 18:04:12"
+            "time": "2014-11-12 20:02:25"
         },
         {
             "name": "keeko/auth",
@@ -236,12 +480,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/auth.git",
-                "reference": "72255f1c2a92b1fb977d687deeb9e2da86b598a0"
+                "reference": "c382c113ff880795abab0b072fd7232c1faa5c99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/auth/zipball/72255f1c2a92b1fb977d687deeb9e2da86b598a0",
-                "reference": "72255f1c2a92b1fb977d687deeb9e2da86b598a0",
+                "url": "https://api.github.com/repos/keeko/auth/zipball/c382c113ff880795abab0b072fd7232c1faa5c99",
+                "reference": "c382c113ff880795abab0b072fd7232c1faa5c99",
                 "shasum": ""
             },
             "require": {
@@ -276,41 +520,6 @@
                                 "response": {
                                     "json": "keeko\\auth\\response\\LogoutJsonResponse"
                                 }
-                            },
-                            "auth-list": {
-                                "class": "keeko\\auth\\action\\AuthListAction",
-                                "title": "List all auths",
-                                "response": {
-                                    "json": "keeko\\auth\\response\\AuthListJsonResponse"
-                                }
-                            },
-                            "auth-create": {
-                                "class": "keeko\\auth\\action\\AuthCreateAction",
-                                "title": "Creates an auth",
-                                "response": {
-                                    "json": "keeko\\auth\\response\\AuthCreateJsonResponse"
-                                }
-                            },
-                            "auth-read": {
-                                "class": "keeko\\auth\\action\\AuthReadAction",
-                                "title": "Reads an auth",
-                                "response": {
-                                    "json": "keeko\\auth\\response\\AuthReadJsonResponse"
-                                }
-                            },
-                            "auth-update": {
-                                "class": "keeko\\auth\\action\\AuthUpdateAction",
-                                "title": "Updates an auth",
-                                "response": {
-                                    "json": "keeko\\auth\\response\\AuthUpdateJsonResponse"
-                                }
-                            },
-                            "auth-delete": {
-                                "class": "keeko\\auth\\action\\AuthDeleteAction",
-                                "title": "Deletes an auth",
-                                "response": {
-                                    "json": "keeko\\auth\\response\\AuthDeleteJsonResponse"
-                                }
                             }
                         },
                         "api": {
@@ -321,7 +530,7 @@
                                     "path": "/login",
                                     "operations": [
                                         {
-                                            "method": "GET",
+                                            "method": "POST",
                                             "summary": "Login",
                                             "nickname": "login",
                                             "type": "LoginResponse",
@@ -330,13 +539,15 @@
                                                     "name": "user",
                                                     "description": "The authenticating user",
                                                     "required": true,
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "paramType": "body"
                                                 },
                                                 {
                                                     "name": "password",
                                                     "description": "The password for the user",
                                                     "required": true,
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "paramType": "body"
                                                 }
                                             ]
                                         }
@@ -348,7 +559,8 @@
                                         {
                                             "method": "GET",
                                             "summary": "Logout",
-                                            "nickname": "logout"
+                                            "nickname": "logout",
+                                            "type": "LogoutResponse"
                                         }
                                     ]
                                 }
@@ -359,6 +571,14 @@
                                     "properties": {
                                         "token": {
                                             "type": "string"
+                                        }
+                                    }
+                                },
+                                "LogoutResponse": {
+                                    "id": "LogoutResponse",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
                                         }
                                     }
                                 }
@@ -380,7 +600,7 @@
             "keywords": [
                 "auth"
             ],
-            "time": "2014-07-10 12:17:40"
+            "time": "2014-07-24 11:24:43"
         },
         {
             "name": "keeko/bootstrap-design",
@@ -388,15 +608,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/bootstrap-design.git",
-                "reference": "38660b7ced98994b7cb8f1c4e7e086eda64c46e4"
+                "reference": "edba8a9686e47a2421bf1cb25cf04b6d81d4872d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/bootstrap-design/zipball/38660b7ced98994b7cb8f1c4e7e086eda64c46e4",
-                "reference": "38660b7ced98994b7cb8f1c4e7e086eda64c46e4",
+                "url": "https://api.github.com/repos/keeko/bootstrap-design/zipball/edba8a9686e47a2421bf1cb25cf04b6d81d4872d",
+                "reference": "edba8a9686e47a2421bf1cb25cf04b6d81d4872d",
                 "shasum": ""
             },
             "require": {
+                "keeko/composer-installer": "*",
                 "php": ">=5.4"
             },
             "type": "keeko-design",
@@ -431,7 +652,7 @@
                 "design",
                 "keeko"
             ],
-            "time": "2013-08-25 00:44:38"
+            "time": "2014-07-22 22:53:06"
         },
         {
             "name": "keeko/composer-installer",
@@ -482,12 +703,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/core.git",
-                "reference": "ec204711b2c40ece52938c21c0b6dd221be5b69d"
+                "reference": "e2423c70521fdacacd3d5e3f1261cb1c00bd1caf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/core/zipball/ec204711b2c40ece52938c21c0b6dd221be5b69d",
-                "reference": "ec204711b2c40ece52938c21c0b6dd221be5b69d",
+                "url": "https://api.github.com/repos/keeko/core/zipball/e2423c70521fdacacd3d5e3f1261cb1c00bd1caf",
+                "reference": "e2423c70521fdacacd3d5e3f1261cb1c00bd1caf",
                 "shasum": ""
             },
             "require": {
@@ -521,7 +742,7 @@
                 }
             ],
             "description": "Keeko core",
-            "time": "2014-07-10 12:17:14"
+            "time": "2014-11-12 20:01:55"
         },
         {
             "name": "keeko/developer-app",
@@ -529,12 +750,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/developer-app.git",
-                "reference": "8b12047a9c5c878f0d3104ffa2cbe9fa4051970a"
+                "reference": "c8c792faf5e28431e376687ed266b749256b4889"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/developer-app/zipball/8b12047a9c5c878f0d3104ffa2cbe9fa4051970a",
-                "reference": "8b12047a9c5c878f0d3104ffa2cbe9fa4051970a",
+                "url": "https://api.github.com/repos/keeko/developer-app/zipball/c8c792faf5e28431e376687ed266b749256b4889",
+                "reference": "c8c792faf5e28431e376687ed266b749256b4889",
                 "shasum": ""
             },
             "require": {
@@ -573,7 +794,7 @@
                 "developer",
                 "keeko"
             ],
-            "time": "2014-06-08 10:08:24"
+            "time": "2014-11-12 20:03:19"
         },
         {
             "name": "keeko/group",
@@ -581,12 +802,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/group.git",
-                "reference": "d4a26474119061612ea792d867eb7cb1e3da1151"
+                "reference": "fc8567d7e70baf2214dc3903ba9c29bb18330d77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/group/zipball/d4a26474119061612ea792d867eb7cb1e3da1151",
-                "reference": "d4a26474119061612ea792d867eb7cb1e3da1151",
+                "url": "https://api.github.com/repos/keeko/group/zipball/fc8567d7e70baf2214dc3903ba9c29bb18330d77",
+                "reference": "fc8567d7e70baf2214dc3903ba9c29bb18330d77",
                 "shasum": ""
             },
             "require": {
@@ -602,41 +823,42 @@
             "extra": {
                 "keeko": {
                     "module": {
-                        "title": "Groups",
+                        "title": "Group",
                         "class": "keeko\\group\\GroupModule",
                         "slug": "group",
+                        "default-action": "group-list",
                         "actions": {
-                            "group-list": {
-                                "class": "keeko\\group\\action\\GroupListAction",
-                                "title": "List all groups",
-                                "response": {
-                                    "json": "keeko\\group\\response\\GroupListJsonResponse"
-                                }
-                            },
                             "group-create": {
-                                "class": "keeko\\group\\action\\GroupCreateAction",
                                 "title": "Creates a group",
+                                "class": "keeko\\group\\action\\GroupCreateAction",
                                 "response": {
                                     "json": "keeko\\group\\response\\GroupCreateJsonResponse"
                                 }
                             },
                             "group-read": {
-                                "class": "keeko\\group\\action\\GroupReadAction",
                                 "title": "Reads a group",
+                                "class": "keeko\\group\\action\\GroupReadAction",
                                 "response": {
                                     "json": "keeko\\group\\response\\GroupReadJsonResponse"
                                 }
                             },
+                            "group-list": {
+                                "title": "List all groups",
+                                "class": "keeko\\group\\action\\GroupListAction",
+                                "response": {
+                                    "json": "keeko\\group\\response\\GroupListJsonResponse"
+                                }
+                            },
                             "group-update": {
-                                "class": "keeko\\group\\action\\GroupUpdateAction",
                                 "title": "Updates a group",
+                                "class": "keeko\\group\\action\\GroupUpdateAction",
                                 "response": {
                                     "json": "keeko\\group\\response\\GroupUpdateJsonResponse"
                                 }
                             },
                             "group-delete": {
-                                "class": "keeko\\group\\action\\GroupDeleteAction",
                                 "title": "Deletes a group",
+                                "class": "keeko\\group\\action\\GroupDeleteAction",
                                 "response": {
                                     "json": "keeko\\group\\response\\GroupDeleteJsonResponse"
                                 }
@@ -649,12 +871,6 @@
                                 {
                                     "path": "/groups",
                                     "operations": [
-                                        {
-                                            "method": "GET",
-                                            "summary": "List all groups",
-                                            "nickname": "group-list",
-                                            "type": "PagedGroups"
-                                        },
                                         {
                                             "method": "POST",
                                             "summary": "Creates a group",
@@ -669,6 +885,12 @@
                                                     "paramType": "body"
                                                 }
                                             ]
+                                        },
+                                        {
+                                            "method": "GET",
+                                            "summary": "List all groups",
+                                            "nickname": "group-list",
+                                            "type": "PagedGroups"
                                         }
                                     ]
                                 },
@@ -701,7 +923,7 @@
                                             ]
                                         },
                                         {
-                                            "method": "PATCH",
+                                            "method": "PUT",
                                             "summary": "Updates a group",
                                             "nickname": "group-update",
                                             "type": "Group",
@@ -794,7 +1016,7 @@
                                         "id": {
                                             "type": "int"
                                         },
-                                        "user_id": {
+                                        "owner_id": {
                                             "type": "int"
                                         },
                                         "name": {
@@ -820,7 +1042,7 @@
                                         "id": {
                                             "type": "int"
                                         },
-                                        "user_id": {
+                                        "owner_id": {
                                             "type": "int"
                                         },
                                         "name": {
@@ -847,8 +1069,7 @@
                                     }
                                 }
                             }
-                        },
-                        "default-action": "group-list"
+                        }
                     }
                 },
                 "local": "../../"
@@ -864,17 +1085,10 @@
             ],
             "authors": [
                 {
-                    "name": "gossi",
-                    "homepage": "http://gos.si"
+                    "name": "gossi"
                 }
             ],
-            "description": "Keeko group Module",
-            "keywords": [
-                "group",
-                "keeko",
-                "permission"
-            ],
-            "time": "2014-06-06 18:03:37"
+            "time": "2014-11-11 14:04:02"
         },
         {
             "name": "keeko/user",
@@ -882,15 +1096,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/user.git",
-                "reference": "323db5bce23e151e6868d715bbd3599b1cda3d90"
+                "reference": "f39b3026f3e0f558b64ca78ca0ac47862ccdc2c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/user/zipball/323db5bce23e151e6868d715bbd3599b1cda3d90",
-                "reference": "323db5bce23e151e6868d715bbd3599b1cda3d90",
+                "url": "https://api.github.com/repos/keeko/user/zipball/f39b3026f3e0f558b64ca78ca0ac47862ccdc2c3",
+                "reference": "f39b3026f3e0f558b64ca78ca0ac47862ccdc2c3",
                 "shasum": ""
             },
             "require": {
+                "keeko/composer-installer": "*",
                 "php": ">=5.4"
             },
             "require-dev": {
@@ -950,15 +1165,15 @@
                                         "password": "password_hash($v, PASSWORD_BCRYPT)"
                                     },
                                     "filter": [
-                                        "password_recover_code",
-                                        "password_recover_time"
+                                        "passwordRecoverCode",
+                                        "passwordRecoverTime"
                                     ]
                                 },
                                 "read": {
                                     "filter": [
                                         "password",
-                                        "password_recover_code",
-                                        "password_recover_time"
+                                        "passwordRecoverCode",
+                                        "passwordRecoverTime"
                                     ]
                                 }
                             }
@@ -1022,7 +1237,7 @@
                                             ]
                                         },
                                         {
-                                            "method": "PATCH",
+                                            "method": "PUT",
                                             "summary": "Updates an user",
                                             "nickname": "user-update",
                                             "type": "User",
@@ -1233,6 +1448,12 @@
                                         },
                                         "updated_at": {
                                             "type": "string"
+                                        },
+                                        "password_recover_code": {
+                                            "type": "string"
+                                        },
+                                        "password_recover_time": {
+                                            "type": "string"
                                         }
                                     }
                                 }
@@ -1258,7 +1479,7 @@
                 }
             ],
             "description": "Keeko user module",
-            "time": "2014-06-05 00:22:26"
+            "time": "2014-11-11 14:04:21"
         },
         {
             "name": "keeko/website-app",
@@ -1266,13 +1487,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/keeko/website-app.git",
-                "reference": "7d58e5d1ab13d6c586f486a33aacdf3e8237ea74"
+                "reference": "c5de76c9fbf747c5f5e345686bb82dffdd7e22bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keeko/website-app/zipball/7d58e5d1ab13d6c586f486a33aacdf3e8237ea74",
-                "reference": "7d58e5d1ab13d6c586f486a33aacdf3e8237ea74",
+                "url": "https://api.github.com/repos/keeko/website-app/zipball/c5de76c9fbf747c5f5e345686bb82dffdd7e22bd",
+                "reference": "c5de76c9fbf747c5f5e345686bb82dffdd7e22bd",
                 "shasum": ""
+            },
+            "require": {
+                "keeko/composer-installer": "*",
+                "php": ">=5.4"
             },
             "require-dev": {
                 "composer/composer": "@dev",
@@ -1305,7 +1530,7 @@
                 }
             ],
             "description": "Website Frontend App for Keeko",
-            "time": "2014-05-25 22:52:37"
+            "time": "2014-07-22 22:58:48"
         },
         {
             "name": "propel/propel",
@@ -1313,23 +1538,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/propelorm/Propel2.git",
-                "reference": "fb7aa33479797a5e2fe794eeb3762691cb6416b2"
+                "reference": "da32413a8ceb295d3bb708dc311756c724a21c7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/fb7aa33479797a5e2fe794eeb3762691cb6416b2",
-                "reference": "fb7aa33479797a5e2fe794eeb3762691cb6416b2",
+                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/da32413a8ceb295d3bb708dc311756c724a21c7b",
+                "reference": "da32413a8ceb295d3bb708dc311756c724a21c7b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4",
                 "psr/log": "~1.0",
-                "symfony/config": "~2.2",
-                "symfony/console": "~2.2",
-                "symfony/filesystem": "~2.2",
-                "symfony/finder": "~2.2",
-                "symfony/validator": "~2.2",
-                "symfony/yaml": "~2.2"
+                "symfony/config": "~2.3",
+                "symfony/console": "~2.3",
+                "symfony/filesystem": "~2.3",
+                "symfony/finder": "~2.3",
+                "symfony/validator": "~2.3",
+                "symfony/yaml": "~2.3"
             },
             "require-dev": {
                 "behat/behat": "~2.4",
@@ -1360,8 +1585,7 @@
             "authors": [
                 {
                     "name": "William Durand",
-                    "email": "william.durand1@gmail.com",
-                    "homepage": "http://www.willdurand.fr"
+                    "email": "william.durand1@gmail.com"
                 }
             ],
             "description": "Propel2 is an open-source Object-Relational Mapping (ORM) for PHP 5.4",
@@ -1371,7 +1595,7 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2014-07-15 20:18:33"
+            "time": "2014-11-06 19:55:15"
         },
         {
             "name": "psr/log",
@@ -1413,16 +1637,16 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.2.0",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "9cae56dbe34f4392e7d0f559474df33749a39f8d"
+                "reference": "a7bc2ec9520ad15382292591b617c43bdb1fec35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/9cae56dbe34f4392e7d0f559474df33749a39f8d",
-                "reference": "9cae56dbe34f4392e7d0f559474df33749a39f8d",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/a7bc2ec9520ad15382292591b617c43bdb1fec35",
+                "reference": "a7bc2ec9520ad15382292591b617c43bdb1fec35",
                 "shasum": ""
             },
             "require": {
@@ -1455,21 +1679,21 @@
                 "parser",
                 "validator"
             ],
-            "time": "2014-07-20 17:36:11"
+            "time": "2014-09-05 15:36:20"
         },
         {
             "name": "symfony/config",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/Config",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
-                "reference": "a31aa8029bcc0b5b85578328050aa70d052e177b"
+                "reference": "0316364bfebc8b080077c731a99f189341476bd7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/a31aa8029bcc0b5b85578328050aa70d052e177b",
-                "reference": "a31aa8029bcc0b5b85578328050aa70d052e177b",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/0316364bfebc8b080077c731a99f189341476bd7",
+                "reference": "0316364bfebc8b080077c731a99f189341476bd7",
                 "shasum": ""
             },
             "require": {
@@ -1493,33 +1717,31 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Config Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-09 09:05:48"
+            "time": "2014-09-23 05:25:11"
         },
         {
             "name": "symfony/console",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "386fa63407805959bd2c5fe540294721ad4224c8"
+                "reference": "6f177fca24200a5b97aef5ce7a5c98124a0f0db0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/386fa63407805959bd2c5fe540294721ad4224c8",
-                "reference": "386fa63407805959bd2c5fe540294721ad4224c8",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/6f177fca24200a5b97aef5ce7a5c98124a0f0db0",
+                "reference": "6f177fca24200a5b97aef5ce7a5c98124a0f0db0",
                 "shasum": ""
             },
             "require": {
@@ -1550,33 +1772,88 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-15 14:15:12"
+            "time": "2014-10-05 13:57:04"
+        },
+        {
+            "name": "symfony/event-dispatcher",
+            "version": "v2.5.6",
+            "target-dir": "Symfony/Component/EventDispatcher",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/EventDispatcher.git",
+                "reference": "804eb28dbbfba9ffdab21fe2066744906cea2212"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/804eb28dbbfba9ffdab21fe2066744906cea2212",
+                "reference": "804eb28dbbfba9ffdab21fe2066744906cea2212",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "psr/log": "~1.0",
+                "symfony/config": "~2.0",
+                "symfony/dependency-injection": "~2.0,<2.6.0",
+                "symfony/stopwatch": "~2.2"
+            },
+            "suggest": {
+                "symfony/dependency-injection": "",
+                "symfony/http-kernel": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\EventDispatcher\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Symfony EventDispatcher Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-10-01 15:43:05"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "c1309b0ee195ad264a4314435bdaecdfacb8ae9c"
+                "reference": "4e62fab0060a826561c78b665925b37c870c45f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/c1309b0ee195ad264a4314435bdaecdfacb8ae9c",
-                "reference": "c1309b0ee195ad264a4314435bdaecdfacb8ae9c",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/4e62fab0060a826561c78b665925b37c870c45f5",
+                "reference": "4e62fab0060a826561c78b665925b37c870c45f5",
                 "shasum": ""
             },
             "require": {
@@ -1599,33 +1876,31 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-09 09:05:48"
+            "time": "2014-09-22 09:14:18"
         },
         {
             "name": "symfony/finder",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "576d8f69feec477067e91b6bd0367c113e76a1a0"
+                "reference": "cf66df4e783e6aade319b273c9bcf9e42aa9b10f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/576d8f69feec477067e91b6bd0367c113e76a1a0",
-                "reference": "576d8f69feec477067e91b6bd0367c113e76a1a0",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/cf66df4e783e6aade319b273c9bcf9e42aa9b10f",
+                "reference": "cf66df4e783e6aade319b273c9bcf9e42aa9b10f",
                 "shasum": ""
             },
             "require": {
@@ -1648,33 +1923,31 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-15 14:15:12"
+            "time": "2014-10-01 05:50:18"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/HttpFoundation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "32ca1659e64bff5df61668e137bb3c3f64b7ce55"
+                "reference": "56111fc8ba8bcad93d367532babecc6ce17f66ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/32ca1659e64bff5df61668e137bb3c3f64b7ce55",
-                "reference": "32ca1659e64bff5df61668e137bb3c3f64b7ce55",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/56111fc8ba8bcad93d367532babecc6ce17f66ce",
+                "reference": "56111fc8ba8bcad93d367532babecc6ce17f66ce",
                 "shasum": ""
             },
             "require": {
@@ -1703,33 +1976,31 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-15 14:15:12"
+            "time": "2014-10-24 05:49:22"
         },
         {
             "name": "symfony/options-resolver",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/OptionsResolver",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/OptionsResolver.git",
-                "reference": "e6a0a0e89221736c5a30b5c48dedd984f7c5188c"
+                "reference": "1bdfe2ef91bfbb00222e643a9e9b907310eb0c39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/OptionsResolver/zipball/e6a0a0e89221736c5a30b5c48dedd984f7c5188c",
-                "reference": "e6a0a0e89221736c5a30b5c48dedd984f7c5188c",
+                "url": "https://api.github.com/repos/symfony/OptionsResolver/zipball/1bdfe2ef91bfbb00222e643a9e9b907310eb0c39",
+                "reference": "1bdfe2ef91bfbb00222e643a9e9b907310eb0c39",
                 "shasum": ""
             },
             "require": {
@@ -1752,14 +2023,12 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony OptionsResolver Component",
@@ -1769,21 +2038,21 @@
                 "configuration",
                 "options"
             ],
-            "time": "2014-07-09 09:05:48"
+            "time": "2014-10-01 05:50:18"
         },
         {
             "name": "symfony/process",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "5e53efbf61a7fbf73c79e3e08feea50f64c20bfa"
+                "reference": "9bbacbb3a7a27b17c0d51e2f126f59e0e588ad3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/5e53efbf61a7fbf73c79e3e08feea50f64c20bfa",
-                "reference": "5e53efbf61a7fbf73c79e3e08feea50f64c20bfa",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/9bbacbb3a7a27b17c0d51e2f126f59e0e588ad3a",
+                "reference": "9bbacbb3a7a27b17c0d51e2f126f59e0e588ad3a",
                 "shasum": ""
             },
             "require": {
@@ -1806,33 +2075,31 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-09 09:05:48"
+            "time": "2014-10-01 05:50:18"
         },
         {
             "name": "symfony/routing",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/Routing",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Routing.git",
-                "reference": "24d5f003a794894513d67c888181ba8c3b8e0693"
+                "reference": "c7e381f571aac1de9e06f2bac2097984c543096a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Routing/zipball/24d5f003a794894513d67c888181ba8c3b8e0693",
-                "reference": "24d5f003a794894513d67c888181ba8c3b8e0693",
+                "url": "https://api.github.com/repos/symfony/Routing/zipball/c7e381f571aac1de9e06f2bac2097984c543096a",
+                "reference": "c7e381f571aac1de9e06f2bac2097984c543096a",
                 "shasum": ""
             },
             "require": {
@@ -1843,6 +2110,7 @@
                 "psr/log": "~1.0",
                 "symfony/config": "~2.2",
                 "symfony/expression-language": "~2.4",
+                "symfony/http-foundation": "~2.3",
                 "symfony/yaml": "~2.0"
             },
             "suggest": {
@@ -1868,14 +2136,12 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Routing Component",
@@ -1886,21 +2152,21 @@
                 "uri",
                 "url"
             ],
-            "time": "2014-07-09 09:05:48"
+            "time": "2014-10-24 05:49:22"
         },
         {
             "name": "symfony/translation",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/Translation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "059d57c361043f5a06eb348b9b7554213f9ab8d1"
+                "reference": "362fe4da2cfe587f72d57aaa2f89e6b61c05dedf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/059d57c361043f5a06eb348b9b7554213f9ab8d1",
-                "reference": "059d57c361043f5a06eb348b9b7554213f9ab8d1",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/362fe4da2cfe587f72d57aaa2f89e6b61c05dedf",
+                "reference": "362fe4da2cfe587f72d57aaa2f89e6b61c05dedf",
                 "shasum": ""
             },
             "require": {
@@ -1908,6 +2174,7 @@
             },
             "require-dev": {
                 "symfony/config": "~2.0",
+                "symfony/intl": "~2.3",
                 "symfony/yaml": "~2.2"
             },
             "suggest": {
@@ -1931,33 +2198,31 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Translation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-15 14:22:44"
+            "time": "2014-10-01 05:50:18"
         },
         {
             "name": "symfony/validator",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/Validator",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "8205456fe5cae985094a2e2a7b4352d1cef06a25"
+                "reference": "a3a2140520fbb47d98d23b78521a383073312a1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/8205456fe5cae985094a2e2a7b4352d1cef06a25",
-                "reference": "8205456fe5cae985094a2e2a7b4352d1cef06a25",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/a3a2140520fbb47d98d23b78521a383073312a1c",
+                "reference": "a3a2140520fbb47d98d23b78521a383073312a1c",
                 "shasum": ""
             },
             "require": {
@@ -2003,33 +2268,31 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Validator Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-15 14:15:12"
+            "time": "2014-10-01 05:50:18"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.5.2",
+            "version": "v2.5.6",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "f868ecdbcc0276b6158dfbf08b9e98ce07f014e1"
+                "reference": "2d9f527449cabfa8543dd7fa3a466d6ae83d6726"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/f868ecdbcc0276b6158dfbf08b9e98ce07f014e1",
-                "reference": "f868ecdbcc0276b6158dfbf08b9e98ce07f014e1",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/2d9f527449cabfa8543dd7fa3a466d6ae83d6726",
+                "reference": "2d9f527449cabfa8543dd7fa3a466d6ae83d6726",
                 "shasum": ""
             },
             "require": {
@@ -2052,32 +2315,30 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-09 09:05:48"
+            "time": "2014-10-01 05:50:18"
         },
         {
             "name": "twig/twig",
-            "version": "v1.16.0",
+            "version": "v1.16.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig.git",
-                "reference": "8ce37115802e257a984a82d38254884085060024"
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "42f758d9fe2146d1f0470604fc05ee43580873fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
-                "reference": "8ce37115802e257a984a82d38254884085060024",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/42f758d9fe2146d1f0470604fc05ee43580873fc",
+                "reference": "42f758d9fe2146d1f0470604fc05ee43580873fc",
                 "shasum": ""
             },
             "require": {
@@ -2121,7 +2382,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-07-05 12:19:05"
+            "time": "2014-10-17 12:53:44"
         }
     ],
     "packages-dev": [],
@@ -2137,7 +2398,10 @@
         "keeko/developer-app": 20,
         "keeko/group": 20,
         "keeko/core": 20,
-        "keeko/auth": 20
+        "keeko/auth": 20,
+        "gossi/trixionary": 20,
+        "gossi/trixionary-client": 20,
+        "gossi/trixionary-app": 20
     },
     "prefer-stable": false,
     "platform": [],

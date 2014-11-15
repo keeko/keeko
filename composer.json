@@ -19,7 +19,10 @@
 		"keeko/developer-app" : "dev-master",
 		"keeko/group" : "dev-master",
 		"keeko/core" : "dev-master",
-		"keeko/auth" : "dev-master"
+		"keeko/auth" : "dev-master",
+		"gossi/trixionary" : "dev-master",
+		"gossi/trixionary-client" : "dev-master",
+		"gossi/trixionary-app" : "dev-master"
 	},
 	"autoload" : {
 		"psr-0" : {

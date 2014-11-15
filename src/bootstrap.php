@@ -17,7 +17,6 @@ if (KEEKO_ENVIRONMENT == KEEKO_DEVELOPMENT) {
 	error_reporting(E_ALL | E_STRICT);
 }
 
-// /* @var $loader \Composer\Autoload\ClassLoader */
 require KEEKO_PATH . '/vendor/autoload.php';
 
 // load database config
@@ -34,10 +33,7 @@ $manager = new ConnectionManagerSingle();
 $manager->setConfiguration([
 	'dsn'      => 'mysql:host=' . $databaseConfiguration->getHost() . ';dbname=' . $databaseConfiguration->getDatabase(),
 	'user'     => $databaseConfiguration->getUser(),
-	'password' => $databaseConfiguration->getPassword(),
-	'settings' => [
-		'charset' => 'utf8'
-	]
+	'password' => $databaseConfiguration->getPassword()
 ]);
 $manager->setName('keeko');
 $serviceContainer->setConnectionManager('keeko', $manager);
