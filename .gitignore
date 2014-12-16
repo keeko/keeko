@@ -5,5 +5,6 @@ apps
 core
 modules
 designs
+public/files
 
 config/database.yml

@@ -1,12 +1,17 @@
 <?php
 use Symfony\Component\HttpFoundation\Request;
-use keeko\core\application\Keeko;
 use keeko\core\routing\ApplicationRouter;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 require 'bootstrap.php';
 
 try {
 	$request = Request::createFromGlobals();
+	
+	function redirect($url) {
+		header('Location: ' . $url);
+		exit(0);
+	}
 
 // 	printf('<p>Basepath: %s<br>
 // 			Pathinfo: %s<br>
@@ -27,6 +32,11 @@ try {
 // 			$request->getPort(),
 // 			$request->isSecure() ? 'yes' : 'no');
 
+	// no trailing slashes in urls
+	if (substr($request->getUri(), -1) == '/') {
+		redirect(rtrim($request->getUri(), '/'));
+	}
+
 	$router = new ApplicationRouter();
 
 	$uri = $router->match($request);
@@ -41,7 +51,14 @@ try {
 	$app->setAppPath($router->getPrefix());
 	$app->setDestinationPath($router->getDestination());
 
-	$response = $app->run($request, $router->getDestination());
+	$runner = $app->getServiceContainer()->getRunner();
+	$response = $runner->run($app, $request);
+	
+	if ($response instanceof RedirectResponse) {
+		$response->sendHeaders();
+		redirect($response->getTargetUrl());
+	}
+	
 	$response->prepare($request);
 	$response->send();
 
