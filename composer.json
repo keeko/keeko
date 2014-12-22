@@ -10,35 +10,50 @@
 	"license" : "MIT",
 	"require" : {
 		"composer/composer" : "@dev",
-		"symfony/config" : "~2",
-		"keeko/bootstrap-design" : "dev-master",
-		"keeko/website-app" : "dev-master",
 		"propel/propel" : "@dev",
-		"keeko/user" : "dev-master",
+		"keeko/core" : "*@stable",
+		"keeko/bootstrap-design" : "*@stable",
+		"keeko/api-app" : "*@stable",
+		"keeko/developer-app" : "*@stable",
+		"keeko/website-app" : "*@stable",
+		"keeko/user" : "*@stable",
+		"keeko/group" : "*@stable",
+		"keeko/auth" : "*@stable"
+	},
+	"require-dev" : {
+		"keeko/core" : "dev-master",
+		"keeko/bootstrap-design" : "dev-master",
 		"keeko/api-app" : "dev-master",
 		"keeko/developer-app" : "dev-master",
+		"keeko/website-app" : "dev-master",
+		"keeko/user" : "dev-master",
 		"keeko/group" : "dev-master",
-		"keeko/core" : "dev-master",
 		"keeko/auth" : "dev-master",
 		"gossi/trixionary" : "dev-master",
 		"gossi/trixionary-client" : "dev-master",
 		"gossi/trixionary-app" : "dev-master"
 	},
 	"autoload" : {
-		"psr-0" : {
-			"keeko\\installer" : "src"
+		"psr-4" : {
+			"keeko\\keeko\\" : "src"
 		}
 	},
 	"minimum-stability" : "stable",
 	"scripts" : {
+		"post-install-cmd" : [
+			"\\keeko\\keeko\\InstallerProxy::process"
+		],
+		"post-update-cmd" : [
+			"\\keeko\\keeko\\InstallerProxy::process"
+		],
 		"post-package-install" : [
-			"\\keeko\\installer\\InstallerProxy::installPackage"
+			"\\keeko\\keeko\\InstallerProxy::installPackage"
 		],
 		"post-package-update" : [
-			"\\keeko\\installer\\InstallerProxy::updatePackage"
+			"\\keeko\\keeko\\InstallerProxy::updatePackage"
 		],
 		"post-package-uninstall" : [
-			"\\keeko\\installer\\InstallerProxy::uninstallPackage"
+			"\\keeko\\keeko\\InstallerProxy::uninstallPackage"
 		]
 	},
 	"extra" : {

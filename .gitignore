@@ -1,5 +1,6 @@
 .DS_Store
 .metadata
+composer.lock
 vendor
 apps
 core
@@ -8,3 +9,5 @@ designs
 public/files
 
 config/database.yml
+config/development.yml
+config/general.yml

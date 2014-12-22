@@ -1,0 +1,5 @@
+# rename this file to development.yaml to enable development mode
+
+development:
+  propel:
+    logging: stderr # Values: stderr

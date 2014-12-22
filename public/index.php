@@ -1,2 +1,2 @@
 <?php
-include_once '../src/keeko.php';
+include_once '../src/bootstrap.php';

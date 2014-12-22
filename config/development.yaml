@@ -1,0 +1,3 @@
+development:
+  propel:
+    logging: stderr # Values: stderr
