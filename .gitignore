@@ -8,6 +8,6 @@ modules
 designs
 public/files
 
-config/database.yml
-config/development.yml
-config/general.yml
+config/database.yaml
+config/development.yaml
+config/general.yaml
