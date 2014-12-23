@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /keeko/public
+#RewriteBase /
 
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
