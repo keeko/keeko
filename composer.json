@@ -11,14 +11,13 @@
 	"require" : {
 		"composer/composer" : "@dev",
 		"propel/propel" : "@dev",
-		"keeko/core" : "*",
-		"keeko/bootstrap-design" : "*",
-		"keeko/api-app" : "*",
-		"keeko/developer-app" : "*",
-		"keeko/website-app" : "*",
-		"keeko/user" : "*",
-		"keeko/group" : "*",
-		"keeko/auth" : "*"
+		"keeko/core" : "~0",
+		"keeko/api-app" : "~0",
+		"keeko/developer-app" : "~0",
+		"keeko/website-app" : "~0",
+		"keeko/user" : "~0",
+		"keeko/group" : "~0",
+		"keeko/auth" : "~0"
 	},
 	"require-dev" : {
 		"keeko/core" : "dev-master",
