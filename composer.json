@@ -11,14 +11,14 @@
 	"require" : {
 		"composer/composer" : "@dev",
 		"propel/propel" : "@dev",
-		"keeko/core" : "*@stable",
-		"keeko/bootstrap-design" : "*@stable",
-		"keeko/api-app" : "*@stable",
-		"keeko/developer-app" : "*@stable",
-		"keeko/website-app" : "*@stable",
-		"keeko/user" : "*@stable",
-		"keeko/group" : "*@stable",
-		"keeko/auth" : "*@stable"
+		"keeko/core" : "*",
+		"keeko/bootstrap-design" : "*",
+		"keeko/api-app" : "*",
+		"keeko/developer-app" : "*",
+		"keeko/website-app" : "*",
+		"keeko/user" : "*",
+		"keeko/group" : "*",
+		"keeko/auth" : "*"
 	},
 	"require-dev" : {
 		"keeko/core" : "dev-master",
@@ -39,6 +39,7 @@
 		}
 	},
 	"minimum-stability" : "stable",
+	"prefer-stable" : true,
 	"scripts" : {
 		"post-install-cmd" : [
 			"\\keeko\\keeko\\InstallerProxy::process"
