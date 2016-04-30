@@ -1,13 +1,20 @@
-.DS_Store
-.metadata
+# project
+.puli/
 composer.lock
-vendor
-apps
-core
-modules
-designs
-public/files
+vendor/
 
+# keeko
+public/_files/*
+public/_assets/*
+public/_packages/*
+packages/*
+!packages/.gitkeep
+res/assets/*
+!res/assets/.gitkeep
+res/files/*
+!res/files/.gitkeep
+
+# config
 config/database.yaml
 config/development.yaml
 config/general.yaml

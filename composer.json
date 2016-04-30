@@ -1,6 +1,6 @@
 {
 	"name" : "keeko/keeko",
-	"description" : "Keeko Test",
+	"description" : "Keeko Platform",
 	"type" : "project",
 	"authors" : [{
 			"name" : "gossi",
@@ -9,28 +9,24 @@
 	],
 	"license" : "MIT",
 	"require" : {
+		"fxp/composer-asset-plugin" : "~1.0",
 		"composer/composer" : "@dev",
-		"propel/propel" : "@dev",
-		"keeko/core" : "~0",
-		"keeko/api-app" : "~0",
-		"keeko/developer-app" : "~0",
-		"keeko/website-app" : "~0",
-		"keeko/user" : "~0",
-		"keeko/group" : "~0",
-		"keeko/auth" : "~0"
+		"propel/propel" : "@alpha",
+		"puli/composer-plugin" : "^1.0@beta"
 	},
 	"require-dev" : {
-		"keeko/core" : "dev-master",
-		"keeko/bootstrap-design" : "dev-master",
-		"keeko/api-app" : "dev-master",
+		"puli/repository" : "@beta",
+		"puli/twig-extension" : "@beta",
+		"puli/url-generator" : "@beta",
+		"puli/discovery" : "@beta",
+		"keeko/composer-installer" : "dev-master",
+		"keeko/framework" : "dev-master",
+		"keeko/core" : "@dev",
 		"keeko/developer-app" : "dev-master",
-		"keeko/website-app" : "dev-master",
-		"keeko/user" : "dev-master",
-		"keeko/group" : "dev-master",
-		"keeko/auth" : "dev-master",
-		"gossi/trixionary" : "dev-master",
-		"gossi/trixionary-client" : "dev-master",
-		"gossi/trixionary-app" : "dev-master"
+		"keeko/api-app" : "dev-master",
+		"keeko/account-app" : "dev-master",
+		"keeko/account" : "dev-master",
+		"keeko/auth" : "dev-master"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -38,7 +34,6 @@
 		}
 	},
 	"minimum-stability" : "stable",
-	"prefer-stable" : true,
 	"scripts" : {
 		"post-install-cmd" : [
 			"\\keeko\\keeko\\InstallerProxy::process"
@@ -57,6 +52,8 @@
 		]
 	},
 	"extra" : {
-		"local" : "../keeko-dev"
+		"asset-installer-paths" : {
+			"bower-asset-library" : "res/assets/"
+		}
 	}
 }

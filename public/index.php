@@ -1,3 +1,3 @@
 <?php
-require_once '../src/bootstrap.php';
-require_once KEEKO_PATH . '/core/bootstrap/keeko.php';
+require_once dirname(__DIR__) . '/src/bootstrap.php';
+require_once dirname(__DIR__) . '/packages/keeko/framework/bootstrap/keeko.php';

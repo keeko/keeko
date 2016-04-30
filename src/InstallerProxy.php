@@ -1,11 +1,10 @@
 <?php
 namespace keeko\keeko;
 
-use Composer\Script\CommandEvent;
 use Composer\Script\PackageEvent;
 
 class InstallerProxy {
-	
+
 	private static $install = [];
 	private static $update = [];
 	private static $uninstall = [];
@@ -23,9 +22,11 @@ class InstallerProxy {
 	}
 
 	public static function process() {
-		if (class_exists('\\keeko\\core\\installer\\DelegateInstaller')) {
-			$installer = new \keeko\core\installer\DelegateInstaller();
-			$installer->process(static::$install, static::$update, static::$uninstall);
-		}
+// 		require_once(__DIR__ . '/bootstrap.php');
+// 		$class = '\\keeko\\core\\installer\\DelegateInstaller';
+// 		if (class_exists($class)) {
+// 			$installer = new $class();
+// 			$installer->process(static::$install, static::$update, static::$uninstall);
+// 		}
 	}
 }

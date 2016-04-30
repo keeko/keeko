@@ -1,2 +1,4 @@
 eclipse.preferences.version=1
 include_path=
+phpVersion=php5.5
+useShortTags=false
