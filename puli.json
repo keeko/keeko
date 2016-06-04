@@ -108,19 +108,23 @@
         },
         "composer/ca-bundle": {
             "install-path": "vendor/composer/ca-bundle",
-            "installer": "composer"
+            "installer": "composer",
+            "env": "dev"
         },
         "composer/composer": {
             "install-path": "vendor/composer/composer",
-            "installer": "composer"
+            "installer": "composer",
+            "env": "dev"
         },
         "composer/semver": {
             "install-path": "vendor/composer/semver",
-            "installer": "composer"
+            "installer": "composer",
+            "env": "dev"
         },
         "composer/spdx-licenses": {
             "install-path": "vendor/composer/spdx-licenses",
-            "installer": "composer"
+            "installer": "composer",
+            "env": "dev"
         },
         "egeloen/http-adapter": {
             "install-path": "vendor/egeloen/http-adapter",
@@ -293,7 +297,8 @@
         },
         "seld/cli-prompt": {
             "install-path": "vendor/seld/cli-prompt",
-            "installer": "composer"
+            "installer": "composer",
+            "env": "dev"
         },
         "seld/jsonlint": {
             "install-path": "vendor/seld/jsonlint",
@@ -301,7 +306,8 @@
         },
         "seld/phar-utils": {
             "install-path": "vendor/seld/phar-utils",
-            "installer": "composer"
+            "installer": "composer",
+            "env": "dev"
         },
         "swiftmailer/swiftmailer": {
             "install-path": "vendor/swiftmailer/swiftmailer",

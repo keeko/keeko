@@ -23,7 +23,7 @@ class InstallerProxy {
 
 	public static function process() {
 // 		require_once(__DIR__ . '/bootstrap.php');
-// 		$class = '\\keeko\\core\\installer\\DelegateInstaller';
+// 		$class = '\\keeko\\framework\\installer\\DelegateInstaller';
 // 		if (class_exists($class)) {
 // 			$installer = new $class();
 // 			$installer->process(static::$install, static::$update, static::$uninstall);
