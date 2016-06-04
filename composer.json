@@ -2,15 +2,20 @@
 	"name" : "keeko/keeko",
 	"description" : "Keeko Platform",
 	"type" : "project",
+	"minimum-stability" : "stable",
+	"license" : "MIT",
 	"authors" : [{
-			"name" : "gossi",
+			"name" : "Thomas Gossmann",
 			"homepage" : "http://gos.si"
 		}
 	],
-	"license" : "MIT",
+	"autoload" : {
+		"psr-4" : {
+			"keeko\\keeko\\" : "src"
+		}
+	},
 	"require" : {
 		"fxp/composer-asset-plugin" : "~1.0",
-		"composer/composer" : "@dev",
 		"propel/propel" : "@alpha",
 		"puli/composer-plugin" : "^1.0@beta"
 	},
@@ -26,14 +31,11 @@
 		"keeko/api-app" : "dev-master",
 		"keeko/account-app" : "dev-master",
 		"keeko/account" : "dev-master",
-		"keeko/auth" : "dev-master"
+		"keeko/auth" : "dev-master",
+		"iuf/junia" : "dev-master",
+		"iuf/junia-app" : "dev-master",
+		"gossi/trixionary" : "dev-master"
 	},
-	"autoload" : {
-		"psr-4" : {
-			"keeko\\keeko\\" : "src"
-		}
-	},
-	"minimum-stability" : "stable",
 	"scripts" : {
 		"post-install-cmd" : [
 			"\\keeko\\keeko\\InstallerProxy::process"

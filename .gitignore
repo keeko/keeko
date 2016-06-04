@@ -1,4 +1,5 @@
 # project
+.buildpath
 .puli/
 composer.lock
 vendor/

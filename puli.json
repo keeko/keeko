@@ -101,6 +101,11 @@
             "installer": "composer",
             "env": "dev"
         },
+        "cocur/slugify": {
+            "install-path": "vendor/cocur/slugify",
+            "installer": "composer",
+            "env": "dev"
+        },
         "composer/ca-bundle": {
             "install-path": "vendor/composer/ca-bundle",
             "installer": "composer"
@@ -141,8 +146,23 @@
             "installer": "composer",
             "env": "dev"
         },
+        "gossi/trixionary": {
+            "install-path": "packages/gossi/trixionary",
+            "installer": "composer",
+            "env": "dev"
+        },
         "igorw/get-in": {
             "install-path": "vendor/igorw/get-in",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "iuf/junia": {
+            "install-path": "packages/iuf/junia",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "iuf/junia-app": {
+            "install-path": "packages/iuf/junia-app",
             "installer": "composer",
             "env": "dev"
         },
@@ -186,6 +206,11 @@
         },
         "keeko/framework": {
             "install-path": "packages/keeko/framework",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "league/csv": {
+            "install-path": "vendor/league/csv",
             "installer": "composer",
             "env": "dev"
         },
@@ -277,6 +302,11 @@
         "seld/phar-utils": {
             "install-path": "vendor/seld/phar-utils",
             "installer": "composer"
+        },
+        "swiftmailer/swiftmailer": {
+            "install-path": "vendor/swiftmailer/swiftmailer",
+            "installer": "composer",
+            "env": "dev"
         },
         "symfony/config": {
             "install-path": "vendor/symfony/config",
