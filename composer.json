@@ -19,7 +19,11 @@
 		"propel/propel" : "@alpha",
 		"puli/composer-plugin" : "^1.0@beta",
 		"keeko/framework" : "^0.2@beta",
-		"keeko/core" : "^0.2@beta"
+		"keeko/core" : "^0.2@beta",
+		"keeko/account": "^0.2@beta",
+		"keeko/auth": "^0.2@beta",
+		"keeko/api-app": "^0.2@beta",
+		"keeko/developer-app": "^0.2@beta"
 	},
 	"require-dev" : {
 		"puli/repository" : "@beta",
