@@ -29,20 +29,6 @@
 		"puli/url-generator" : "@beta",
 		"puli/discovery" : "@beta"
 	},
-	"require-dev" : {
-		"puli/repository" : "@beta",
-		"puli/twig-extension" : "@beta",
-		"puli/url-generator" : "@beta",
-		"puli/discovery" : "@beta",
-		"keeko/composer-installer" : "dev-master",
-		"keeko/framework" : "dev-master",
-		"keeko/core" : "@dev",
-		"keeko/developer-app" : "dev-master",
-		"keeko/api-app" : "dev-master",
-		"keeko/account-app" : "dev-master",
-		"keeko/account" : "dev-master",
-		"keeko/auth" : "dev-master"
-	},
 	"scripts" : {
 		"post-install-cmd" : [
 			"keeko\\keeko\\InstallerProxy::process"
