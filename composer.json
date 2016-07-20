@@ -17,7 +17,9 @@
 	"require" : {
 		"fxp/composer-asset-plugin" : "~1.0",
 		"propel/propel" : "@alpha",
-		"puli/composer-plugin" : "^1.0@beta"
+		"puli/composer-plugin" : "^1.0@beta",
+		"keeko/framework" : "^0.2@beta",
+		"keeko/core" : "^0.2@beta"
 	},
 	"require-dev" : {
 		"puli/repository" : "@beta",
@@ -31,12 +33,7 @@
 		"keeko/api-app" : "dev-master",
 		"keeko/account-app" : "dev-master",
 		"keeko/account" : "dev-master",
-		"keeko/auth" : "dev-master",
-		"iuf/junia" : "dev-master",
-		"iuf/junia-app" : "dev-master",
-		"gossi/trixionary" : "dev-master",
-		"gossi/trixionary-client" : "dev-master",
-		"gossi/trixionary-app" : "dev-master"
+		"keeko/auth" : "dev-master"
 	},
 	"scripts" : {
 		"post-install-cmd" : [
