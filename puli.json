@@ -3,6 +3,7 @@
     "name": "keeko/keeko",
     "path-mappings": {
         "/assets": "res/assets/",
+        "/config": "config/",
         "/files": "res/files/",
         "/packages": "packages/"
     },
@@ -31,6 +32,24 @@
             "type": "puli/public-resource",
             "parameters": {
                 "path": "/keeko/account-app",
+                "server": "packages"
+            }
+        },
+        "a938be9b-0c09-4c37-b703-737b2344c894": {
+            "_class": "Puli\\Discovery\\Binding\\ResourceBinding",
+            "query": "/gossi/trixionary-client/public{,/**/*}",
+            "type": "puli/public-resource",
+            "parameters": {
+                "path": "/gossi/trixionary-client",
+                "server": "packages"
+            }
+        },
+        "aa599993-829f-4163-8318-34ba6753aa1c": {
+            "_class": "Puli\\Discovery\\Binding\\ResourceBinding",
+            "query": "/gossi/trixionary-app/public{,/**/*}",
+            "type": "puli/public-resource",
+            "parameters": {
+                "path": "/gossi/trixionary-app",
                 "server": "packages"
             }
         },
@@ -71,11 +90,31 @@
             "files": {
                 "installer": "symlink",
                 "document-root": "public/_files",
-                "url-format": "/keeko/_files/%s"
+                "url-format": "http://localhost/keeko/_files/%s"
             }
         }
     },
     "packages": {
+        "bower-asset/blueimp-canvas-to-blob": {
+            "install-path": "res/assets/blueimp-canvas-to-blob",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "bower-asset/blueimp-file-upload": {
+            "install-path": "res/assets/blueimp-file-upload",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "bower-asset/blueimp-load-image": {
+            "install-path": "res/assets/blueimp-load-image",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "bower-asset/blueimp-tmpl": {
+            "install-path": "res/assets/blueimp-tmpl",
+            "installer": "composer",
+            "env": "dev"
+        },
         "bower-asset/bootstrap": {
             "install-path": "res/assets/bootstrap",
             "installer": "composer",
@@ -131,6 +170,11 @@
             "installer": "composer",
             "env": "dev"
         },
+        "embed/embed": {
+            "install-path": "vendor/embed/embed",
+            "installer": "composer",
+            "env": "dev"
+        },
         "flow/jsonpath": {
             "install-path": "vendor/flow/jsonpath",
             "installer": "composer",
@@ -155,8 +199,23 @@
             "installer": "composer",
             "env": "dev"
         },
+        "gossi/trixionary-app": {
+            "install-path": "packages/gossi/trixionary-app",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "gossi/trixionary-client": {
+            "install-path": "packages/gossi/trixionary-client",
+            "installer": "composer",
+            "env": "dev"
+        },
         "igorw/get-in": {
             "install-path": "vendor/igorw/get-in",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "imagine/imagine": {
+            "install-path": "vendor/imagine/imagine",
             "installer": "composer",
             "env": "dev"
         },

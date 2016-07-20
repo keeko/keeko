@@ -34,7 +34,9 @@
 		"keeko/auth" : "dev-master",
 		"iuf/junia" : "dev-master",
 		"iuf/junia-app" : "dev-master",
-		"gossi/trixionary" : "dev-master"
+		"gossi/trixionary" : "dev-master",
+		"gossi/trixionary-client" : "dev-master",
+		"gossi/trixionary-app" : "dev-master"
 	},
 	"scripts" : {
 		"post-install-cmd" : [
