@@ -15,15 +15,19 @@
 		}
 	},
 	"require" : {
-		"fxp/composer-asset-plugin" : "~1.0",
-		"propel/propel" : "@alpha",
+		"fxp/composer-asset-plugin" : "^1.0",
 		"puli/composer-plugin" : "^1.0@beta",
 		"keeko/framework" : "^0.2@beta",
 		"keeko/core" : "^0.2@beta",
 		"keeko/account": "^0.2@beta",
 		"keeko/auth": "^0.2@beta",
 		"keeko/api-app": "^0.2@beta",
-		"keeko/developer-app": "^0.2@beta"
+		"keeko/developer-app": "^0.2@beta",
+		"propel/propel" : "@alpha",
+		"puli/repository" : "@beta",
+		"puli/twig-extension" : "@beta",
+		"puli/url-generator" : "@beta",
+		"puli/discovery" : "@beta"
 	},
 	"require-dev" : {
 		"puli/repository" : "@beta",
