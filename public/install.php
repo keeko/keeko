@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Request;
 use keeko\framework\installer\KeekoInstaller;
 use keeko\framework\service\ServiceContainer;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../src/autoload.php';
 $puli = require_once __DIR__ . '/../packages/keeko/framework/bootstrap/bootstrap.php';
 
 $request = Request::createFromGlobals();

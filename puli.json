@@ -95,26 +95,6 @@
         }
     },
     "packages": {
-        "bower-asset/blueimp-canvas-to-blob": {
-            "install-path": "res/assets/blueimp-canvas-to-blob",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "bower-asset/blueimp-file-upload": {
-            "install-path": "res/assets/blueimp-file-upload",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "bower-asset/blueimp-load-image": {
-            "install-path": "res/assets/blueimp-load-image",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "bower-asset/blueimp-tmpl": {
-            "install-path": "res/assets/blueimp-tmpl",
-            "installer": "composer",
-            "env": "dev"
-        },
         "bower-asset/bootstrap": {
             "install-path": "res/assets/bootstrap",
             "installer": "composer",
@@ -137,11 +117,6 @@
         },
         "bower-asset/swagger-ui": {
             "install-path": "res/assets/swagger-ui",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "cocur/slugify": {
-            "install-path": "vendor/cocur/slugify",
             "installer": "composer",
             "env": "dev"
         },
@@ -170,11 +145,6 @@
             "installer": "composer",
             "env": "dev"
         },
-        "embed/embed": {
-            "install-path": "vendor/embed/embed",
-            "installer": "composer",
-            "env": "dev"
-        },
         "flow/jsonpath": {
             "install-path": "vendor/flow/jsonpath",
             "installer": "composer",
@@ -194,38 +164,8 @@
             "installer": "composer",
             "env": "dev"
         },
-        "gossi/trixionary": {
-            "install-path": "packages/gossi/trixionary",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "gossi/trixionary-app": {
-            "install-path": "packages/gossi/trixionary-app",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "gossi/trixionary-client": {
-            "install-path": "packages/gossi/trixionary-client",
-            "installer": "composer",
-            "env": "dev"
-        },
         "igorw/get-in": {
             "install-path": "vendor/igorw/get-in",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "imagine/imagine": {
-            "install-path": "vendor/imagine/imagine",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "iuf/junia": {
-            "install-path": "packages/iuf/junia",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "iuf/junia-app": {
-            "install-path": "packages/iuf/junia-app",
             "installer": "composer",
             "env": "dev"
         },
@@ -269,11 +209,6 @@
         },
         "keeko/framework": {
             "install-path": "packages/keeko/framework",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "league/csv": {
-            "install-path": "vendor/league/csv",
             "installer": "composer",
             "env": "dev"
         },
@@ -343,8 +278,7 @@
         },
         "puli/twig-extension": {
             "install-path": "vendor/puli/twig-extension",
-            "installer": "composer",
-            "env": "dev"
+            "installer": "composer"
         },
         "puli/url-generator": {
             "install-path": "vendor/puli/url-generator",
@@ -436,8 +370,7 @@
         },
         "twig/twig": {
             "install-path": "vendor/twig/twig",
-            "installer": "composer",
-            "env": "dev"
+            "installer": "composer"
         },
         "webmozart/assert": {
             "install-path": "vendor/webmozart/assert",
